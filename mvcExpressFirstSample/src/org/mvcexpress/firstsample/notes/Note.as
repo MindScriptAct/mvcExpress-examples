@@ -5,7 +5,7 @@ package org.mvcexpress.firstsample.notes {
  * @author 
  */
 public class Note {
-	
+	static public const SHOW_SCREEN:String = "showScreen";
 	
 }
 }
