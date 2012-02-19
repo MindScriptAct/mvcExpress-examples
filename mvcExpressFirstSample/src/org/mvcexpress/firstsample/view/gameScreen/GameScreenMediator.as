@@ -23,7 +23,7 @@ public class GameScreenMediator extends Mediator {
 	
 	// on menu button press - send message to show menu screen!
 	private function handleMenuClick(event:MouseEvent):void {
-		sendMessage(Note.SHOW_SCREEN, Screens.MENU);
+		sendMessage(Note.STOP_GAME);
 	}
 	
 	override public function onRemove():void {
