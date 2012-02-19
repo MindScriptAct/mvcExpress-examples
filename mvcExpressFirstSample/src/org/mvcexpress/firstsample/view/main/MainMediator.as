@@ -30,8 +30,8 @@ public class MainMediator extends Mediator {
 	private function handleShowScreen(screenName:String):void {
 		// if screen is already shown - unmediate it and remove.
 		if (screen) {
-			mediatorMap.unmediate(screen);
 			view.removeChild(screen);
+			mediatorMap.unmediate(screen);
 			screen = null;
 		}
 		// set new screen sprite object.
@@ -46,8 +46,8 @@ public class MainMediator extends Mediator {
 		}
 		// if new screen is set - add it and mediate.
 		if (screen) {
-			mediatorMap.mediate(screen);
 			view.addChild(screen);
+			mediatorMap.mediate(screen);
 		}
 	}
 	

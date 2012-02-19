@@ -2,6 +2,7 @@ package org.mvcexpress.firstsample.view.gameScreen {
 import com.bit101.components.PushButton;
 import flash.display.Sprite;
 import org.mvcexpress.firstsample.constants.MainConfig;
+import org.mvcexpress.firstsample.notes.Note;
 import org.mvcexpress.firstsample.view.hero.Hero;
 import utils.debug.Stats;
 
@@ -24,7 +25,6 @@ public class GameScreen extends Sprite {
 		//
 		hero = new Hero();
 		this.addChild(hero);
-		hero.x = MainConfig.STAGE_WIDTH / 2;
 		hero.y = MainConfig.HERO_Y_POS;
 	}
 	

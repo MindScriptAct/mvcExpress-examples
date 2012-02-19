@@ -1,4 +1,5 @@
 package org.mvcexpress.firstsample.controler.setup {
+import org.mvcexpress.firstsample.controler.hero.MoveHeroCommand;
 import org.mvcexpress.firstsample.controler.main.StartGameCommand;
 import org.mvcexpress.firstsample.controler.main.StopGameCommand;
 import org.mvcexpress.firstsample.notes.Note;
@@ -14,6 +15,8 @@ public class SetupControlerCommand extends Command {
 	public function execute(params:Object):void {
 		commandMap.map(Note.START_GAME, StartGameCommand);
 		commandMap.map(Note.STOP_GAME, StopGameCommand);
+		
+		commandMap.map(Note.KEY_PRESS, MoveHeroCommand);
 	}
 
 }

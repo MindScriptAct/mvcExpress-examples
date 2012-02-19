@@ -2,6 +2,8 @@ package org.mvcexpress.firstsample.controler.setup {
 import org.mvcexpress.firstsample.Main;
 import org.mvcexpress.firstsample.view.gameScreen.GameScreen;
 import org.mvcexpress.firstsample.view.gameScreen.GameScreenMediator;
+import org.mvcexpress.firstsample.view.hero.Hero;
+import org.mvcexpress.firstsample.view.hero.HeroMediator;
 import org.mvcexpress.firstsample.view.main.MainMediator;
 import org.mvcexpress.firstsample.view.menuScreen.MenuScreen;
 import org.mvcexpress.firstsample.view.menuScreen.MenuScreenMediator;
@@ -19,6 +21,8 @@ public class SetupViewCommand extends Command {
 		
 		mediatorMap.map(GameScreen, GameScreenMediator);
 		mediatorMap.map(MenuScreen, MenuScreenMediator);
+		
+		mediatorMap.map(Hero, HeroMediator);
 	}
 
 }

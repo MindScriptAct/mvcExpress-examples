@@ -5,7 +5,7 @@ package org.mvcexpress.firstsample.notes {
  * @author 
  */
 public class DataNote {
-	
+	static public const HERO_POS_UPDATE:String = "heroPosUpdate";
 	
 }
 }

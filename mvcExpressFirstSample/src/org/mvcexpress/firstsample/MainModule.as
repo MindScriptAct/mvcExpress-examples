@@ -5,7 +5,6 @@ import org.mvcexpress.firstsample.controler.setup.SetupControlerCommand;
 import org.mvcexpress.firstsample.controler.setup.SetupModelCommand;
 import org.mvcexpress.firstsample.controler.setup.SetupViewCommand;
 import org.mvcexpress.firstsample.notes.Note;
-import org.mvcexpress.firstsample.view.keyInput.KeyboardMediator;
 
 /**
  * TODO:CLASS COMMENT
@@ -26,9 +25,6 @@ public class MainModule extends ModuleCore {
 		trace("Hello mvcExpress!!!");
 		// mediate main view.
 		mediatorMap.mediate(main);
-		
-		// start mediating stage for keyPresses
-		mediatorMap.mediateWith(main.stage, KeyboardMediator);
 		
 		// show menu screen
 		sendMessage(Note.SHOW_SCREEN, Screens.MENU);
