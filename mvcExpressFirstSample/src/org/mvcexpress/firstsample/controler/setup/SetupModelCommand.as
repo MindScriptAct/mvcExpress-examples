@@ -1,5 +1,6 @@
 package org.mvcexpress.firstsample.controler.setup {
 import org.mvcexpress.firstsample.model.hero.HeroProxy;
+import org.mvcexpress.firstsample.model.score.ScoreProxy;
 import org.mvcexpress.mvc.Command;
 	
 /**
@@ -11,6 +12,7 @@ import org.mvcexpress.mvc.Command;
 public class SetupModelCommand extends Command{
 	
 	public function execute(params:Object):void {
+		proxyMap.mapClass(ScoreProxy);
 		proxyMap.mapClass(HeroProxy);
 	}
 	

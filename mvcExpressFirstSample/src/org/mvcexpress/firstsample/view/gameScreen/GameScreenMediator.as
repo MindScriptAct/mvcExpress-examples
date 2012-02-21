@@ -4,6 +4,8 @@ import flash.events.MouseEvent;
 import flash.ui.Keyboard;
 import org.mvcexpress.firstsample.constants.KeyCodes;
 import org.mvcexpress.firstsample.constants.Screens;
+import org.mvcexpress.firstsample.model.score.ScoreProxy;
+import org.mvcexpress.firstsample.notes.DataNote;
 import org.mvcexpress.firstsample.notes.Note;
 import org.mvcexpress.mvc.Mediator;
 
@@ -16,8 +18,8 @@ public class GameScreenMediator extends Mediator {
 	[Inject]
 	public var view:GameScreen;
 	
-	//[Inject]
-	//public var myProxy:MyProxy;
+	[Inject]
+	public var scoreProxy:ScoreProxy;
 	
 	override public function onRegister():void {
 		view.menuBtn.addEventListener(MouseEvent.CLICK, handleMenuClick, false, 0, true);
@@ -28,8 +30,12 @@ public class GameScreenMediator extends Mediator {
 		view.stage.addEventListener(KeyboardEvent.KEY_DOWN, handleKeyUp);
 		view.stage.addEventListener(KeyboardEvent.KEY_UP, handleKeyUp);
 		
+		addHandler(DataNote.SCORE_UPDATE, view.updateScore);
+		
 		mediatorMap.mediate(view.hero);
 		
+		view.updateScore(scoreProxy.score);
+	
 	}
 	
 	private function handleKeyUp(event:KeyboardEvent):void {
@@ -40,7 +46,7 @@ public class GameScreenMediator extends Mediator {
 				sendMessage(Note.KEY_PRESS, KeyCodes.RIGHT);
 				break;
 			case Keyboard.LEFT: 
-			case Keyboard.A:
+			case Keyboard.A: 
 				sendMessage(Note.KEY_PRESS, KeyCodes.LEFT);
 				break;
 			default: 
