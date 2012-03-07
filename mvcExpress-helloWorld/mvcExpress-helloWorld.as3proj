@@ -4,7 +4,7 @@
   <output>
     <movie outputType="Application" />
     <movie input="" />
-    <movie path="bin\sample5.swf" />
+    <movie path="bin\mvcExpressExample.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
