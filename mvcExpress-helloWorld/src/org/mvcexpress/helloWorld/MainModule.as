@@ -30,7 +30,7 @@ public class MainModule extends ModuleCore {
 	}
 	
     public function start(main:Main):void {
-        trace("Hello mvcExpress!!!");
+        //trace("Hello mvcExpress!!!");
 		// mediate main view.
 		mediatorMap.mediate(main);
     }	
