@@ -19,7 +19,7 @@ public class GameScreenMediator extends Mediator {
 	public var gameBoardProxy:GameBoardProxy;
 	
 	override public function onRegister():void {
-		trace("GameScreenMediator.onRegister");
+		//trace("GameScreenMediator.onRegister");
 		
 		// 
 		view.addEventListener(GameScreenEvent.CELL_CLICK, handleCellClick);

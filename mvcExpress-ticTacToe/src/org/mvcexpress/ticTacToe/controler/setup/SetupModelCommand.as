@@ -1,18 +1,20 @@
-package org.mvcexpress.ticTacToe.controler.setup{
+package org.mvcexpress.ticTacToe.controler.setup {
 import org.mvcexpress.mvc.Command;
 import org.mvcexpress.ticTacToe.model.GameBoardProxy;
-	
+import org.mvcexpress.ticTacToe.model.GameProxy;
+
 /**
  * Initial set up of maping proxies to proxy class and name for injection.
  * proxyMap.mapClass(proxyClass:Class, injectClass:Class = null, name:String = "");
  * proxyMap.mapObject(proxyObject:Proxy, injectClass:Class = null, name:String = "");
- * @author 
+ * @author
  */
 public class SetupModelCommand extends Command {
 	
 	public function execute(params:Object):void {
+		proxyMap.mapClass(GameProxy);
 		proxyMap.mapClass(GameBoardProxy);
 	}
-	
+
 }
 }

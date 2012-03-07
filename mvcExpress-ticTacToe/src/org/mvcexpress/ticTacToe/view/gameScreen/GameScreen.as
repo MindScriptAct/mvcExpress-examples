@@ -35,7 +35,7 @@ public class GameScreen extends Sprite {
 	}
 	
 	public function addTocken(cellCords:Point, cellToken:int):void {
-		trace( "GameScreen.addTocken > cellCords : " + cellCords + ", cellToken : " + cellToken );
+		//trace( "GameScreen.addTocken > cellCords : " + cellCords + ", cellToken : " + cellToken );
 		var token:Sprite;
 		if (cellToken == TokenId.TIC) {
 			token = new Tic();
