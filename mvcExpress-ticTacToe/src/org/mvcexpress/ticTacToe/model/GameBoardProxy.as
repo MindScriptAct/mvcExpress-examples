@@ -38,5 +38,14 @@ public class GameBoardProxy extends Proxy {
 	public function getCellToken(cellCords:Point):int {
 		return boardData[cellCords.x][cellCords.y];
 	}
+	
+	public function clearBoard():void {
+		for (var i:int = 0; i < boardData.length; i++) {
+			for (var j:int = 0; j < boardData[i].length; j++) {
+				boardData[i][j] = 0;
+			}
+		}
+		sendMessage(DataMsg.BOARD_CLEARED);
+	}
 }
 }

@@ -69,7 +69,7 @@ public class GameScreen extends Sprite {
 		dispatchEvent(new GameScreenEvent(GameScreenEvent.CELL_CLICK, Math.floor(backGround.mouseX / CELL_SIZE), Math.floor(backGround.mouseY / CELL_SIZE)));
 	}
 	
-	public function addTocken(cellCords:Point, cellToken:int):void {
+	public function addToken(cellCords:Point, cellToken:int):void {
 		//trace( "GameScreen.addTocken > cellCords : " + cellCords + ", cellToken : " + cellToken );
 		var token:Sprite;
 		if (cellToken == TokenId.TIC) {
@@ -83,6 +83,12 @@ public class GameScreen extends Sprite {
 			token.y = cellCords.y * 100 + backGround.y;
 			this.addChild(token);
 			tokens.push(token);
+		}
+	}
+	
+	public function removeAllTokens():void {
+		while (tokens.length) {
+			this.removeChild(tokens.pop());
 		}
 	}
 

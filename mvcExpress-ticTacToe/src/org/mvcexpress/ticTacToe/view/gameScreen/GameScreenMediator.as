@@ -27,6 +27,7 @@ public class GameScreenMediator extends Mediator {
 		view.newGameDispatcher.addEventListener(MouseEvent.CLICK, handleNewGameClick);
 		
 		addHandler(DataMsg.CELL_SET, handleCellSet);
+		addHandler(DataMsg.BOARD_CLEARED, handleBoardCleared);
 	}
 	
 	private function handleCellClick(event:GameScreenEvent):void {
@@ -34,12 +35,16 @@ public class GameScreenMediator extends Mediator {
 	}
 	
 	private function handleNewGameClick(event:MouseEvent):void {
-		trace("GameScreenMediator.handleNewGameClick > event : " + event);
+		//trace("GameScreenMediator.handleNewGameClick > event : " + event);
 		sendMessage(ViewMsg.NEW_GAME_CLICKED);
 	}
 	
 	public function handleCellSet(cellCords:Point):void {
-		view.addTocken(cellCords, gameBoardProxy.getCellToken(cellCords));
+		view.addToken(cellCords, gameBoardProxy.getCellToken(cellCords));
+	}
+	
+	private function handleBoardCleared(params:Object):void {
+		view.removeAllTokens();
 	}
 	
 	override public function onRemove():void {

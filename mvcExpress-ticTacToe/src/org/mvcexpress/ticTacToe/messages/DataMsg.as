@@ -5,6 +5,7 @@ package org.mvcexpress.ticTacToe.messages {
  */
 public class DataMsg {
 	static public const CELL_SET:String = "cellSet";
+	static public const BOARD_CLEARED:String = "boardCleared";
 	
 	
 }
