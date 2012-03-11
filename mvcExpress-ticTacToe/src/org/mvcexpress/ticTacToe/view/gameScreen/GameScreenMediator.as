@@ -5,6 +5,7 @@ import org.mvcexpress.mvc.Mediator;
 import org.mvcexpress.ticTacToe.messages.DataMsg;
 import org.mvcexpress.ticTacToe.messages.ViewMsg;
 import org.mvcexpress.ticTacToe.model.GameBoardProxy;
+import org.mvcexpress.ticTacToe.model.LineVO;
 
 /**
  * TODO:CLASS COMMENT
@@ -28,6 +29,7 @@ public class GameScreenMediator extends Mediator {
 		
 		addHandler(DataMsg.CELL_SET, handleCellSet);
 		addHandler(DataMsg.BOARD_CLEARED, handleBoardCleared);
+		addHandler(DataMsg.LINE_FOUND, handleLineFound);
 	}
 	
 	private function handleCellClick(event:GameScreenEvent):void {
@@ -44,7 +46,11 @@ public class GameScreenMediator extends Mediator {
 	}
 	
 	private function handleBoardCleared(params:Object):void {
-		view.removeAllTokens();
+		view.clearBoard();
+	}
+	
+	private function handleLineFound(lineVo:LineVO):void {
+		view.drawLine(lineVo.fromPos, lineVo.toPos);
 	}
 	
 	override public function onRemove():void {

@@ -47,5 +47,53 @@ public class GameBoardProxy extends Proxy {
 		}
 		sendMessage(DataMsg.BOARD_CLEARED);
 	}
+	
+	public function findLine():LineVO {
+		var retVal:LineVO;
+		
+		var lineToken:int;
+		
+		// search horizontals
+		for (var j:int = 0; j < boardData.length; j++) {
+			lineToken = boardData[0][j];
+			if (lineToken && lineToken == boardData[1][j] && lineToken == boardData[2][j]) {
+				retVal = new LineVO();
+				retVal.fromPos = new Point(0, j);
+				retVal.toPos = new Point(2, j);
+				retVal.tokenId = lineToken;
+				break;
+			}
+		}
+		// search verticals
+		for (var i:int = 0; i < boardData.length; i++) {
+			lineToken = boardData[i][0];
+			if (lineToken && lineToken == boardData[i][1] && lineToken == boardData[i][2]) {
+				retVal = new LineVO();
+				retVal.fromPos = new Point(i, 0);
+				retVal.toPos = new Point(i, 2);
+				retVal.tokenId = lineToken;
+				break;
+			}
+		}
+		// search diagonals
+		lineToken = boardData[1][1];
+		if (lineToken && lineToken == boardData[0][0] && lineToken == boardData[2][2]) {
+			retVal = new LineVO();
+			retVal.fromPos = new Point(0, 0);
+			retVal.toPos = new Point(2, 2);
+			retVal.tokenId = lineToken;
+		}
+		if (lineToken && lineToken == boardData[2][0] && lineToken == boardData[0][2]) {
+			retVal = new LineVO();
+			retVal.fromPos = new Point(2, 0);
+			retVal.toPos = new Point(0, 2);
+			retVal.tokenId = lineToken;
+		}
+		if (retVal) {
+			sendMessage(DataMsg.LINE_FOUND, retVal);
+		}
+		
+		return retVal;
+	}
 }
 }

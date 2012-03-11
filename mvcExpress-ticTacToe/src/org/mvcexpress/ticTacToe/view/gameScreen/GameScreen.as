@@ -25,7 +25,9 @@ public class GameScreen extends Sprite {
 	private var backGround:BoardBackground;
 	private var tokens:Vector.<Sprite> = new Vector.<Sprite>();
 	private var newGameButton:NewGameButton;
-
+	private var tokenHolder:Sprite;
+	private var lineHolder:Sprite;
+	
 	//
 	public var newGameDispatcher:EventDispatcher;
 	
@@ -62,7 +64,18 @@ public class GameScreen extends Sprite {
 		newGameFormat.font = 'Verdana';
 		newGameFormat.align = TextFormatAlign.CENTER;
 		newGameTF.setTextFormat(newGameFormat);
-	
+		
+		// add tokenHolder
+		tokenHolder = new Sprite();
+		this.addChild(tokenHolder);
+		tokenHolder.x = backGround.x;
+		tokenHolder.y = backGround.y;
+		
+		// add lineHolder
+		lineHolder = new Sprite();
+		this.addChild(lineHolder);
+		lineHolder.x = backGround.x;
+		lineHolder.y = backGround.y;
 	}
 	
 	private function handleBackClick(event:MouseEvent):void {
@@ -79,17 +92,24 @@ public class GameScreen extends Sprite {
 		}
 		
 		if (token) {
-			token.x = cellCords.x * 100 + backGround.x;
-			token.y = cellCords.y * 100 + backGround.y;
-			this.addChild(token);
+			token.x = cellCords.x * CELL_SIZE;
+			token.y = cellCords.y * CELL_SIZE;
+			tokenHolder.addChild(token);
 			tokens.push(token);
 		}
 	}
 	
-	public function removeAllTokens():void {
+	public function clearBoard():void {
 		while (tokens.length) {
-			this.removeChild(tokens.pop());
+			tokenHolder.removeChild(tokens.pop());
 		}
+		lineHolder.graphics.clear();
+	}
+	
+	public function drawLine(fromPos:Point, toPos:Point):void {
+		lineHolder.graphics.lineStyle(20, 0x00F23D, 0.8);
+		lineHolder.graphics.moveTo(fromPos.x * CELL_SIZE + CELL_SIZE / 2, fromPos.y * CELL_SIZE + CELL_SIZE / 2);
+		lineHolder.graphics.lineTo(toPos.x * CELL_SIZE + CELL_SIZE / 2, toPos.y * CELL_SIZE + CELL_SIZE / 2);
 	}
 
 }
