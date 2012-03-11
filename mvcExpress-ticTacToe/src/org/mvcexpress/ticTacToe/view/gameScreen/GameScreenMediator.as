@@ -24,11 +24,18 @@ public class GameScreenMediator extends Mediator {
 		// 
 		view.addEventListener(GameScreenEvent.CELL_CLICK, handleCellClick);
 		
+		view.newGameDispatcher.addEventListener(MouseEvent.CLICK, handleNewGameClick);
+		
 		addHandler(DataMsg.CELL_SET, handleCellSet);
 	}
 	
 	private function handleCellClick(event:GameScreenEvent):void {
 		sendMessage(ViewMsg.CELL_CLICKED, new Point(event.xCell, event.yCell));
+	}
+	
+	private function handleNewGameClick(event:MouseEvent):void {
+		trace("GameScreenMediator.handleNewGameClick > event : " + event);
+		sendMessage(ViewMsg.NEW_GAME_CLICKED);
 	}
 	
 	public function handleCellSet(cellCords:Point):void {

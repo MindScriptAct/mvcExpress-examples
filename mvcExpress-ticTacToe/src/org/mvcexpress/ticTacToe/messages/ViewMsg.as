@@ -5,6 +5,7 @@ package org.mvcexpress.ticTacToe.messages {
  */
 public class ViewMsg {
 	static public const CELL_CLICKED:String = "cellClicked";
+	static public const NEW_GAME_CLICKED:String = "newGameClicked";
 	
 	
 }
