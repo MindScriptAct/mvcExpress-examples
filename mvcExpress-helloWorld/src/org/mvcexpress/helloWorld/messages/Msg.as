@@ -5,6 +5,7 @@ package org.mvcexpress.helloWorld.messages {
  */
 public class Msg {
 	
+	static public const TEST:String = "test";
 	
 	
 }

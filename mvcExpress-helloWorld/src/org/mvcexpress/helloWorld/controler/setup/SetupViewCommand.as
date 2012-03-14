@@ -10,7 +10,11 @@ import org.mvcexpress.helloWorld.view.main.MainMediator;
  */
 public class SetupViewCommand extends Command {
 	
-	public function execute(params:Object):void {
+	public function execute(blank:Object):void {
+		trace( "SetupViewCommand.execute > blank : " + blank );
+		
+		// Will map mediator class to view class.
+		// Mediator(MainMediator) will be automaticaly created every time you will try to mediatorMap.mediate() viewObject of mapped class(Main).
 		mediatorMap.map(Main, MainMediator);
 	}
 	

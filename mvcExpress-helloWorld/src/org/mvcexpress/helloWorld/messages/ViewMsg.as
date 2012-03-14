@@ -5,6 +5,7 @@ package org.mvcexpress.helloWorld.messages {
  */
 public class ViewMsg {
 	
+	static public const MAIN_CLICKED:String = "mainClicked";
 	
 	
 }

@@ -20,6 +20,7 @@ public class Main extends Sprite {
 	}
 
 	private function init(event:Event = null):void {
+		trace( "Main.init > event : " + event );
 		removeEventListener(Event.ADDED_TO_STAGE, init);
 		// entry point
 		module = new MainModule();
