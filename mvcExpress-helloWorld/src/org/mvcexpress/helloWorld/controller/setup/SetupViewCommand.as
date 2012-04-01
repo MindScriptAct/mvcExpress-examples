@@ -1,4 +1,4 @@
-package org.mvcexpress.helloWorld.controler.setup{
+package org.mvcexpress.helloWorld.controller.setup{
 import org.mvcexpress.mvc.Command;
 import org.mvcexpress.helloWorld.Main;
 import org.mvcexpress.helloWorld.view.main.MainMediator;

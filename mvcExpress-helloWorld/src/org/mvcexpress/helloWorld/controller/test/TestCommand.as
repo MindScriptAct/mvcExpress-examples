@@ -1,4 +1,4 @@
-package org.mvcexpress.helloWorld.controler.test {
+package org.mvcexpress.helloWorld.controller.test {
 import flash.geom.Point;
 import org.mvcexpress.helloWorld.model.TestProxy;
 import org.mvcexpress.mvc.Command;

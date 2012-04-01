@@ -1,4 +1,4 @@
-package org.mvcexpress.helloWorld.controler.setup {
+package org.mvcexpress.helloWorld.controller.setup {
 import org.mvcexpress.helloWorld.model.TestProxy;
 import org.mvcexpress.mvc.Command;
 

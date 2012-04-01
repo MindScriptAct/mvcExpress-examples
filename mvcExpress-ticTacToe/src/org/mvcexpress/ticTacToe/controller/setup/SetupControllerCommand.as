@@ -1,7 +1,7 @@
-package org.mvcexpress.ticTacToe.controler.setup {
+package org.mvcexpress.ticTacToe.controller.setup {
 import org.mvcexpress.mvc.Command;
-import org.mvcexpress.ticTacToe.controler.game.CellClickCommand;
-import org.mvcexpress.ticTacToe.controler.game.NewGameCommand;
+import org.mvcexpress.ticTacToe.controller.game.CellClickCommand;
+import org.mvcexpress.ticTacToe.controller.game.NewGameCommand;
 import org.mvcexpress.ticTacToe.messages.ViewMsg;
 
 /**
@@ -9,7 +9,7 @@ import org.mvcexpress.ticTacToe.messages.ViewMsg;
  * commandMap.map(type:String, commandClass:Class);
  * @author
  */
-public class SetupControlerCommand extends Command {
+public class SetupControllerCommand extends Command {
 	
 	public function execute(params:Object):void {
 		commandMap.map(ViewMsg.CELL_CLICKED, CellClickCommand);

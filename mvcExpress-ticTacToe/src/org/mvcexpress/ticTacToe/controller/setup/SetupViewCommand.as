@@ -1,4 +1,4 @@
-package org.mvcexpress.ticTacToe.controler.setup {
+package org.mvcexpress.ticTacToe.controller.setup {
 import org.mvcexpress.mvc.Command;
 import org.mvcexpress.ticTacToe.Main;
 import org.mvcexpress.ticTacToe.view.gameScreen.GameScreen;

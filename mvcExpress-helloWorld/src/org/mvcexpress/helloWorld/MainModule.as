@@ -2,9 +2,9 @@ package org.mvcexpress.helloWorld{
 import flash.geom.Point;
 import org.mvcexpress.core.ModuleCore;
 import org.mvcexpress.utils.checkClassStringConstants;
-import org.mvcexpress.helloWorld.controler.setup.SetupControlerCommand;
-import org.mvcexpress.helloWorld.controler.setup.SetupModelCommand;
-import org.mvcexpress.helloWorld.controler.setup.SetupViewCommand;
+import org.mvcexpress.helloWorld.controller.setup.SetupControllerCommand;
+import org.mvcexpress.helloWorld.controller.setup.SetupModelCommand;
+import org.mvcexpress.helloWorld.controller.setup.SetupViewCommand;
 import org.mvcexpress.helloWorld.messages.DataMsg;
 import org.mvcexpress.helloWorld.messages.Msg;
 import org.mvcexpress.helloWorld.messages.ViewMsg;
@@ -24,7 +24,7 @@ public class MainModule extends ModuleCore {
 		}
 		
 		// map commands (you can map them here.. or move it to command.)
-		commandMap.execute(SetupControlerCommand);
+		commandMap.execute(SetupControllerCommand);
 		
 		// map proxies (and services)(you can map them here.. or move it to command.)
 		commandMap.execute(SetupModelCommand);

@@ -1,4 +1,4 @@
-package org.mvcexpress.ticTacToe.controler.game {
+package org.mvcexpress.ticTacToe.controller.game {
 import org.mvcexpress.mvc.Command;
 import org.mvcexpress.ticTacToe.model.GameBoardProxy;
 import org.mvcexpress.ticTacToe.model.GameProxy;

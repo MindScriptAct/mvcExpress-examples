@@ -1,9 +1,9 @@
 package org.mvcexpress.ticTacToe{
 import org.mvcexpress.core.ModuleCore;
 import org.mvcexpress.utils.checkClassStringConstants;
-import org.mvcexpress.ticTacToe.controler.setup.SetupControlerCommand;
-import org.mvcexpress.ticTacToe.controler.setup.SetupModelCommand;
-import org.mvcexpress.ticTacToe.controler.setup.SetupViewCommand;
+import org.mvcexpress.ticTacToe.controller.setup.SetupControllerCommand;
+import org.mvcexpress.ticTacToe.controller.setup.SetupModelCommand;
+import org.mvcexpress.ticTacToe.controller.setup.SetupViewCommand;
 import org.mvcexpress.ticTacToe.messages.DataMsg;
 import org.mvcexpress.ticTacToe.messages.Msg;
 import org.mvcexpress.ticTacToe.messages.ViewMsg;
@@ -22,7 +22,7 @@ public class MainModule extends ModuleCore {
 		}
 		
 		// map commands
-		commandMap.execute(SetupControlerCommand);
+		commandMap.execute(SetupControllerCommand);
 		// map proxies (and services)
 		commandMap.execute(SetupModelCommand);
 		// map modiators

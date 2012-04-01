@@ -1,5 +1,5 @@
-package org.mvcexpress.helloWorld.controler.setup{
-import org.mvcexpress.helloWorld.controler.test.TestCommand;
+package org.mvcexpress.helloWorld.controller.setup{
+import org.mvcexpress.helloWorld.controller.test.TestCommand;
 import org.mvcexpress.helloWorld.messages.Msg;
 import org.mvcexpress.mvc.Command;
 	
@@ -8,10 +8,10 @@ import org.mvcexpress.mvc.Command;
  * commandMap.map(type:String, commandClass:Class);
  * @author 
  */
-public class SetupControlerCommand extends Command {
+public class SetupControllerCommand extends Command {
 	
 	public function execute(blank:Object):void {
-		trace( "SetupControlerCommand.execute > blank : " + blank );
+		trace( "SetupControllerCommand.execute > blank : " + blank );
 		
 		// map a command to message string.
 		// command class will be executed then messange with that string is sent.

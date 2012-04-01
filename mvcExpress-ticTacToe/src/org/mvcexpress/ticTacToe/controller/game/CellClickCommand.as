@@ -1,4 +1,4 @@
-package org.mvcexpress.ticTacToe.controler.game {
+package org.mvcexpress.ticTacToe.controller.game {
 import flash.geom.Point;
 import org.mvcexpress.mvc.Command;
 import org.mvcexpress.ticTacToe.messages.DataMsg;
