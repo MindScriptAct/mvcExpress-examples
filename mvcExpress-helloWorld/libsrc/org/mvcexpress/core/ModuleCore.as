@@ -1,3 +1,4 @@
+// Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.core {
 import flash.display.DisplayObjectContainer;
 import flash.utils.getDefinitionByName;
@@ -14,7 +15,7 @@ import org.mvcexpress.base.FlexMediatorMap;
  * It inits framework and lets you set up your application. (or execute Cammands that will do it.)
  * Also you can create modular application by having more then one CoreModule subclass.
  * </p>
- * @author rbanevicius
+ * @author Raimundas Banevicius (raima156@yahoo.com)
  */
 public class ModuleCore {
 	
@@ -25,6 +26,8 @@ public class ModuleCore {
 	protected var commandMap:CommandMap;
 	
 	private var messenger:Messenger;
+	
+	private var _debugFunction:Function;
 	
 	/**
 	 * CONSTRUCTOR
@@ -104,5 +107,56 @@ public class ModuleCore {
 		}
 		return uiComponentClass;
 	}
+	
+	//----------------------------------
+	//     Debug
+	//----------------------------------
+	
+	/**
+	 * Sets a debug function that will get all framework activity as string messages.
+	 * WARNING : will work only with compile variable CONFIG:debug set to true.
+	 * @param	debugFunction
+	 */
+	public function setDebugFunction(debugFunction:Function):void {
+		this.debugFunction = debugFunction;
+	}
+	
+	private function set debugFunction(value:Function):void {
+		_debugFunction = value;
+		use namespace pureLegsCore;
+		proxyMap.setDebugFunction(_debugFunction);
+		mediatorMap.setDebugFunction(_debugFunction);
+		commandMap.setDebugFunction(_debugFunction);
+		messenger.setDebugFunction(_debugFunction);
+	}
+	
+	/**
+	 * List all message mappings.
+	 */
+	public function listMappedMessages():String {
+		return messenger.listMappings(commandMap);
+	}
+	
+	/**
+	 * List all view mappings.
+	 */
+	public function listMappedMediators():String {
+		return mediatorMap.listMappings();
+	}
+	
+	/**
+	 * List all model mappings.
+	 */
+	public function listMappedProxies():String {
+		return proxyMap.listMappings();
+	}
+	
+	/**
+	 * List all controller mappings.
+	 */
+	public function listMappedCommands():String {
+		return commandMap.listMappings();
+	}
+
 }
 }

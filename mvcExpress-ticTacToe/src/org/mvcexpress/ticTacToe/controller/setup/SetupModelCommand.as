@@ -12,8 +12,8 @@ import org.mvcexpress.ticTacToe.model.GameProxy;
 public class SetupModelCommand extends Command {
 	
 	public function execute(params:Object):void {
-		proxyMap.mapClass(GameProxy);
-		proxyMap.mapClass(GameBoardProxy);
+		proxyMap.map(new GameProxy());
+		proxyMap.map(new GameBoardProxy());
 	}
 
 }

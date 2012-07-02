@@ -1,3 +1,4 @@
+// Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.base {
 import flash.utils.describeType;
 import flash.utils.Dictionary;
@@ -10,7 +11,7 @@ import org.mvcexpress.namespace.pureLegsCore;
 
 /**
  * ProxyMap is responsible for storing proxy objects and handling injection.
- * @author rbanevicius
+ * @author Raimundas Banevicius (raima156@yahoo.com)
  */
 public class ProxyMap {
 	
@@ -23,6 +24,8 @@ public class ProxyMap {
 	/** Communication object for sending messages*/
 	private var messenger:Messenger;
 	
+	private var debugFunction:Function;
+	
 	public function ProxyMap(messenger:Messenger) {
 		this.messenger = messenger;
 	}
@@ -33,12 +36,15 @@ public class ProxyMap {
 	 * @param	injectClass	Optional class to use for injection, if null proxyObject class is used. It is helpfull if you want to map proxy interface or subclass.
 	 * @param	name		Optional name if you need more then one proxy instance of same class.
 	 */
-	public function mapObject(proxyObject:Proxy, injectClass:Class = null, name:String = ""):void {
-		var proxyClass:Class = Object(proxyObject).constructor;
-		// if .constructor fail to get class - do it using class name. (.constructor is faster but might fail with some object.)
-		if (!proxyClass) {
-			proxyClass = Class(getDefinitionByName(getQualifiedClassName(proxyClass)));
+	public function map(proxyObject:Proxy, injectClass:Class = null, name:String = ""):void {
+		CONFIG::debug {
+			if (debugFunction != null) {
+				debugFunction("+ ProxyMap.map > proxyObject : " + proxyObject + ", injectClass : " + injectClass + ", name : " + name);
+			}
 		}
+		
+		var proxyClass:Class = Object(proxyObject).constructor;
+		
 		if (!injectClass) {
 			injectClass = proxyClass;
 		}
@@ -50,23 +56,7 @@ public class ProxyMap {
 			injectClassRegistry[className + name] = proxyObject;
 			proxyObject.register();
 		} else {
-			throw Error("Proxy object class is already mapped.[" + className + name + "]");
-		}
-	}
-	
-	/**
-	 * Automaticaly instantiates proxyClass and maps it to specific injectClass and name.
-	 * @param	proxyClass	Proxy class to use for injection. Proxy object is created then it is mapped.
-	 * @param	injectClass	Optional class to use for injection, if null proxyClass is used. It is helpfull if you want to map proxy interface or subclass.
-	 * @param	name		Optional name if you need more then one proxy instance of same class.
-	 */
-	public function mapClass(proxyClass:Class, injectClass:Class = null, name:String = ""):void {
-		var className:String = getQualifiedClassName(injectClass);
-		if (!injectClassRegistry[className + name]) {
-			var proxyObject:Proxy = new proxyClass();
-			mapObject(proxyObject, injectClass, name);
-		} else {
-			throw Error("Proxy class is already mapped.[" + className + name + "]");
+			throw Error("Proxy object class is already mapped.[injectClass:" + className + " name:" + name + "]");
 		}
 	}
 	
@@ -76,7 +66,13 @@ public class ProxyMap {
 	 * @param	injectClass	class previously mapped for injection
 	 * @param	name		name added to class, that was previously mapped for injection
 	 */
-	public function unmapClass(injectClass:Class, name:String = ""):void {
+	public function unmap(injectClass:Class, name:String = ""):void {
+		CONFIG::debug {
+			if (debugFunction != null) {
+				debugFunction("- ProxyMap.unmap > injectClass : " + injectClass + ", name : " + name);
+			}
+		}
+		
 		var className:String = getQualifiedClassName(injectClass);
 		use namespace pureLegsCore;
 		(injectClassRegistry[className + name] as Proxy).remove();
@@ -114,7 +110,7 @@ public class ProxyMap {
 				if (!injectClassRegistry[tempClassName]) {
 					injectClassRegistry[tempClassName] = tempValue;
 				} else {
-					throw Error("Temp config sholud not be maped...");
+					throw Error("Temp config sholud not be maped... it was ment to be used by framework for mediator view object only.");
 				}
 			}
 		}
@@ -126,6 +122,7 @@ public class ProxyMap {
 			///////////////////////////////////////////////////////////
 			// TODO : TEST inline function .. ( Putting inline function here ... makes commands slower.. WHY!!!)
 			rules = getInjectRules(signatureClass);
+			classInjectRules[signatureClass] = rules;
 				///////////////////////////////////////////////////////////
 				//////////////////////////////////////////////////////////
 		}
@@ -136,7 +133,7 @@ public class ProxyMap {
 			if (injectObject) {
 				object[rules[i].varName] = injectObject
 			} else {
-				throw Error("Inject object is not found for class:" + rules[i].injectClassAndName);
+				throw Error("Inject object is not found for class with id:" + rules[i].injectClassAndName + "(needed in " + object + ")");
 			}
 		}
 		
@@ -151,35 +148,74 @@ public class ProxyMap {
 	 */
 	private function getInjectRules(signatureClass:Class):Vector.<InjectRuleVO> {
 		var retVal:Vector.<InjectRuleVO> = new Vector.<InjectRuleVO>();
-		
 		var classDescription:XML = describeType(signatureClass);
-		var node:XML;
-		
-		// TODO : optimize
-		for each (node in classDescription.factory.*.(name() == "variable" || name() == "accessor").metadata.(@name == "Inject")) {
-			//trace( "node : " + node );
-			
-			// TODO : optimize
-			var name:String = "";
-			var args:XMLList = node.arg;
-			if (args[0]) {
-				if (args[0].@key == "name") {
-					name = args[0].@value;
+		var factoryNodes:XMLList = classDescription.factory.*;
+		for (var i:int = 0; i < factoryNodes.length(); i++) {
+			var node:XML = factoryNodes[i];
+			var nodeNome:String = node.name();
+			if (nodeNome == "variable" || nodeNome == "accessor") {
+				var metadataList:XMLList = node.metadata;
+				for (var j:int = 0; j < metadataList.length(); j++) {
+					nodeNome = metadataList[j].@name;
+					if (nodeNome == "Inject") {
+						var injectName:String = "";
+						var args:XMLList = metadataList[j].arg;
+						if (args[0]) {
+							if (args[0].@key == "name") {
+								injectName = args[0].@value;
+							}
+						}
+						var mapRule:InjectRuleVO = new InjectRuleVO();
+						mapRule.varName = node.@name.toString();
+						mapRule.injectClassAndName = node.@type.toString() + injectName;
+						retVal.push(mapRule);
+					}
 				}
 			}
-			
-			var mapRule:InjectRuleVO = new InjectRuleVO();
-			
-			mapRule.varName = node.parent().@name.toString();
-			mapRule.injectClassAndName = node.parent().@type.toString() + name;
-			
-			retVal.push(mapRule);
 		}
-		
-		classInjectRules[signatureClass] = retVal;
-		
 		return retVal;
 	}
-
+	
+	//----------------------------------
+	//     Debug
+	//----------------------------------
+	
+	/**
+	 * Checks if proxy object is already mapped.
+	 * @param	proxyObject	Proxy instance to use for injection.
+	 * @param	injectClass	Optional class to use for injection, if null proxyObject class is used. It is helpfull if you want to map proxy interface or subclass.
+	 * @param	name		Optional name if you need more then one proxy instance of same class.
+	 * @return				true if object is already mapped.
+	 */
+	public function isMapped(proxyObject:Proxy, injectClass:Class = null, name:String = ""):Boolean {
+		var retVal:Boolean = false;
+		var proxyClass:Class = Object(proxyObject).constructor;
+		if (!injectClass) {
+			injectClass = proxyClass;
+		}
+		var className:String = getQualifiedClassName(injectClass);
+		if (injectClassRegistry[className + name]) {
+			retVal = true;
+		}
+		return retVal;
+	}
+	
+	/**
+	 * Returns text of all mapped proxy objects, and keys they are mapped to.
+	 * @return		Text with all mapped proxies.
+	 */
+	public function listMappings():String {
+		var retVal:String = "";
+		retVal = "====================== ProxyMap Mappings: ======================\n";
+		for (var key:Object in injectClassRegistry) {
+			retVal += "PROXY OBJECT:'" + injectClassRegistry[key] + "'\t\t\t(MAPPED TO:" + key + ")\n";
+		}
+		retVal += "================================================================\n";
+		return retVal;
+	}
+	
+	pureLegsCore function setDebugFunction(debugFunction:Function):void {
+		this.debugFunction = debugFunction;
+	}
 }
 }

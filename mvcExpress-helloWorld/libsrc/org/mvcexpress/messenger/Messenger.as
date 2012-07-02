@@ -1,10 +1,12 @@
+// Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.messenger {
 import flash.utils.Dictionary;
+import org.mvcexpress.base.CommandMap;
 import org.mvcexpress.namespace.pureLegsCore;
 
 /**
  * Handles framework communications.
- * @author rbanevicius
+ * @author Raimundas Banevicius (raima156@yahoo.com)
  */
 public class Messenger {
 	
@@ -17,6 +19,8 @@ public class Messenger {
 	
 	// keeps ALL MsgVO's in Dictionalies by message type, maped by handlers for fast disabling and dublicated handler checks.
 	private var handlerRegistry:Dictionary = new Dictionary(); /* of Dictionary by String */
+	
+	private var debugFunction:Function;
 	
 	public function Messenger() {
 		if (!allowInstantiation) {
@@ -43,6 +47,11 @@ public class Messenger {
 	 * @return	returns message data object. This object can be disabled instead of removing the handle with function. (disabling is much faster)
 	 */
 	public function addHandler(type:String, handler:Function, handlerClassName:String = null):MsgVO {
+		CONFIG::debug {
+			if (debugFunction != null) {
+				debugFunction("++ Messenger.addHandler > type : " + type + ", handler : " + handler + ", handlerClassName : " + handlerClassName);
+			}
+		}
 		
 		if (!messageRegistry[type]) {
 			messageRegistry[type] = new Vector.<MsgVO>();
@@ -73,6 +82,12 @@ public class Messenger {
 	 * @param	handler	function called on sent message.
 	 */
 	public function removeHandler(type:String, handler:Function):void {
+		CONFIG::debug {
+			if (debugFunction != null) {
+				debugFunction("-- Messenger.removeHandler > type : " + type + ", handler : " + handler);
+			}
+		}
+		
 		if (handlerRegistry[type]) {
 			if (handlerRegistry[type][handler]) {
 				(handlerRegistry[type][handler] as MsgVO).disabled = true;
@@ -88,6 +103,12 @@ public class Messenger {
 	 * @param	params	parameter object that will be sent to all handler functions as single parameter.
 	 */
 	public function send(type:String, params:Object = null):void {
+		CONFIG::debug {
+			if (debugFunction != null) {
+				debugFunction("** Messenger.send > type : " + type + ", params : " + params);
+			}
+		}
+		
 		var messageList:Vector.<MsgVO> = messageRegistry[type];
 		var msgVo:MsgVO;
 		var delCount:int = 0;
@@ -141,5 +162,47 @@ public class Messenger {
 		var executeMvgVo:MsgVO = addHandler(type, executeFunction, handlerClassName);
 		executeMvgVo.isExecutable = true;
 	}
+	
+	//----------------------------------
+	//     Debug
+	//----------------------------------
+	
+	/**
+	 * List all message mappings.
+	 * Intended to be used by ModuleCore.as
+	 */
+	public function listMappings(commandMap:CommandMap):String {
+		use namespace pureLegsCore;
+		var retVal:String = "";
+		retVal = "====================== Message Mappings: ======================\n";
+		var warningText:String = "WARNING: If you want to see Classes that handles messages - you must run with CONFIG::debug compile variable set to 'true'.\n";
+		CONFIG::debug {
+			warningText = "";
+		}
+		if (warningText) {
+			retVal += warningText;
+		}
+		for (var key:String in messageRegistry) {
+			var msgList:Vector.<MsgVO> = messageRegistry[key];
+			var messageHandlers:String = "";
+			for (var i:int = 0; i < msgList.length; i++) {
+				var msgVo:MsgVO = msgList[i];
+				if (msgVo.isExecutable) {
+					messageHandlers += "[EXECUTES:" + commandMap.listMessageCommands(key) + "], ";
+				} else {
+					messageHandlers += "[" + msgVo.handlerClassName + "], ";
+				}
+			}
+			
+			retVal += "SENDING MESSAGE:'" + key + "'\t> HANDLED BY: > " + messageHandlers + "\n";
+		}
+		retVal += "================================================================";
+		return retVal;
+	}
+	
+	pureLegsCore function setDebugFunction(debugFunction:Function):void {
+		this.debugFunction = debugFunction;
+	}
+
 }
 }

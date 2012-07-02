@@ -1,3 +1,4 @@
+// Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.mvc {
 import org.mvcexpress.messenger.Messenger;
 import org.mvcexpress.namespace.pureLegsCore;
@@ -5,7 +6,7 @@ import org.mvcexpress.namespace.pureLegsCore;
 /**
  * Classes to hold application data.
  * Can send messages.
- * @author rbanevicius
+ * @author Raimundas Banevicius (raima156@yahoo.com)
  */
 public class Proxy {
 	

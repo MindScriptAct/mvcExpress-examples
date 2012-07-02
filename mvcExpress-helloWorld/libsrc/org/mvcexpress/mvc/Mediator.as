@@ -1,3 +1,4 @@
+// Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.mvc {
 import flash.utils.getQualifiedClassName;
 import org.mvcexpress.base.interfaces.IMediatorMap;
@@ -8,19 +9,28 @@ import org.mvcexpress.namespace.pureLegsCore;
 /**
  * Mediates single view object.
  *  It should only mediate(send message from/to them), not manage them.
- * @author rbanevicius
+ * @author Raimundas Banevicius (raima156@yahoo.com)
  */
 public class Mediator {
 	
-	private var messageDataRegistry:Vector.<MsgVO> = new Vector.<MsgVO>();
+	/** @private */
+	pureLegsCore var messageDataRegistry:Vector.<MsgVO> = new Vector.<MsgVO>();
 	
 	/** @private */
 	pureLegsCore var messanger:Messenger;
 	
+	/** @private */
+	CONFIG::debug
+	static pureLegsCore var canConstruct:Boolean;	
+	
 	public var mediatorMap:IMediatorMap;
 	
 	public function Mediator() {
-		// should stay empty.
+		CONFIG::debug {
+			if (!pureLegsCore::canConstruct) {
+				throw Error("Mediator:"+this+" can be constructed only by framework. If you want to use it - map it to view object class with 'mediatorMap.map()', and then mediate instance of the view object with 'mediatorMap.mediate()'.")
+			}
+		}	
 	}
 	
 	/**
@@ -53,14 +63,18 @@ public class Mediator {
 	 * @param	handler	function that will be called then needed message is sent. this functino must expect one parameter. (you can set your custom type for this param object, or leave it as Object)
 	 */
 	protected function addHandler(type:String, handler:Function):void {
+		use namespace pureLegsCore;
 		CONFIG::debug {
 			if (handler.length < 1) {
-				throw Error("Every message handler function needs at least one parameter. You are trying to add handler function from " + getQualifiedClassName(this));
+				throw Error("Every message handler function needs at least one parameter. You are trying to add handler function from " + getQualifiedClassName(this) + " for message type:" + type);
 			}
-			messageDataRegistry.push(pureLegsCore::messanger.addHandler(type, handler, getQualifiedClassName(this)));
+			if (!Boolean(type) || type == "null" || type == "undefined") {
+				throw Error("Message type:[" + type + "] can not be empty or 'null'.(You are trying to add message handler in: " + this + ")");
+			}
+			messageDataRegistry.push(messanger.addHandler(type, handler, getQualifiedClassName(this)));
 			return;
 		}
-		messageDataRegistry.push(pureLegsCore::messanger.addHandler(type, handler));
+		messageDataRegistry.push(messanger.addHandler(type, handler));
 	}
 	
 	/**
@@ -78,6 +92,7 @@ public class Mediator {
 	 * @private
 	 * */
 	pureLegsCore function removeAllHandlers():void {
+		use namespace pureLegsCore;
 		for (var i:int = 0; i < messageDataRegistry.length; i++) {
 			messageDataRegistry[i].disabled = true;
 		}

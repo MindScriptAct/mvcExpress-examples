@@ -1,3 +1,4 @@
+// Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.utils {
 import flash.utils.describeType;
 
@@ -29,7 +30,7 @@ public function checkClassStringConstants(... args:Array):void {
 				}
 			}
 		} else {
-			throw Error("Please provide trackStringConstants() only with Class names, not object.");
+			throw Error("Please send Class names to trackStringConstants() only(not object).");
 		}
 	}
 }
