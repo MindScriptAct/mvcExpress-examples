@@ -1,5 +1,6 @@
 package org.mvcexpress.ticTacToe{
 import org.mvcexpress.core.ModuleCore;
+import org.mvcexpress.MvcExpress;
 import org.mvcexpress.utils.checkClassStringConstants;
 import org.mvcexpress.ticTacToe.controller.setup.SetupControllerCommand;
 import org.mvcexpress.ticTacToe.controller.setup.SetupModelCommand;
@@ -19,6 +20,8 @@ public class MainModule extends ModuleCore {
 		// little utility to prevent accidental message constant dublications.
 		CONFIG::debug {
 			checkClassStringConstants(Msg, DataMsg, ViewMsg);
+			
+			MvcExpress.debugFunction = trace;
 		}
 		
 		// map commands

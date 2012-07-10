@@ -1,59 +1,62 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.core {
-import flash.display.DisplayObjectContainer;
-import flash.utils.getDefinitionByName;
 import org.mvcexpress.base.CommandMap;
 import org.mvcexpress.base.MediatorMap;
 import org.mvcexpress.base.ProxyMap;
-import org.mvcexpress.messenger.Messenger;
-import org.mvcexpress.namespace.pureLegsCore;
-import org.mvcexpress.base.FlexMediatorMap;
 
 /**
- * Core class of framework.
+ * Core Module class. Used if you don't want your module be display object.
  * <p>
  * It inits framework and lets you set up your application. (or execute Cammands that will do it.)
- * Also you can create modular application by having more then one CoreModule subclass.
+ * Also you can create modular application by having more then one module.
  * </p>
- * @author Raimundas Banevicius (raima156@yahoo.com)
+ * @author Raimundas Banevicius (http://www.mindscriptact.com/)
  */
 public class ModuleCore {
 	
+	private var moduleBase:ModuleBase;
+	
 	protected var proxyMap:ProxyMap;
-	
 	protected var mediatorMap:MediatorMap;
-	
 	protected var commandMap:CommandMap;
-	
-	private var messenger:Messenger;
-	
-	private var _debugFunction:Function;
 	
 	/**
 	 * CONSTRUCTOR
-	 * @param	mainObject	main object of your application. Should be set once with main module if you have more then one.
+	 * @param	moduleName	module name that is used for referencing a module. (if not provided - unique name will be generated.)
+	 * @param	autoInit	if set to false framework is not initialized for this module. If you want to use framework features you will have to manually init() it first.
+	 * 						(or you start getting null reference errors.)
 	 */
-	public function ModuleCore() {
-		use namespace pureLegsCore;
-		messenger = Messenger.getInstance();
-		
-		proxyMap = new ProxyMap(messenger);
-		// check if flex is used.
-		var uiComponentClass:Class = getFlexClass();
-		// if flex is used - special FlexMediatorMap Class is instantiated that wraps mediate() and unmediate() functions to handle flex 'creationComplete' isues.
-		if (uiComponentClass) {
-			mediatorMap = new FlexMediatorMap(messenger, proxyMap, uiComponentClass);
-		} else {
-			mediatorMap = new MediatorMap(messenger, proxyMap);
+	public function ModuleCore(moduleName:String = null, autoInit:Boolean = true) {
+		moduleBase = ModuleBase.getModuleInstance(moduleName, autoInit);
+		//
+		proxyMap = moduleBase.proxyMap;
+		mediatorMap = moduleBase.mediatorMap;
+		commandMap = moduleBase.commandMap;
+		//
+		if (autoInit) {
+			onInit();
 		}
-		commandMap = new CommandMap(messenger, proxyMap, mediatorMap);
-		
+	}
+	
+	/**
+	 * Name of the module
+	 */
+	public function get moduleName():String {
+		return moduleBase.moduleName;
+	}
+	
+	/**
+	 * Initializes module. If this function is not called module will not work properly.
+	 * By default it is called in constructor, but you can do it manually if you set constructor parameter 'autoInit' to false.
+	 */
+	protected function initModule():void {
+		moduleBase.initModule();
 		onInit();
 	}
 	
 	/**
 	 * Function called after framework is initialized.
-	 * Ment to be overriten.
+	 * Meant to be overridden.
 	 */
 	protected function onInit():void {
 		// for override
@@ -61,28 +64,19 @@ public class ModuleCore {
 	
 	/**
 	 * Function to get rid of module.
-	 *  All internals are disposed.
-	 *  All mediators removed.
-	 *  All proxies removed.
+	 * - All module cammands are unmapped.
+	 * - All module mediators are unmediated
+	 * - All module proxies are unmapped
+	 * - All internals are nulled.
 	 */
-	public function dispose():void {
+	public function disposeModule():void {
 		onDispose();
-		//
-		use namespace pureLegsCore;
-		//
-		commandMap.dispose();
-		mediatorMap.dispose();
-		proxyMap.dispose();
-		
-		commandMap = null;
-		mediatorMap = null;
-		proxyMap = null;
-		messenger = null;
+		moduleBase.disposeModule();
 	}
 	
 	/**
-	 * Function called before module is destroed.
-	 * Ment to be overriten.
+	 * Function called before module is destroyed.
+	 * Meant to be overridden.
 	 */
 	protected function onDispose():void {
 		// for override
@@ -92,20 +86,10 @@ public class ModuleCore {
 	 * Message sender.
 	 * @param	type	type of the message. (Commands and handle functions must bu map to it to react.)
 	 * @param	params	Object that will be send to Command execute() or to handle function as parameter.
+	 * @param	targetAllModules	if true, will send message to all existing modules, by default message will be internal for current module only.
 	 */
-	protected function sendMessage(type:String, params:Object = null):void {
-		messenger.send(type, params);
-	}
-	
-	/** get flex lowest class by definition. ( way to check for flex project.) */
-	protected static function getFlexClass():Class {
-		var uiComponentClass:Class;
-		try {
-			uiComponentClass = getDefinitionByName('mx.core::UIComponent') as Class;
-		} catch (error:Error) {
-			// do nothing
-		}
-		return uiComponentClass;
+	protected function sendMessage(type:String, params:Object = null, targetAllModules:Boolean = false):void {
+		moduleBase.sendMessage(type, params, targetAllModules);
 	}
 	
 	//----------------------------------
@@ -113,49 +97,31 @@ public class ModuleCore {
 	//----------------------------------
 	
 	/**
-	 * Sets a debug function that will get all framework activity as string messages.
-	 * WARNING : will work only with compile variable CONFIG:debug set to true.
-	 * @param	debugFunction
-	 */
-	public function setDebugFunction(debugFunction:Function):void {
-		this.debugFunction = debugFunction;
-	}
-	
-	private function set debugFunction(value:Function):void {
-		_debugFunction = value;
-		use namespace pureLegsCore;
-		proxyMap.setDebugFunction(_debugFunction);
-		mediatorMap.setDebugFunction(_debugFunction);
-		commandMap.setDebugFunction(_debugFunction);
-		messenger.setDebugFunction(_debugFunction);
-	}
-	
-	/**
 	 * List all message mappings.
 	 */
 	public function listMappedMessages():String {
-		return messenger.listMappings(commandMap);
+		return moduleBase.listMappedMessages();
 	}
 	
 	/**
 	 * List all view mappings.
 	 */
 	public function listMappedMediators():String {
-		return mediatorMap.listMappings();
+		return moduleBase.listMappedMediators();
 	}
 	
 	/**
 	 * List all model mappings.
 	 */
 	public function listMappedProxies():String {
-		return proxyMap.listMappings();
+		return moduleBase.listMappedProxies();
 	}
 	
 	/**
 	 * List all controller mappings.
 	 */
 	public function listMappedCommands():String {
-		return commandMap.listMappings();
+		return moduleBase.listMappedCommands();
 	}
 
 }

@@ -6,29 +6,30 @@ import flash.utils.getDefinitionByName;
 import flash.utils.getQualifiedClassName;
 import org.mvcexpress.messenger.Messenger;
 import org.mvcexpress.mvc.Command;
+import org.mvcexpress.MvcExpress;
 import org.mvcexpress.namespace.pureLegsCore;
 import org.mvcexpress.utils.checkClassSuperclass;
 
 /**
  * Handles command mappings, and executes them on messages
- * @author Raimundas Banevicius (raima156@yahoo.com)
+ * @author Raimundas Banevicius (http://www.mindscriptact.com/)
  */
 public class CommandMap {
 	
-	private var messanger:Messenger;
+	private var messenger:Messenger;
 	private var proxyMap:ProxyMap;
 	private var mediatorMap:MediatorMap;
 	
-	private var classRegistry:Dictionary = new Dictionary();
+	// collection of class arrays, stored by message type. Then message with this type is sent, all mapped classes are executed.
+	private var classRegistry:Dictionary = new Dictionary(); /* of Vector.<Class> by String */
 	
-	private var debugFunction:Function;
-	
-	/** types of command execute function needed for debug mode only validation.  */
+	/** types of command execute function, needed for debug mode only validation of execute() parameter.  */
 	CONFIG::debug
-	private var commandClassParamTypes:Dictionary = new Dictionary();
+	private var commandClassParamTypes:Dictionary = new Dictionary(); /* of String by Class */
 	
-	public function CommandMap(messanger:Messenger, proxyMap:ProxyMap, mediatorMap:MediatorMap) {
-		this.messanger = messanger;
+	/** CONSTRUCTOR */
+	public function CommandMap(messenger:Messenger, proxyMap:ProxyMap, mediatorMap:MediatorMap) {
+		this.messenger = messenger;
 		this.proxyMap = proxyMap;
 		this.mediatorMap = mediatorMap;
 	}
@@ -41,9 +42,10 @@ public class CommandMap {
 	public function map(type:String, commandClass:Class):void {
 		// check if command has execute function, parameter, and store type of parameter object for future checks on execute.
 		use namespace pureLegsCore;
+		// debug this action
 		CONFIG::debug {
-			if (debugFunction != null) {
-				debugFunction("+ CommandMap.map > type : " + type + ", commandClass : " + commandClass);
+			if (MvcExpress.debugFunction != null) {
+				MvcExpress.debugFunction("+ CommandMap.map > type : " + type + ", commandClass : " + commandClass);
 			}
 			validateCommandClass(commandClass);
 			if (!Boolean(type) || type == "null" || type == "undefined") {
@@ -53,7 +55,7 @@ public class CommandMap {
 		
 		if (!classRegistry[type]) {
 			classRegistry[type] = new Vector.<Class>();
-			messanger.addCommandHandler(type, handleCommandExecute);
+			messenger.addCommandHandler(type, handleCommandExecute, commandClass);
 		}
 		
 		// TODO : check if command is already added. (in DEBUG mode only?.)
@@ -67,9 +69,10 @@ public class CommandMap {
 	 * @param	commandClass	Command class that will bi instantiated and executed.
 	 */
 	public function unmap(type:String, commandClass:Class):void {
+		// debug this action
 		CONFIG::debug {
-			if (debugFunction != null) {
-				debugFunction("- CommandMap.unmap > type : " + type + ", commandClass : " + commandClass);
+			if (MvcExpress.debugFunction != null) {
+				MvcExpress.debugFunction("- CommandMap.unmap > type : " + type + ", commandClass : " + commandClass);
 			}
 		}
 		var commandList:Vector.<Class> = classRegistry[type];
@@ -93,9 +96,10 @@ public class CommandMap {
 		//////////////////////////////////////////////
 		////// INLINE FUNCTION runCommand() START
 		// check if command has execute function, parameter, and store type of parameter object for future checks on execute.
+		// debug this action
 		CONFIG::debug {
-			if (debugFunction != null) {
-				debugFunction("* CommandMap.execute > commandClass : " + commandClass + ", params : " + params);
+			if (MvcExpress.debugFunction != null) {
+				MvcExpress.debugFunction("* CommandMap.execute > commandClass : " + commandClass + ", params : " + params);
 			}
 			validateCommandParams(commandClass, params);
 		}
@@ -109,7 +113,7 @@ public class CommandMap {
 		}
 		
 		use namespace pureLegsCore;
-		command.messenger = messanger;
+		command.messenger = messenger;
 		command.mediatorMap = mediatorMap;
 		command.proxyMap = proxyMap;
 		
@@ -124,7 +128,7 @@ public class CommandMap {
 		//////////////////////////////////////////////	
 	}
 	
-	/* function to be called by messenger on needed mesage type sent */
+	/** function to be called by messenger on needed mesage type sent */
 	private function handleCommandExecute(messageType:String, params:Object):void {
 		var commandList:Vector.<Class> = classRegistry[messageType];
 		if (commandList) {
@@ -146,16 +150,17 @@ public class CommandMap {
 				}
 				
 				use namespace pureLegsCore;
-				command.messenger = messanger;
+				command.messenger = messenger;
 				command.mediatorMap = mediatorMap;
 				command.proxyMap = proxyMap;
 				
 				command.commandMap = this;
 				
 				proxyMap.injectStuff(command, commandList[i]);
+				// debug this action
 				CONFIG::debug {
-					if (debugFunction != null) {
-						debugFunction("* CommandMap.handleCommandExecute > messageType : " + messageType + ", params : " + params + " Executed with : " + commandList[i]);
+					if (MvcExpress.debugFunction != null) {
+						MvcExpress.debugFunction("* CommandMap.handleCommandExecute > messageType : " + messageType + ", params : " + params + " Executed with : " + commandList[i]);
 					}
 				}
 				command.execute(params);
@@ -171,7 +176,11 @@ public class CommandMap {
 	 * @private
 	 */
 	pureLegsCore function dispose():void {
-		messanger = null;
+		use namespace pureLegsCore;
+		for (var type:String in classRegistry) {
+			messenger.removeHandler(type, handleCommandExecute);
+		}
+		messenger = null;
 		proxyMap = null;
 		mediatorMap = null;
 		classRegistry = null;
@@ -269,10 +278,6 @@ public class CommandMap {
 	
 	pureLegsCore function listMessageCommands(messageType:String):Vector.<Class> {
 		return classRegistry[messageType];
-	}
-	
-	pureLegsCore function setDebugFunction(debugFunction:Function):void {
-		this.debugFunction = debugFunction;
 	}
 
 }
