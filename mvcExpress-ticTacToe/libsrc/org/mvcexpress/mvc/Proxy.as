@@ -1,7 +1,8 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.mvc {
-import org.mvcexpress.messenger.Messenger;
-import org.mvcexpress.namespace.pureLegsCore;
+import org.mvcexpress.core.ProxyMap;
+import org.mvcexpress.core.messenger.Messenger;
+import org.mvcexpress.core.namespace.pureLegsCore;
 
 /**
  * Proxy holds and manages application data, provide API to work with it. 				</br>
@@ -18,6 +19,8 @@ public class Proxy {
 	
 	private var _isReady:Boolean = false;
 	
+	pureLegsCore var isHosted:Boolean = false;
+	
 	/** CONSTRUCTOR */
 	public function Proxy() {
 	}
@@ -30,7 +33,12 @@ public class Proxy {
 	 */
 	protected function sendMessage(type:String, params:Object = null, targetAllModules:Boolean = false):void {
 		use namespace pureLegsCore;
+		// send message to self.
 		messenger.send(type, params, targetAllModules);
+		// send message to all remote modules.. (but only if all modules are not already targeted.)
+		if (isHosted && !targetAllModules) {
+			messenger.sendTo(type, params, ProxyMap.getRemoteMudules(this));
+		} 
 	}
 	
 	/**

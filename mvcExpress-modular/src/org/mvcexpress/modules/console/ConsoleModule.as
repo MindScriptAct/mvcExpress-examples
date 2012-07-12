@@ -1,17 +1,17 @@
 package org.mvcexpress.modules.console {
 import com.bit101.components.PushButton;
 import com.bit101.components.TextArea;
-import org.mvcexpress.modules.console.controller.HandleTargetedMessageCommand;
+import flash.display.Sprite;
+import flash.text.TextField;
+import flash.text.TextFieldType;
 import org.mvcexpress.modules.console.controller.HandleInputCommand;
+import org.mvcexpress.modules.console.controller.HandleTargetedMessageCommand;
 import org.mvcexpress.modules.console.model.ConsoleLogProxy;
 import org.mvcexpress.modules.console.msg.ConsoleDataMsg;
 import org.mvcexpress.modules.console.msg.ConsoleMsg;
 import org.mvcexpress.modules.console.msg.ConsoleViewMsg;
 import org.mvcexpress.modules.console.view.ConsoleMediator;
-import flash.display.Sprite;
-import flash.text.TextField;
-import flash.text.TextFieldType;
-import org.mvcexpress.core.ModuleSprite;
+import org.mvcexpress.modules.ModuleSprite;
 import org.mvcexpress.utils.checkClassStringConstants;
 
 /**

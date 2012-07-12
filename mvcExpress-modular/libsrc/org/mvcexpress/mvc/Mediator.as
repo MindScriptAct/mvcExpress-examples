@@ -3,11 +3,10 @@ package org.mvcexpress.mvc {
 import flash.events.IEventDispatcher;
 import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
-import org.mvcexpress.base.interfaces.IMediatorMap;
-import org.mvcexpress.base.MediatorMap;
-import org.mvcexpress.messenger.Messenger;
-import org.mvcexpress.messenger.HandlerVO;
-import org.mvcexpress.namespace.pureLegsCore;
+import org.mvcexpress.core.interfaces.IMediatorMap;
+import org.mvcexpress.core.messenger.HandlerVO;
+import org.mvcexpress.core.messenger.Messenger;
+import org.mvcexpress.core.namespace.pureLegsCore;
 
 /**
  * Mediates single view object. 																</br>
@@ -163,7 +162,7 @@ public class Mediator {
 	protected function removeAllHandlers():void {
 		use namespace pureLegsCore;
 		while (messageDataRegistry.length) {
-			messageDataRegistry.pop().disabled = true;
+			messageDataRegistry.pop().handler = null;
 		}
 	}
 	

@@ -3,7 +3,7 @@ import org.mvcexpress.modularSample.msg.DataMsg;
 import org.mvcexpress.modularSample.msg.Msg;
 import org.mvcexpress.modularSample.msg.ViewMsg;
 import org.mvcexpress.modularSample.view.ModularSampleMediator;
-import org.mvcexpress.core.ModuleSprite;
+import org.mvcexpress.modules.ModuleSprite;
 import org.mvcexpress.utils.checkClassStringConstants;
 
 /**

@@ -1,13 +1,13 @@
 package org.mvcexpress.helloWorld{
 import flash.geom.Point;
-import org.mvcexpress.core.ModuleCore;
-import org.mvcexpress.utils.checkClassStringConstants;
 import org.mvcexpress.helloWorld.controller.setup.SetupControllerCommand;
 import org.mvcexpress.helloWorld.controller.setup.SetupModelCommand;
 import org.mvcexpress.helloWorld.controller.setup.SetupViewCommand;
 import org.mvcexpress.helloWorld.messages.DataMsg;
 import org.mvcexpress.helloWorld.messages.Msg;
 import org.mvcexpress.helloWorld.messages.ViewMsg;
+import org.mvcexpress.modules.ModuleCore;
+import org.mvcexpress.utils.checkClassStringConstants;
 	
 /**
  * Main application module.

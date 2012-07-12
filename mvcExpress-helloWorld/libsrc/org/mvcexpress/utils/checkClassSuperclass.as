@@ -9,14 +9,13 @@ import flash.utils.getDefinitionByName;
 
 public function checkClassSuperclass(classObject:Class, superClassName:String):Boolean {
 	var retVal:Boolean = false;
-	var mediatorClassSuperClassName:String = getQualifiedSuperclassName(classObject);
-	if (mediatorClassSuperClassName != superClassName) {
-		var mediatorFound:Boolean = false;
-		var mediatorClassName:String = mediatorClassSuperClassName;
-		while (mediatorClassName != "Object" && mediatorClassName != null) {
-			var superClass:Class = getDefinitionByName(mediatorClassName) as Class;
-			mediatorClassName = getQualifiedSuperclassName(superClass);
-			if (mediatorClassName == superClassName) {
+	var classObjectSuperClassName:String = getQualifiedSuperclassName(classObject);
+	if (classObjectSuperClassName != superClassName) {
+		var className:String = classObjectSuperClassName;
+		while (className != "Object" && className != null) {
+			var superClass:Class = getDefinitionByName(className) as Class;
+			className = getQualifiedSuperclassName(superClass);
+			if (className == superClassName) {
 				retVal = true;
 				break;
 			}

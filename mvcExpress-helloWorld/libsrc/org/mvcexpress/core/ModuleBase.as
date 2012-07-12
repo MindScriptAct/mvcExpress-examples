@@ -1,13 +1,14 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.core {
 import flash.utils.getDefinitionByName;
-import org.mvcexpress.base.CommandMap;
-import org.mvcexpress.base.FlexMediatorMap;
-import org.mvcexpress.base.MediatorMap;
-import org.mvcexpress.base.ProxyMap;
-import org.mvcexpress.messenger.Messenger;
-import org.mvcexpress.messenger.MessengerManager;
-import org.mvcexpress.namespace.pureLegsCore;
+import org.mvcexpress.core.CommandMap;
+import org.mvcexpress.core.FlexMediatorMap;
+import org.mvcexpress.core.MediatorMap;
+import org.mvcexpress.core.ModuleManager;
+import org.mvcexpress.core.ProxyMap;
+import org.mvcexpress.core.messenger.Messenger;
+import org.mvcexpress.core.namespace.pureLegsCore;
+import org.mvcexpress.mvc.Proxy;
 
 /**
  * Internal framework class. Not meant to be constructed.
@@ -26,7 +27,7 @@ public class ModuleBase {
 	public var proxyMap:ProxyMap;
 	public var mediatorMap:MediatorMap;
 	public var commandMap:CommandMap;
-	private var messenger:Messenger;
+	private var _messenger:Messenger;
 	
 	/**
 	 * Internal framework class. Not meant to be constructed.
@@ -38,14 +39,23 @@ public class ModuleBase {
 		}
 		//
 		this._moduleName = moduleName;
-		//
-		MessengerManager.increaseMessengerCount();
-		if (!moduleName) {
-			this._moduleName = "module" + (MessengerManager.messengerCount);
-		}
 		if (autoInit) {
 			initModule();
 		}
+	}
+	/**
+	 * Module name
+	 */
+	public function get moduleName():String {
+		return _moduleName;
+	}
+	
+	/**
+	 * framework access to module messenger
+	 * @private
+	 */
+	pureLegsCore function get messenger():Messenger {
+		return _messenger;
 	}
 	
 	/**
@@ -71,21 +81,23 @@ public class ModuleBase {
 	// By default it is called in constructor.
 	public function initModule():void {
 		use namespace pureLegsCore;
-		if (messenger) {
+		if (_messenger) {
 			throw Error("Module can be initiated only once.");
 		}
-		messenger = MessengerManager.createMessenger(_moduleName);
+		Messenger.allowInstantiation = true;
+		_messenger = new Messenger(moduleName);
+		Messenger.allowInstantiation = false;
 		
-		proxyMap = new ProxyMap(messenger);
+		proxyMap = new ProxyMap(_moduleName, _messenger);
 		// check if flex is used.
 		var uiComponentClass:Class = getFlexClass();
 		// if flex is used - special FlexMediatorMap Class is instantiated that wraps mediate() and unmediate() functions to handle flex 'creationComplete' issues.
 		if (uiComponentClass) {
-			mediatorMap = new FlexMediatorMap(messenger, proxyMap, uiComponentClass);
+			mediatorMap = new FlexMediatorMap(_moduleName, _messenger, proxyMap, uiComponentClass);
 		} else {
-			mediatorMap = new MediatorMap(messenger, proxyMap);
+			mediatorMap = new MediatorMap(_moduleName, _messenger, proxyMap);
 		}
-		commandMap = new CommandMap(messenger, proxyMap, mediatorMap);
+		commandMap = new CommandMap(_moduleName, _messenger, proxyMap, mediatorMap);
 	}
 	
 	/**
@@ -106,9 +118,9 @@ public class ModuleBase {
 		commandMap = null;
 		mediatorMap = null;
 		proxyMap = null;
-		messenger = null;
+		_messenger = null;
 		//
-		MessengerManager.disposeMessenger(_moduleName);
+		ModuleManager.disposeModule(_moduleName);
 	}
 	
 	/**
@@ -119,11 +131,7 @@ public class ModuleBase {
 	// @param	params	Object that will be send to Command execute() or to handle function as parameter.
 	// @param	targetAllModules	if true, will send message to all existing modules, by default message will be internal for current module only.
 	public function sendMessage(type:String, params:Object = null, targetAllModules:Boolean = false):void {
-		messenger.send(type, params, targetAllModules);
-	}
-	
-	public function get moduleName():String {
-		return _moduleName;
+		_messenger.send(type, params, targetAllModules);
 	}
 	
 	//----------------------------------
@@ -150,7 +158,7 @@ public class ModuleBase {
 	 */
 	// List all message mappings.
 	public function listMappedMessages():String {
-		return messenger.listMappings(commandMap);
+		return _messenger.listMappings(commandMap);
 	}
 	
 	/**
