@@ -5,9 +5,9 @@ import flash.utils.Dictionary;
 import flash.utils.getDefinitionByName;
 import flash.utils.getQualifiedClassName;
 import org.mvcexpress.core.messenger.Messenger;
+import org.mvcexpress.core.namespace.pureLegsCore;
 import org.mvcexpress.mvc.Command;
 import org.mvcexpress.MvcExpress;
-import org.mvcexpress.core.namespace.pureLegsCore;
 import org.mvcexpress.utils.checkClassSuperclass;
 
 /**
@@ -16,7 +16,9 @@ import org.mvcexpress.utils.checkClassSuperclass;
  */
 public class CommandMap {
 	
+	// name of the module CommandMap is working for.
 	private var moduleName:String;
+	
 	private var messenger:Messenger;
 	private var proxyMap:ProxyMap;
 	private var mediatorMap:MediatorMap;
@@ -37,9 +39,9 @@ public class CommandMap {
 	}
 	
 	/**
-	 * Map a class to be executed then message with type provied is sent.
-	 * @param	type			Message type for command class to react to.
-	 * @param	commandClass	Command class that will bi instantiated and executed.
+	 * Map a class to be executed then message with provided type is sent.
+	 * @param	type				Message type for command class to react to.
+	 * @param	commandClass		Command class that will bi instantiated and executed.
 	 */
 	public function map(type:String, commandClass:Class):void {
 		// check if command has execute function, parameter, and store type of parameter object for future checks on execute.
@@ -47,26 +49,23 @@ public class CommandMap {
 		// debug this action
 		CONFIG::debug {
 			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("+ CommandMap.map > type : " + type + ", commandClass : " + commandClass);
+				MvcExpress.debugFunction("©©©+ CommandMap.map > type : " + type + ", commandClass : " + commandClass);
 			}
 			validateCommandClass(commandClass);
 			if (!Boolean(type) || type == "null" || type == "undefined") {
-				throw Error("Message type:[" + type + "] can not be empty or 'null'. (You are trying to map command:" + commandClass + ")");
+				throw Error("Message type:[" + type + "] can not be empty or 'null' or 'undefined'. (You are trying to map command:" + commandClass + ")");
 			}
 		}
-		
 		if (!classRegistry[type]) {
 			classRegistry[type] = new Vector.<Class>();
 			messenger.addCommandHandler(type, handleCommandExecute, commandClass);
 		}
-		
 		// TODO : check if command is already added. (in DEBUG mode only?.)
 		classRegistry[type].push(commandClass);
-	
 	}
 	
 	/**
-	 * Unap a class to be executed then message with type provied is sent.
+	 * Unmap a class to be executed then message with provided type is sent.
 	 * @param	type			Message type for command class to react to.
 	 * @param	commandClass	Command class that will bi instantiated and executed.
 	 */
@@ -74,7 +73,7 @@ public class CommandMap {
 		// debug this action
 		CONFIG::debug {
 			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("- CommandMap.unmap > type : " + type + ", commandClass : " + commandClass);
+				MvcExpress.debugFunction("©©©- CommandMap.unmap > type : " + type + ", commandClass : " + commandClass);
 			}
 		}
 		var commandList:Vector.<Class> = classRegistry[type];
@@ -101,7 +100,7 @@ public class CommandMap {
 		// debug this action
 		CONFIG::debug {
 			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("* CommandMap.execute > commandClass : " + commandClass + ", params : " + params);
+				MvcExpress.debugFunction("©* CommandMap.execute > commandClass : " + commandClass + ", params : " + params);
 			}
 			validateCommandParams(commandClass, params);
 		}
@@ -130,9 +129,11 @@ public class CommandMap {
 		//////////////////////////////////////////////	
 	}
 	
-	/** function to be called by messenger on needed mesage type sent */
+	/** function to be called by messenger on needed message type sent */
 	private function handleCommandExecute(messageType:String, params:Object):void {
-		var commandList:Vector.<Class> = classRegistry[messageType];
+		var commandList:Vector.<Class>;
+		commandList = classRegistry[messageType];
+		
 		if (commandList) {
 			for (var i:int = 0; i < commandList.length; i++) {
 				//////////////////////////////////////////////
@@ -162,7 +163,7 @@ public class CommandMap {
 				// debug this action
 				CONFIG::debug {
 					if (MvcExpress.debugFunction != null) {
-						MvcExpress.debugFunction("* CommandMap.handleCommandExecute > messageType : " + messageType + ", params : " + params + " Executed with : " + commandList[i]);
+						MvcExpress.debugFunction("©* CommandMap.handleCommandExecute > messageType : " + messageType + ", params : " + params + " Executed with : " + commandList[i]);
 					}
 				}
 				command.execute(params);
@@ -174,7 +175,7 @@ public class CommandMap {
 	}
 	
 	/**
-	 * Dispose commandMap on module shutDown
+	 * Dispose commandMap on disposeModule()
 	 * @private
 	 */
 	pureLegsCore function dispose():void {
@@ -189,7 +190,7 @@ public class CommandMap {
 	}
 	
 	/**
-	 * Helper funcitons for error checking
+	 * Helper functions for error checking
 	 * @private
 	 */
 	CONFIG::debug

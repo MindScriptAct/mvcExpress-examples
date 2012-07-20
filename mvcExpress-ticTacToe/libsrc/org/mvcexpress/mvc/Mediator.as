@@ -4,6 +4,7 @@ import flash.events.IEventDispatcher;
 import flash.utils.Dictionary;
 import flash.utils.getQualifiedClassName;
 import org.mvcexpress.core.interfaces.IMediatorMap;
+import org.mvcexpress.core.interfaces.IProxyMap;
 import org.mvcexpress.core.messenger.HandlerVO;
 import org.mvcexpress.core.messenger.Messenger;
 import org.mvcexpress.core.namespace.pureLegsCore;
@@ -17,31 +18,38 @@ import org.mvcexpress.core.namespace.pureLegsCore;
  */
 public class Mediator {
 	
-	/** @private */
-	pureLegsCore var messageDataRegistry:Vector.<HandlerVO> = new Vector.<HandlerVO>();
-	
-	/** contains dictionary of added event listeners, stored by event listening function as a key. For event useCapture = false*/
-	private var eventListenerRegistry:Dictionary = new Dictionary(); /* or Dictionary by Function */
-	/** contains array of added event listeners, stored by event listening function as a key. For event useCapture = true*/
-	private var eventListenerCaptureRegistry:Dictionary = new Dictionary(); /* or Dictionary by Function */
-	
-	/** @private */
-	pureLegsCore var messenger:Messenger;
-	
-	/** @private */
-	CONFIG::debug
-	static pureLegsCore var canConstruct:Boolean;
-	
-	// Allows Mediator to be constructed. (removed from release build to save some performance.)
-	/** @private */
-	pureLegsCore var pendingInjections:int = 0;
-	
+	// Shows if proxy is ready. Read only.
 	private var _isReady:Boolean = false;
+	
+	/**
+	 * Interface to work with proxies.
+	 */
+	public var proxyMap:IProxyMap;
 	
 	/**
 	 * Handles application mediators.
 	 */
 	public var mediatorMap:IMediatorMap;
+	
+	/** @private */
+	pureLegsCore var messenger:Messenger;
+	
+	// Allows Mediator to be constructed. (removed from release build to save some performance.)
+	/** @private */
+	pureLegsCore var pendingInjections:int = 0;
+	
+	/** @private */
+	pureLegsCore var messageDataRegistry:Vector.<HandlerVO> = new Vector.<HandlerVO>();
+	
+	/** contains dictionary of added event listeners, stored by event listening function as a key. For event useCapture = false*/
+	private var eventListenerRegistry:Dictionary = new Dictionary(); /* or Dictionary by Function */
+	
+	/** contains array of added event listeners, stored by event listening function as a key. For event useCapture = true*/
+	private var eventListenerCaptureRegistry:Dictionary = new Dictionary(); /* or Dictionary by Function */
+	
+	/** @private */
+	CONFIG::debug
+	static pureLegsCore var canConstruct:Boolean;
 	
 	/** CONSTRUCTOR */
 	public function Mediator() {
@@ -54,6 +62,15 @@ public class Mediator {
 	}
 	
 	/**
+	 * sets proxyMap interface.
+	 * @param	iProxyMap
+	 * @private
+	 */
+	pureLegsCore function setProxyMap(iProxyMap:IProxyMap):void {
+		this.proxyMap = iProxyMap;
+	}
+	
+	/**
 	 * Indicates if mediator is ready for usage. (all dependencies are injected.)
 	 */
 	protected function get isReady():Boolean {
@@ -61,12 +78,12 @@ public class Mediator {
 	}
 	
 	//----------------------------------
-	//     mediator start-up and tier-down life cicle
+	//     mediator start-up and tier-down life cycle
 	//----------------------------------
 	
 	/**
 	 * marks mediator as ready and calls onRegister()
-	 * Executed automaticaly BEFORE mediator is created. (with proxyMap.mediate(...))
+	 * Executed automatically BEFORE mediator is created. (with proxyMap.mediate(...))
 	 * @private */
 	pureLegsCore function register():void {
 		_isReady = true;
@@ -74,7 +91,7 @@ public class Mediator {
 	}
 	
 	/**
-	 * Then viewObject is mediated by this mediator - it is innited first and then this function is called.
+	 * Then viewObject is mediated by this mediator - it is inited first and then this function is called.
 	 */
 	public function onRegister():void {
 		// for override
@@ -89,7 +106,7 @@ public class Mediator {
 	
 	/**
 	 * framework function to dispose this mediator. 																			<br>
-	 * Executed automaticaly AFTER mediator is removed. (with proxyMap.unmediate(...))											<br>
+	 * Executed automatically AFTER mediator is removed. (with proxyMap.unmediate(...))											<br>
 	 * It:																														<br>
 	 * - remove all handle functions created by this mediator																	<br>
 	 * - remove all event listeners created by internal addEventListener() function of this mediator							<br>
@@ -114,11 +131,20 @@ public class Mediator {
 	 * Sends a message with optional params object.
 	 * @param	type	type of the message for Commands and handle function to react to.
 	 * @param	params	Object that will be passed to Command execute() function and to handle functions.
-	 * @param	targetAllModules	if true, will send message to all existing modules, by default message will be internal for current module only.
 	 */
-	protected function sendMessage(type:String, params:Object = null, targetAllModules:Boolean = false):void {
+	protected function sendMessage(type:String, params:Object = null):void {
 		use namespace pureLegsCore;
-		messenger.send(type, params, targetAllModules);
+		messenger.send(type, params);
+	}
+	
+	/**
+	 * Sends message to all existing modules.
+	 * @param	type				message type to find needed handlers
+	 * @param	params				parameter object that will be sent to all handler and execute functions as single parameter.
+	 */
+	protected function sendMessageToAll(type:String, params:Object = null):void {
+		use namespace pureLegsCore;
+		messenger.sendToAll(type, params);
 	}
 	
 	//----------------------------------
@@ -172,7 +198,7 @@ public class Mediator {
 	
 	/**
 	 * Registers an event listener object with viewObject, so that the listener receives notification of an event.
-	 * @param	viewObject	view object that can dispaches events.
+	 * @param	viewObject	view object that can dispatch events.
 	 * @param	type	The type of event.
 	 * @param	listener	The listener function that processes the event. This function must accept an event object
 	 *   as its only parameter and must return nothing, as this example shows:
@@ -206,7 +232,7 @@ public class Mediator {
 	
 	/**
 	 * Removes a listener from the viewObject.
-	 * @param	viewObject	view object that can dispaches events.
+	 * @param	viewObject	view object that can dispatch events.
 	 * @param	type		The type of event.
 	 * @param	listener	The listener object to remove.
 	 * @param	useCapture	Specifies whether the listener was registered for the capture phase or the target and bubbling phases.
@@ -230,8 +256,8 @@ public class Mediator {
 					}
 				}
 			}
-		}		
-	}	
+		}
+	}
 	
 	/**
 	 * Removes all listeners created by mediators addEventListener() function.
@@ -251,7 +277,7 @@ public class Mediator {
 				viewObject = eventTypes[type];
 				viewObject.removeEventListener(type, listener as Function, false);
 			}
-		}		
+		}
 	}
 
 }

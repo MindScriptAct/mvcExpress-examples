@@ -1,9 +1,10 @@
 package org.mvcexpress.utils {
-import flash.utils.getQualifiedSuperclassName;
 import flash.utils.getDefinitionByName;
+import flash.utils.getQualifiedSuperclassName;
 
 /**
- * Checks if provided class is extended from provided class name
+ * Checks if provided class is extended from provided class name.
+ * Will return false if it is of same type as superClassName, or other type that has nothing to do with superClassName.
  * @author Raimundas Banevicius (http://www.mindscriptact.com/)
  */
 

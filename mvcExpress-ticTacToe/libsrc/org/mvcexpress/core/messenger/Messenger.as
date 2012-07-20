@@ -3,8 +3,8 @@ package org.mvcexpress.core.messenger {
 import flash.utils.Dictionary;
 import org.mvcexpress.core.CommandMap;
 import org.mvcexpress.core.ModuleManager;
-import org.mvcexpress.MvcExpress;
 import org.mvcexpress.core.namespace.pureLegsCore;
+import org.mvcexpress.MvcExpress;
 
 /**
  * Handles framework communications.
@@ -12,7 +12,8 @@ import org.mvcexpress.core.namespace.pureLegsCore;
  */
 public class Messenger {
 	
-	private var _moduleName:String;
+	// name of the module messenger is working for.
+	pureLegsCore var moduleName:String;
 	
 	// defines if messenger can be instantiated.
 	static pureLegsCore var allowInstantiation:Boolean = false;
@@ -31,7 +32,7 @@ public class Messenger {
 		if (!allowInstantiation) {
 			throw Error("Messenger is a framework class, you can't instantiate it.");
 		}
-		this._moduleName = moduleName;
+		this.moduleName = moduleName;
 	}
 	
 	/**
@@ -45,7 +46,7 @@ public class Messenger {
 		// debug this action
 		CONFIG::debug {
 			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("++ Messenger.addHandler > type : " + type + ", handler : " + handler + ", handlerClassName : " + handlerClassName);
+				MvcExpress.debugFunction("••<+ Messenger.addHandler > type : " + type + ", handler : " + handler + ", handlerClassName : " + handlerClassName);
 			}
 		}
 		
@@ -63,8 +64,6 @@ public class Messenger {
 				throw Error("This handler function is already mapped to message type :" + type);
 			}
 		}
-		
-		// create message handler data.
 		if (!msgData) {
 			msgData = new HandlerVO();
 			CONFIG::debug {
@@ -75,22 +74,22 @@ public class Messenger {
 			handlerRegistry[type][handler] = msgData;
 		}
 		return msgData;
+		//}
 	}
 	
 	/**
 	 * Removes handler function that will be called then message of specified type is sent.
 	 * - if handler is not found it fails silently.
-	 * @param	type	message type that handler had to react
-	 * @param	handler	function called on sent message.
+	 * @param	type				message type that handler had to react
+	 * @param	handler				function called on sent message.
 	 */
 	public function removeHandler(type:String, handler:Function):void {
 		// debug this action
 		CONFIG::debug {
 			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("-- Messenger.removeHandler > type : " + type + ", handler : " + handler);
+				MvcExpress.debugFunction("••<- Messenger.removeHandler > type : " + type + ", handler : " + handler);
 			}
 		}
-		
 		if (handlerRegistry[type]) {
 			if (handlerRegistry[type][handler]) {
 				(handlerRegistry[type][handler] as HandlerVO).handler = null;
@@ -104,71 +103,81 @@ public class Messenger {
 	 * Runs all handler functions associated with message type, and send params object as single parameter.
 	 * @param	type				message type to find needed handlers
 	 * @param	params				parameter object that will be sent to all handler functions as single parameter.
-	 * @param	targetAllModules	if true, will send message to all existing modules, by default message will be internal for current module only.
 	 */
-	public function send(type:String, params:Object = null, targetAllModules:Boolean = false):void {
+	public function send(type:String, params:Object = null):void {
 		use namespace pureLegsCore;
 		// debug this action
 		CONFIG::debug {
 			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("** Messenger.send > type : " + type + ", params : " + params);
+				MvcExpress.debugFunction("•> Messenger.send > type : " + type + ", params : " + params);
 			}
 		}
-		if (targetAllModules) {
-			ModuleManager.sendMessageToAll(type, params);
-		} else {
-			var messageList:Vector.<HandlerVO> = messageRegistry[type];
-			var handlerVo:HandlerVO;
-			var delCount:int = 0;
-			if (messageList) {
-				var tempListLength:int = messageList.length
-				for (var i:int = 0; i < tempListLength; i++) {
-					handlerVo = messageList[i];
-					// check if message is not marked to be removed. (disabled)
-					if (handlerVo.handler == null) {
-						delCount++;
+		var messageList:Vector.<HandlerVO> = messageRegistry[type];
+		var handlerVo:HandlerVO;
+		var delCount:int = 0;
+		if (messageList) {
+			var tempListLength:int = messageList.length
+			for (var i:int = 0; i < tempListLength; i++) {
+				handlerVo = messageList[i];
+				// check if message is not marked to be removed. (disabled)
+				if (handlerVo.handler == null) {
+					delCount++;
+				} else {
+					
+					// if some MsgVOs marked to be removed - move all other messages to there place.
+					if (delCount) {
+						messageList[i - delCount] = messageList[i];
+					}
+					
+					// check if handling function handles commands.
+					if (handlerVo.isExecutable) {
+						handlerVo.handler(type, params);
 					} else {
-						// if some MsgVOs marked to be removed - move all other messages to there place.
-						if (delCount) {
-							messageList[i - delCount] = messageList[i];
+						CONFIG::debug {
+							// FOR DEBUG viewing only(mouse over over variables while in debugger mode.)
+							/* Failed message type: */
+							type
+							/* Failed handler class: */
+							handlerVo.handlerClassName
 						}
-						// check if handling function handles commands.
-						if (handlerVo.isExecutable) {
-							handlerVo.handler(type, params);
-						} else {
-							CONFIG::debug {
-								// FOR DEBUG viewing only..
-								/* Failed message type: */
-								type
-								/* Failed handler class: */
-								handlerVo.handlerClassName
-							}
-							handlerVo.handler(params);
-						}
+						handlerVo.handler(params);
 					}
 				}
-				// remove all removed handlers.
-				if (delCount) {
-					messageList.splice(tempListLength - delCount, delCount);
-				}
+			}
+			// remove all removed handlers.
+			if (delCount) {
+				messageList.splice(tempListLength - delCount, delCount);
 			}
 		}
 	}
 	
-	public function sendTo(type:String, params:Object, targetModules:Vector.<String>):void {
-		use namespace pureLegsCore;
-		for (var i:int = 0; i < targetModules.length; i++) {
-			ModuleManager.getMessenger(targetModules[i]).send(type, params);
+	/**
+	 * sends message to all existing modules.
+	 * @param	type				message type to find needed handlers
+	 * @param	params				parameter object that will be sent to all handler and execute functions as single parameter.
+	 */
+	public function sendToAll(type:String, params:Object = null):void {
+		// debug this action
+		CONFIG::debug {
+			if (MvcExpress.disableSendToAllFeature) {
+				throw Error("sendMessageToAll feature is disabled by MvcExpress.disableSendToAllFeature set to true.");
+			}
+			if (MvcExpress.debugFunction != null) {
+				MvcExpress.debugFunction("•>>> Messenger.sendToAll > type : " + type + ", params : " + params);
+			}
 		}
+		use namespace pureLegsCore;
+		ModuleManager.sendMessageToAll(type, params);
 	}
 	
 	/**
 	 * function to add command execute function.
 	 * @private
 	 */
-	public function addCommandHandler(type:String, executeFunction:Function, handlerClass:Class = null):void {
+	public function addCommandHandler(type:String, executeFunction:Function, handlerClass:Class = null):HandlerVO {
 		var executeMvgVo:HandlerVO = addHandler(type, executeFunction, String(handlerClass));
 		executeMvgVo.isExecutable = true;
+		return executeMvgVo;
 	}
 	
 	//----------------------------------
@@ -208,13 +217,12 @@ public class Messenger {
 		return retVal;
 	}
 	
+	/**
+	 * Disposes of messenger.
+	 */
 	public function dispose():void {
 		messageRegistry = null;
 		handlerRegistry = null;
-	}
-	
-	public function get moduleName():String {
-		return _moduleName;
 	}
 
 }

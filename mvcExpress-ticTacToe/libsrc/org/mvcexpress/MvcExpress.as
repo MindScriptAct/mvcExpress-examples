@@ -10,11 +10,11 @@ public class MvcExpress {
 	public static const WEBSITE_URL:String = "http://mvcexpress.org";
 	
 	/** Current framework major version */
-	public static const MAJOR_VERSION:uint = 0;
+	public static const MAJOR_VERSION:uint = 1;
 	/** Current framework minor version */
-	public static const MINOR_VERSION:uint = 9;
+	public static const MINOR_VERSION:uint = 0;
 	/** Current framework revision version */
-	public static const REVISION:uint = 9;
+	public static const REVISION:uint = 0;
 	
 	/** Current framework version */
 	public static function get VERSION():String {
@@ -43,6 +43,12 @@ public class MvcExpress {
 	 * ATTENTION : it will work only with compile variable CONFIG:debug set to true.
 	 */
 	static public var debugFunction:Function = null;
+	
+	/**
+	 * Flag to force sendMessageToAll function throw an error in debug mode.
+	 * (For people who don't what this feature in.)
+	 */
+	static public var disableSendToAllFeature:Boolean = false;
 
 }
 }

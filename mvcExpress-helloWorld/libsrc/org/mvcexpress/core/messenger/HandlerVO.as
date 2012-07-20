@@ -1,6 +1,5 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.core.messenger {
-import org.mvcexpress.core.CommandMap;
 
 /**
  * Framework internal value data for message handlers.
@@ -16,11 +15,11 @@ public class HandlerVO {
 	// (HandlerVO is not removed instantly, only marked for removal. It is removed only with next message call of needed type, this message not always comes. :\ )
 	public var handler:Function;
 	
-	/** FOR INTERNAL USE ONLY. shows if message is handled by Cammand. */
+	/** FOR INTERNAL USE ONLY. shows if message is handled by Command. */
 	public var isExecutable:Boolean;
 	
 	/** FOR INTERNAL USE ONLY. Variable to store class there handler came from. (for debugging) */
 	public var handlerClassName:String;
-	
+
 }
 }

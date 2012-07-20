@@ -4,11 +4,10 @@ import flash.utils.getDefinitionByName;
 import org.mvcexpress.core.CommandMap;
 import org.mvcexpress.core.FlexMediatorMap;
 import org.mvcexpress.core.MediatorMap;
-import org.mvcexpress.core.ModuleManager;
-import org.mvcexpress.core.ProxyMap;
 import org.mvcexpress.core.messenger.Messenger;
+import org.mvcexpress.core.ModuleManager;
 import org.mvcexpress.core.namespace.pureLegsCore;
-import org.mvcexpress.mvc.Proxy;
+import org.mvcexpress.core.ProxyMap;
 
 /**
  * Internal framework class. Not meant to be constructed.
@@ -43,6 +42,7 @@ public class ModuleBase {
 			initModule();
 		}
 	}
+	
 	/**
 	 * Module name
 	 */
@@ -129,9 +129,17 @@ public class ModuleBase {
 	// Message sender.
 	// @param	type	type of the message. (Commands and handle functions must bu map to it to react.)
 	// @param	params	Object that will be send to Command execute() or to handle function as parameter.
-	// @param	targetAllModules	if true, will send message to all existing modules, by default message will be internal for current module only.
-	public function sendMessage(type:String, params:Object = null, targetAllModules:Boolean = false):void {
-		_messenger.send(type, params, targetAllModules);
+	public function sendMessage(type:String, params:Object = null):void {
+		_messenger.send(type, params);
+	}
+	
+	/**
+	 * Sends message to all existing modules.
+	 * @param	type				message type to find needed handlers
+	 * @param	params				parameter object that will be sent to all handler and execute functions as single parameter.
+	 */
+	public function sendMessageToAll(type:String, params:Object = null):void {
+		_messenger.sendToAll(type, params);
 	}
 	
 	//----------------------------------
