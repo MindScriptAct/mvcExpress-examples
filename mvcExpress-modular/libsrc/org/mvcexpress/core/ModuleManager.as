@@ -1,9 +1,12 @@
+// Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress.core {
 import flash.utils.Dictionary;
-import org.mvcexpress.core.messenger.HandlerVO;
 import org.mvcexpress.core.messenger.Messenger;
 import org.mvcexpress.core.namespace.pureLegsCore;
-import org.mvcexpress.mvc.Proxy;
+import org.mvcexpress.core.traceObjects.MvcTraceActions;
+import org.mvcexpress.core.traceObjects.TraceModuleManager_createModule;
+import org.mvcexpress.core.traceObjects.TraceModuleManager_disposeModule;
+import org.mvcexpress.core.traceObjects.TraceObj;
 import org.mvcexpress.MvcExpress;
 
 /**
@@ -35,13 +38,11 @@ public class ModuleManager {
 	 * @private
 	 */
 	static pureLegsCore function createModule(moduleName:String, autoInit:Boolean):ModuleBase {
-		trace();
 		var retVal:ModuleBase;
 		// debug this action
 		CONFIG::debug {
-			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("#####+ ModuleManager.createModule > moduleName : " + moduleName + ", autoInit : " + autoInit);
-			}
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceModuleManager_createModule(MvcTraceActions.MODULEMANAGER_CREATEMODULE, moduleName, autoInit));
 		}
 		if (moduleRegistry[moduleName] == null) {
 			_moduleId++
@@ -80,9 +81,8 @@ public class ModuleManager {
 		use namespace pureLegsCore;
 		// debug this action
 		CONFIG::debug {
-			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("#####- ModuleManager.disposeModule > moduleName : " + moduleName);
-			}
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceModuleManager_disposeModule(MvcTraceActions.MODULEMANAGER_DISPOSEMODULE, moduleName));
 		}
 		if (moduleRegistry[moduleName]) {
 			delete moduleRegistry[moduleName];

@@ -7,6 +7,12 @@ import org.mvcexpress.core.inject.InjectRuleVO;
 import org.mvcexpress.core.interfaces.IProxyMap;
 import org.mvcexpress.core.messenger.Messenger;
 import org.mvcexpress.core.namespace.pureLegsCore;
+import org.mvcexpress.core.traceObjects.MvcTraceActions;
+import org.mvcexpress.core.traceObjects.TraceObj;
+import org.mvcexpress.core.traceObjects.TraceProxyMap_injectPending;
+import org.mvcexpress.core.traceObjects.TraceProxyMap_injectStuff;
+import org.mvcexpress.core.traceObjects.TraceProxyMap_map;
+import org.mvcexpress.core.traceObjects.TraceProxyMap_unmap;
 import org.mvcexpress.mvc.Command;
 import org.mvcexpress.mvc.Mediator;
 import org.mvcexpress.mvc.Proxy;
@@ -29,9 +35,6 @@ public class ProxyMap implements IProxyMap {
 	/** dictionary of (Vector of PendingInject), it holds array of pending data with proxies and mediators that has pending injections,  stored by needed injection key(className + inject name).  */
 	private var pendingInjectionsRegistry:Dictionary = new Dictionary(); /* of Vector.<PendingInject> by String */
 	
-	/** all hosted proxy objects stored by key */
-	static private var hostObjectRegistry:Dictionary = new Dictionary(); /* of HostedProxy by String */
-	
 	/** all hostedProxy data stored by hosted Proxy objects stored */
 	static private var hostedProxyRegistry:Dictionary = new Dictionary(); /* of HostedProxy by Proxy */
 	
@@ -51,12 +54,6 @@ public class ProxyMap implements IProxyMap {
 	 * @param	name		Optional name if you need more then one proxy instance of same class.
 	 */
 	public function map(proxyObject:Proxy, injectClass:Class = null, name:String = ""):void {
-		// debug this action
-		CONFIG::debug {
-			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("¶¶¶+ ProxyMap.map > proxyObject : " + proxyObject + ", injectClass : " + injectClass + ", name : " + name);
-			}
-		}
 		
 		// get proxy class
 		var proxyClass:Class = Object(proxyObject).constructor;
@@ -66,24 +63,22 @@ public class ProxyMap implements IProxyMap {
 			injectClass = proxyClass;
 		}
 		
-		var className:String = getQualifiedClassName(injectClass);
-		if (!injectObjectRegistry[className + name]) {
+		// debug this action
+		CONFIG::debug {
 			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceProxyMap_map(MvcTraceActions.PROXYMAP_MAP, moduleName, proxyObject, injectClass, name));
+		}
+		
+		var className:String = getQualifiedClassName(injectClass);
+		
+		use namespace pureLegsCore;
+		if (proxyObject.messenger == null) {
 			proxyObject.messenger = messenger;
 			proxyObject.setProxyMap(this);
+			
 			// inject dependencies
 			var isAllInjected:Boolean = injectStuff(proxyObject, proxyClass);
-			// store proxy injection to other classes.
-			injectObjectRegistry[className + name] = proxyObject;
-			// check if there is no waiting hosted proxies with this key.
-			if (hostObjectRegistry[className + name]) {
-				// check if hosted object is pending..
-				if (hostObjectRegistry[className + name].proxy) {
-					if (hostObjectRegistry[className + name].proxy != proxyObject) {
-						throw Error("Hosted proxy object is already mapped for:[injectClass:" + className + " name:" + name + "] only one hosted proxy can be mapped at any given time.");
-					}
-				}
-			}
+			
 			// check if there is no pending injection with this key.
 			if (pendingInjectionsRegistry[className + name]) {
 				injectPendingStuff(className + name, proxyObject);
@@ -92,9 +87,16 @@ public class ProxyMap implements IProxyMap {
 			if (isAllInjected) {
 				proxyObject.register();
 			}
+			
+		}
+		
+		if (!injectObjectRegistry[className + name]) {
+			// store proxy injection for other classes.
+			injectObjectRegistry[className + name] = proxyObject;
 		} else {
 			throw Error("Proxy object class is already mapped.[injectClass:" + className + " name:" + name + "]");
 		}
+	
 	}
 	
 	/**
@@ -106,9 +108,8 @@ public class ProxyMap implements IProxyMap {
 	public function unmap(injectClass:Class, name:String = ""):void {
 		// debug this action
 		CONFIG::debug {
-			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("¶¶¶¶- ProxyMap.unmap > injectClass : " + injectClass + ", name : " + name);
-			}
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceProxyMap_unmap(MvcTraceActions.PROXYMAP_UNMAP, moduleName, injectClass, name));
 		}
 		// remove proxy if it exists.
 		var className:String = getQualifiedClassName(injectClass);
@@ -195,6 +196,12 @@ public class ProxyMap implements IProxyMap {
 			var injectObject:Object = injectObjectRegistry[rules[i].injectClassAndName];
 			if (injectObject) {
 				object[rules[i].varName] = injectObject;
+				
+				// debug this action
+				CONFIG::debug {
+					use namespace pureLegsCore;
+					MvcExpress.debug(new TraceProxyMap_injectStuff(MvcTraceActions.PROXYMAP_INJECTSTUFF, moduleName, object, injectObject, rules[i]));
+				}
 			} else {
 				// if local injection fails... test for global(hosted) injections
 				
@@ -206,10 +213,8 @@ public class ProxyMap implements IProxyMap {
 					
 					// debug this action
 					CONFIG::debug {
-						if (MvcExpress.debugFunction != null) {
-							// TODO: add option to ignore this warning.
-							MvcExpress.debugFunction("WARNING: Pending injection. Inject object is not found for class with id:" + rules[i].injectClassAndName + "(needed in " + object + ")");
-						}
+						use namespace pureLegsCore;
+						MvcExpress.debug(new TraceProxyMap_injectPending(MvcTraceActions.PROXYMAP_INJECTPENDING, moduleName, object, injectObject, rules[i]));
 					}
 					//
 					if (!pendingInjectionsRegistry[rules[i].injectClassAndName]) {

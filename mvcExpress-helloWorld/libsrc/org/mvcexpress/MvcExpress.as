@@ -1,4 +1,7 @@
+// Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package org.mvcexpress {
+import org.mvcexpress.core.namespace.pureLegsCore;
+import org.mvcexpress.core.traceObjects.TraceObj;
 
 /**
  * Class to store framework global settings and some important variables.
@@ -14,7 +17,7 @@ public class MvcExpress {
 	/** Current framework minor version */
 	public static const MINOR_VERSION:uint = 0;
 	/** Current framework revision version */
-	public static const REVISION:uint = 0;
+	public static const REVISION:uint = 1;
 	
 	/** Current framework version */
 	public static function get VERSION():String {
@@ -49,6 +52,35 @@ public class MvcExpress {
 	 * (For people who don't what this feature in.)
 	 */
 	static public var disableSendToAllFeature:Boolean = false;
+	
+	//----------------------------------
+	//     Internal
+	//----------------------------------
+	
+	/**
+	 * Function to get more detailed framework activity.
+	 * @private
+	 */
+	static pureLegsCore var loggerFunction:Function = null;
+	
+	/**
+	 * Framework function for debugging.
+	 * @param	traceObj
+	 * @private
+	 */
+	static pureLegsCore function debug(traceObj:TraceObj):void {
+		CONFIG::debug {
+			if (debugFunction != null) {
+				if (traceObj.canPrint) {
+					debugFunction(traceObj);
+				}
+			}
+			use namespace pureLegsCore;
+			if (loggerFunction != null) {
+				loggerFunction(traceObj);
+			}
+		}
+	}
 
 }
 }

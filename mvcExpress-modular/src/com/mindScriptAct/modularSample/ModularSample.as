@@ -4,7 +4,6 @@ import com.mindScriptAct.modularSample.msg.DataMsg;
 import com.mindScriptAct.modularSample.msg.Msg;
 import com.mindScriptAct.modularSample.msg.ViewMsg;
 import com.mindScriptAct.modularSample.view.ModularSampleMediator;
-import com.mindscriptact.mvcExpressLogger.MvcExpressLogger;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
 import org.mvcexpress.modules.ModuleSprite;
@@ -19,7 +18,6 @@ public class ModularSample extends ModuleSprite {
 	public function ModularSample() {
 		CONFIG::debug {
 			checkClassStringConstants(Msg, DataMsg, ViewMsg);
-			MvcExpressLogger.init(this.stage, 800, 20, 800, 400, 1, true);
 		}
 		super(ModuleNames.SHELL);
 		//

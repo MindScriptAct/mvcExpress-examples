@@ -6,6 +6,12 @@ import flash.utils.getDefinitionByName;
 import flash.utils.getQualifiedClassName;
 import org.mvcexpress.core.messenger.Messenger;
 import org.mvcexpress.core.namespace.pureLegsCore;
+import org.mvcexpress.core.traceObjects.MvcTraceActions;
+import org.mvcexpress.core.traceObjects.TraceCommandMap_execute;
+import org.mvcexpress.core.traceObjects.TraceCommandMap_handleCommandExecute;
+import org.mvcexpress.core.traceObjects.TraceCommandMap_map;
+import org.mvcexpress.core.traceObjects.TraceCommandMap_unmap;
+import org.mvcexpress.core.traceObjects.TraceObj;
 import org.mvcexpress.mvc.Command;
 import org.mvcexpress.MvcExpress;
 import org.mvcexpress.utils.checkClassSuperclass;
@@ -48,9 +54,8 @@ public class CommandMap {
 		use namespace pureLegsCore;
 		// debug this action
 		CONFIG::debug {
-			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("©©©+ CommandMap.map > type : " + type + ", commandClass : " + commandClass);
-			}
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceCommandMap_map(MvcTraceActions.COMMANDMAP_MAP, moduleName, type, commandClass));
 			validateCommandClass(commandClass);
 			if (!Boolean(type) || type == "null" || type == "undefined") {
 				throw Error("Message type:[" + type + "] can not be empty or 'null' or 'undefined'. (You are trying to map command:" + commandClass + ")");
@@ -72,9 +77,8 @@ public class CommandMap {
 	public function unmap(type:String, commandClass:Class):void {
 		// debug this action
 		CONFIG::debug {
-			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("©©©- CommandMap.unmap > type : " + type + ", commandClass : " + commandClass);
-			}
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceCommandMap_unmap(MvcTraceActions.COMMANDMAP_UNMAP, moduleName, type, commandClass));
 		}
 		var commandList:Vector.<Class> = classRegistry[type];
 		if (commandList) {
@@ -97,13 +101,6 @@ public class CommandMap {
 		//////////////////////////////////////////////
 		////// INLINE FUNCTION runCommand() START
 		// check if command has execute function, parameter, and store type of parameter object for future checks on execute.
-		// debug this action
-		CONFIG::debug {
-			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("©* CommandMap.execute > commandClass : " + commandClass + ", params : " + params);
-			}
-			validateCommandParams(commandClass, params);
-		}
 		
 		CONFIG::debug {
 			Command.canConstruct = true;
@@ -111,6 +108,14 @@ public class CommandMap {
 		var command:Command = new commandClass();
 		CONFIG::debug {
 			Command.canConstruct = false;
+		}
+		
+		// debug this action
+		CONFIG::debug {
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceCommandMap_execute(MvcTraceActions.COMMANDMAP_EXECUTE, moduleName, command, commandClass, params));
+			
+			validateCommandParams(commandClass, params);
 		}
 		
 		use namespace pureLegsCore;
@@ -152,6 +157,12 @@ public class CommandMap {
 					Command.canConstruct = false;
 				}
 				
+				// debug this action
+				CONFIG::debug {
+					use namespace pureLegsCore;
+					MvcExpress.debug(new TraceCommandMap_handleCommandExecute(MvcTraceActions.COMMANDMAP_HANDLECOMMANDEXECUTE, moduleName, command, commandList[i], messageType, params));
+				}
+				
 				use namespace pureLegsCore;
 				command.messenger = messenger;
 				command.mediatorMap = mediatorMap;
@@ -160,12 +171,7 @@ public class CommandMap {
 				command.commandMap = this;
 				
 				proxyMap.injectStuff(command, commandList[i]);
-				// debug this action
-				CONFIG::debug {
-					if (MvcExpress.debugFunction != null) {
-						MvcExpress.debugFunction("©* CommandMap.handleCommandExecute > messageType : " + messageType + ", params : " + params + " Executed with : " + commandList[i]);
-					}
-				}
+				
 				command.execute(params);
 				
 					////// INLINE FUNCTION runCommand() END

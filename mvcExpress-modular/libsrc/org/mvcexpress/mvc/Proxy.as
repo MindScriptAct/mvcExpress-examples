@@ -3,7 +3,10 @@ package org.mvcexpress.mvc {
 import org.mvcexpress.core.interfaces.IProxyMap;
 import org.mvcexpress.core.messenger.Messenger;
 import org.mvcexpress.core.namespace.pureLegsCore;
-import org.mvcexpress.core.ProxyMap;
+import org.mvcexpress.core.traceObjects.MvcTraceActions;
+import org.mvcexpress.core.traceObjects.TraceObj;
+import org.mvcexpress.core.traceObjects.TraceProxy_sendMessage;
+import org.mvcexpress.MvcExpress;
 
 /**
  * Proxy holds and manages application data, provide API to work with it. 				</br>
@@ -20,6 +23,7 @@ public class Proxy {
 	 */
 	protected var proxyMap:IProxyMap;
 	
+	// for comunication.
 	/** @private */
 	pureLegsCore var messenger:Messenger;
 	
@@ -37,7 +41,19 @@ public class Proxy {
 	 */
 	protected function sendMessage(type:String, params:Object = null):void {
 		use namespace pureLegsCore;
+		// log the action
+		CONFIG::debug {
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceProxy_sendMessage(MvcTraceActions.PROXY_SENDMESSAGE, messenger.moduleName, this, type, params));
+		}
+		//
 		messenger.send(type, params);
+		//
+		// clean up loging the action
+		CONFIG::debug {
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceProxy_sendMessage(MvcTraceActions.PROXY_SENDMESSAGE_CLEAN, messenger.moduleName, this, type, params));
+		}
 	}
 	
 	/**
@@ -59,8 +75,6 @@ public class Proxy {
 		if (!_isReady) {
 			_isReady = true;
 			onRegister();
-		} else {
-			throw Error("Proxy:" + this + " is already registered. You can register one proxy only once.");
 		}
 	}
 	

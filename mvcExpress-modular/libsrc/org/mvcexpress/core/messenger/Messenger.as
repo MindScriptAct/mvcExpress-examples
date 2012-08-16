@@ -4,6 +4,14 @@ import flash.utils.Dictionary;
 import org.mvcexpress.core.CommandMap;
 import org.mvcexpress.core.ModuleManager;
 import org.mvcexpress.core.namespace.pureLegsCore;
+import org.mvcexpress.core.traceObjects.MvcTraceActions;
+import org.mvcexpress.core.traceObjects.TraceMessenger_addHandler;
+import org.mvcexpress.core.traceObjects.TraceMessenger_removeHandler;
+import org.mvcexpress.core.traceObjects.TraceMessenger_send;
+import org.mvcexpress.core.traceObjects.TraceMessenger_send_handler;
+import org.mvcexpress.core.traceObjects.TraceMessenger_sendToAll;
+import org.mvcexpress.core.traceObjects.TraceMessenger_sendToAll_clean;
+import org.mvcexpress.core.traceObjects.TraceObj;
 import org.mvcexpress.MvcExpress;
 
 /**
@@ -45,9 +53,8 @@ public class Messenger {
 	public function addHandler(type:String, handler:Function, handlerClassName:String = null):HandlerVO {
 		// debug this action
 		CONFIG::debug {
-			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("••<+ Messenger.addHandler > type : " + type + ", handler : " + handler + ", handlerClassName : " + handlerClassName);
-			}
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceMessenger_addHandler(MvcTraceActions.MESSENGER_ADDHANDLER, moduleName, type, handler, handlerClassName));
 		}
 		
 		// if this message type used for the first time - create data placeholders.
@@ -86,9 +93,8 @@ public class Messenger {
 	public function removeHandler(type:String, handler:Function):void {
 		// debug this action
 		CONFIG::debug {
-			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("••<- Messenger.removeHandler > type : " + type + ", handler : " + handler);
-			}
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceMessenger_removeHandler(MvcTraceActions.MESSENGER_REMOVEHANDLER, moduleName, type, handler));
 		}
 		if (handlerRegistry[type]) {
 			if (handlerRegistry[type][handler]) {
@@ -108,9 +114,8 @@ public class Messenger {
 		use namespace pureLegsCore;
 		// debug this action
 		CONFIG::debug {
-			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("•> Messenger.send > type : " + type + ", params : " + params);
-			}
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceMessenger_send(MvcTraceActions.MESSENGER_SEND, moduleName, type, params));
 		}
 		var messageList:Vector.<HandlerVO> = messageRegistry[type];
 		var handlerVo:HandlerVO;
@@ -139,6 +144,9 @@ public class Messenger {
 							type
 							/* Failed handler class: */
 							handlerVo.handlerClassName
+							//
+							use namespace pureLegsCore;
+							MvcExpress.debug(new TraceMessenger_send_handler(MvcTraceActions.MESSENGER_SEND_HANDLER, moduleName, type, params, handlerVo.handler, handlerVo.handlerClassName));
 						}
 						handlerVo.handler(params);
 					}
@@ -157,17 +165,21 @@ public class Messenger {
 	 * @param	params				parameter object that will be sent to all handler and execute functions as single parameter.
 	 */
 	public function sendToAll(type:String, params:Object = null):void {
+		use namespace pureLegsCore;
 		// debug this action
 		CONFIG::debug {
 			if (MvcExpress.disableSendToAllFeature) {
 				throw Error("sendMessageToAll feature is disabled by MvcExpress.disableSendToAllFeature set to true.");
 			}
-			if (MvcExpress.debugFunction != null) {
-				MvcExpress.debugFunction("•>>> Messenger.sendToAll > type : " + type + ", params : " + params);
-			}
+			
+			MvcExpress.debug(new TraceMessenger_sendToAll(MvcTraceActions.MESSENGER_SENDTOALL, moduleName, type, params))
 		}
-		use namespace pureLegsCore;
 		ModuleManager.sendMessageToAll(type, params);
+		//
+		// clean up loging the action
+		CONFIG::debug {
+			MvcExpress.debug(new TraceMessenger_sendToAll_clean(MvcTraceActions.MESSENGER_SENDTOALL_CLEAN, moduleName, type, params))
+		}
 	}
 	
 	/**

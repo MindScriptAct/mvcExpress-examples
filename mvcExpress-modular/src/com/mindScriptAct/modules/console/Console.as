@@ -10,7 +10,6 @@ import com.mindScriptAct.modules.console.msg.ConsoleDataMsg;
 import com.mindScriptAct.modules.console.msg.ConsoleMsg;
 import com.mindScriptAct.modules.console.msg.ConsoleViewMsg;
 import com.mindScriptAct.modules.console.view.ConsoleMediator;
-import com.mindscriptact.mvcExpressLogger.MvcExpressLogger;
 import flash.display.Sprite;
 import flash.text.TextField;
 import flash.text.TextFieldType;
@@ -40,7 +39,6 @@ public class Console extends ModuleSprite {
 		// for debugging
 		CONFIG::debug {
 			checkClassStringConstants(ConsoleMsg, ConsoleDataMsg, ConsoleViewMsg);
-			MvcExpressLogger.init(this.stage, 800, 20, 800, 400, 1, true);
 		}
 		
 		// set up commands

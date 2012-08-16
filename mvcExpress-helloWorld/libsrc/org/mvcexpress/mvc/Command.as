@@ -5,6 +5,10 @@ import org.mvcexpress.core.MediatorMap;
 import org.mvcexpress.core.messenger.Messenger;
 import org.mvcexpress.core.namespace.pureLegsCore;
 import org.mvcexpress.core.ProxyMap;
+import org.mvcexpress.core.traceObjects.MvcTraceActions;
+import org.mvcexpress.core.traceObjects.TraceCommand_sendMessage;
+import org.mvcexpress.core.traceObjects.TraceObj;
+import org.mvcexpress.MvcExpress;
 
 /**
  * Command, handles business logic of your application. 												</br>
@@ -16,10 +20,22 @@ import org.mvcexpress.core.ProxyMap;
  */
 dynamic public class Command {
 	
+	/**
+	 * Handles application Commands.
+	 */
 	public var commandMap:CommandMap;
+	
+	/**
+	 * Handles application Mediators.
+	 */
 	public var mediatorMap:MediatorMap;
+	
+	/**
+	 * Handles application Proxies.
+	 */
 	public var proxyMap:ProxyMap;
 	
+	// for comunication.
 	/** @private */
 	pureLegsCore var messenger:Messenger;
 	
@@ -44,7 +60,19 @@ dynamic public class Command {
 	 */
 	protected function sendMessage(type:String, params:Object = null):void {
 		use namespace pureLegsCore;
+		// log the action
+		CONFIG::debug {
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceCommand_sendMessage(MvcTraceActions.COMMAND_SENDMESSAGE, messenger.moduleName, this, type, params));
+		}
+		//
 		messenger.send(type, params);
+		//
+		// clean up loging the action
+		CONFIG::debug {
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceCommand_sendMessage(MvcTraceActions.COMMAND_SENDMESSAGE_CLEAN, messenger.moduleName, this, type, params));
+		}
 	}
 	
 	/**
