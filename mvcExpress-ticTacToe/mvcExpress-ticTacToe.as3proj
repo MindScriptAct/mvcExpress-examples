@@ -17,6 +17,7 @@
   <classpaths>
     <class path="src" />
     <class path="libsrc" />
+    <class path="mvcExpressLogger" />
   </classpaths>
   <!-- Build options -->
   <build>
