@@ -1,6 +1,7 @@
 package com.mindScriptAct.modularSample.view {
 import com.bit101.components.PushButton;
 import com.mindScriptAct.global.messages.GlobalMessage;
+import com.mindScriptAct.global.ScopeNames;
 import com.mindScriptAct.modularSample.ModularSample;
 import com.mindScriptAct.modules.console.Console;
 import com.mindScriptAct.modules.console.msg.ConsoleMsg;
@@ -106,15 +107,15 @@ public class ModularSampleMediator extends Mediator {
 	}
 	
 	public function handleMessageToFirst(event:MouseEvent):void {
-		sendMessageToAll(GlobalMessage.SEND_TARGETED_INPUT_MESSAGE, new ConsoleParams("Message to FIRST module!!!", [1]));
+		sendScopeMessage(ScopeNames.CONSOLE_SCOPE, GlobalMessage.SEND_TARGETED_INPUT_MESSAGE, new ConsoleParams("Message to FIRST module!!!", [1]));
 	}
 	
 	public function handleMessageToEven(event:MouseEvent):void {
-		sendMessageToAll(GlobalMessage.SEND_TARGETED_INPUT_MESSAGE, new ConsoleParams("Message to even modules!!! (2 and 4)", [2, 4]));
+		sendScopeMessage(ScopeNames.CONSOLE_SCOPE, GlobalMessage.SEND_TARGETED_INPUT_MESSAGE, new ConsoleParams("Message to even modules!!! (2 and 4)", [2, 4]));
 	}
 	
 	public function handleMessageToAll(event:MouseEvent):void {
-		sendMessageToAll(GlobalMessage.SEND_INPUT_MESSAGE_TO_ALL, "Global message to all modules!!!");
+		sendScopeMessage(ScopeNames.CONSOLE_SCOPE, GlobalMessage.SEND_INPUT_MESSAGE_TO_ALL, "Global message to all modules!!!");
 	}
 	
 	//public function handleMessageToAllNoStore(event:MouseEvent):void {

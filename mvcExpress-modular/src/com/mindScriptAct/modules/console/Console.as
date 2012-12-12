@@ -3,6 +3,7 @@ import com.bit101.components.PushButton;
 import com.bit101.components.TextArea;
 import com.mindScriptAct.global.messages.GlobalMessage;
 import com.mindScriptAct.global.ModuleNames;
+import com.mindScriptAct.global.ScopeNames;
 import com.mindScriptAct.modules.console.controller.HandleTargetedMessageCommand;
 import com.mindScriptAct.modules.console.controller.HandleInputCommand;
 import com.mindScriptAct.modules.console.model.ConsoleLogProxy;
@@ -43,8 +44,8 @@ public class Console extends ModuleSprite {
 		
 		// set up commands
 		commandMap.map(ConsoleViewMsg.INPUT_MESSAGE, HandleInputCommand);
-		commandMap.map(GlobalMessage.SEND_INPUT_MESSAGE_TO_ALL, HandleInputCommand);
-		commandMap.map(GlobalMessage.SEND_TARGETED_INPUT_MESSAGE, HandleTargetedMessageCommand);
+		commandMap.scopeMap(ScopeNames.CONSOLE_SCOPE, GlobalMessage.SEND_INPUT_MESSAGE_TO_ALL, HandleInputCommand);
+		commandMap.scopeMap(ScopeNames.CONSOLE_SCOPE, GlobalMessage.SEND_TARGETED_INPUT_MESSAGE, HandleTargetedMessageCommand);
 
 		// set up view
 		proxyMap.map(new ConsoleLogProxy(consoleId));

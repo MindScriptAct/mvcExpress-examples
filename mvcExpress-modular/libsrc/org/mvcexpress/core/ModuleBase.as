@@ -10,7 +10,7 @@ import org.mvcexpress.core.namespace.pureLegsCore;
 import org.mvcexpress.core.ProxyMap;
 import org.mvcexpress.core.traceObjects.MvcTraceActions;
 import org.mvcexpress.core.traceObjects.TraceModuleBase_sendMessage;
-import org.mvcexpress.core.traceObjects.TraceObj;
+import org.mvcexpress.core.traceObjects.TraceModuleBase_sendScopeMessage;
 import org.mvcexpress.MvcExpress;
 
 /**
@@ -27,9 +27,16 @@ public class ModuleBase {
 	
 	private var _moduleName:String;
 	
-	public var proxyMap:ProxyMap;
-	public var mediatorMap:MediatorMap;
+	/** Handles application Commands. */
 	public var commandMap:CommandMap;
+
+	/** Handles application Proxies. */
+	public var proxyMap:ProxyMap;
+	
+	/** Handles application Mediators. */
+	public var mediatorMap:MediatorMap;
+	
+	/** for comunication. */
 	private var _messenger:Messenger;
 	
 	/**
@@ -61,6 +68,10 @@ public class ModuleBase {
 	pureLegsCore function get messenger():Messenger {
 		return _messenger;
 	}
+	
+	//----------------------------------
+	//     Life cycle
+	//----------------------------------
 	
 	/**
 	 * Internal framework function. Not meant to be used from outside.
@@ -102,6 +113,7 @@ public class ModuleBase {
 			mediatorMap = new MediatorMap(_moduleName, _messenger, proxyMap);
 		}
 		commandMap = new CommandMap(_moduleName, _messenger, proxyMap, mediatorMap);
+		proxyMap.setCommandMap(commandMap);
 	}
 	
 	/**
@@ -127,17 +139,20 @@ public class ModuleBase {
 		ModuleManager.disposeModule(_moduleName);
 	}
 	
+	//----------------------------------
+	//     Communication
+	//----------------------------------
+	
 	/**
-	 * Internal framework function. Not meant to be used from outside.
+	 * Sends a message with optional params object inside of current module.
+	 * @param	type	type of the message for Commands or Mediator's handle function to react to.
+	 * @param	params	Object that will be passed to Command execute() function and to handle functions.
 	 */
-	// Message sender.
-	// @param	type	type of the message. (Commands and handle functions must bu map to it to react.)
-	// @param	params	Object that will be send to Command execute() or to handle function as parameter.
 	public function sendMessage(type:String, params:Object = null):void {
 		// log the action
 		CONFIG::debug {
 			use namespace pureLegsCore;
-			MvcExpress.debug(new TraceModuleBase_sendMessage(MvcTraceActions.MODULEBASE_SENDMESSAGE, moduleName, this, type, params));
+			MvcExpress.debug(new TraceModuleBase_sendMessage(MvcTraceActions.MODULEBASE_SENDMESSAGE, _moduleName, this, type, params));
 		}
 		//
 		_messenger.send(type, params);
@@ -145,17 +160,31 @@ public class ModuleBase {
 		// clean up loging the action
 		CONFIG::debug {
 			use namespace pureLegsCore;
-			MvcExpress.debug(new TraceModuleBase_sendMessage(MvcTraceActions.MODULEBASE_SENDMESSAGE_CLEAN, moduleName, this, type, params));
+			MvcExpress.debug(new TraceModuleBase_sendMessage(MvcTraceActions.MODULEBASE_SENDMESSAGE_CLEAN, _moduleName, this, type, params));
 		}
 	}
 	
 	/**
-	 * Sends message to all existing modules.
-	 * @param	type				message type to find needed handlers
-	 * @param	params				parameter object that will be sent to all handler and execute functions as single parameter.
+	 * Sends scoped module to module message, all modules that are listening to specified scopeName and message type will get it.
+	 * @param	scopeName	both sending and receiving modules must use same scope to make module to module comminication.
+	 * @param	type		type of the message for Commands or Mediator's handle function to react to.
+	 * @param	params		Object that will be passed to Command execute() function and to handle functions.
 	 */
-	public function sendMessageToAll(type:String, params:Object = null):void {
-		_messenger.sendToAll(type, params);
+	public function sendScopeMessage(scopeName:String, type:String, params:Object):void {
+		use namespace pureLegsCore;
+		// log the action
+		CONFIG::debug {
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceModuleBase_sendScopeMessage(MvcTraceActions.MODULEBASE_SENDSCOPEMESSAGE, _moduleName, this, type, params));
+		}
+		//
+		ModuleManager.sendScopeMessage(scopeName, type, params);
+		//
+		// clean up loging the action
+		CONFIG::debug {
+			use namespace pureLegsCore;
+			MvcExpress.debug(new TraceModuleBase_sendScopeMessage(MvcTraceActions.MODULEBASE_SENDSCOPEMESSAGE_CLEAN, _moduleName, this, type, params));
+		}
 	}
 	
 	//----------------------------------

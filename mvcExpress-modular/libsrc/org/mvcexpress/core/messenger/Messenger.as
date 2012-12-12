@@ -2,19 +2,16 @@
 package org.mvcexpress.core.messenger {
 import flash.utils.Dictionary;
 import org.mvcexpress.core.CommandMap;
-import org.mvcexpress.core.ModuleManager;
 import org.mvcexpress.core.namespace.pureLegsCore;
 import org.mvcexpress.core.traceObjects.MvcTraceActions;
 import org.mvcexpress.core.traceObjects.TraceMessenger_addHandler;
 import org.mvcexpress.core.traceObjects.TraceMessenger_removeHandler;
 import org.mvcexpress.core.traceObjects.TraceMessenger_send;
 import org.mvcexpress.core.traceObjects.TraceMessenger_send_handler;
-import org.mvcexpress.core.traceObjects.TraceMessenger_sendToAll;
-import org.mvcexpress.core.traceObjects.TraceMessenger_sendToAll_clean;
-import org.mvcexpress.core.traceObjects.TraceObj;
 import org.mvcexpress.MvcExpress;
 
 /**
+ * FOR INTERNAL USE ONLY.
  * Handles framework communications.
  * @author Raimundas Banevicius (http://www.mindscriptact.com/)
  */
@@ -104,7 +101,6 @@ public class Messenger {
 		}
 	}
 	
-	// TODO : consider adding error checking that will FIND this function if it fails.. (to say what mediator failed to handle the message...) debug mode only... (most likely will be slow.. but very helpful for debug mode.)
 	/**
 	 * Runs all handler functions associated with message type, and send params object as single parameter.
 	 * @param	type				message type to find needed handlers
@@ -121,7 +117,7 @@ public class Messenger {
 		var handlerVo:HandlerVO;
 		var delCount:int = 0;
 		if (messageList) {
-			var tempListLength:int = messageList.length
+			var tempListLength:int = messageList.length;
 			for (var i:int = 0; i < tempListLength; i++) {
 				handlerVo = messageList[i];
 				// check if message is not marked to be removed. (disabled)
@@ -141,9 +137,9 @@ public class Messenger {
 						CONFIG::debug {
 							// FOR DEBUG viewing only(mouse over over variables while in debugger mode.)
 							/* Failed message type: */
-							type
+							type;
 							/* Failed handler class: */
-							handlerVo.handlerClassName
+							handlerVo.handlerClassName;
 							//
 							use namespace pureLegsCore;
 							MvcExpress.debug(new TraceMessenger_send_handler(MvcTraceActions.MESSENGER_SEND_HANDLER, moduleName, type, params, handlerVo.handler, handlerVo.handlerClassName));
@@ -156,29 +152,6 @@ public class Messenger {
 			if (delCount) {
 				messageList.splice(tempListLength - delCount, delCount);
 			}
-		}
-	}
-	
-	/**
-	 * sends message to all existing modules.
-	 * @param	type				message type to find needed handlers
-	 * @param	params				parameter object that will be sent to all handler and execute functions as single parameter.
-	 */
-	public function sendToAll(type:String, params:Object = null):void {
-		use namespace pureLegsCore;
-		// debug this action
-		CONFIG::debug {
-			if (MvcExpress.disableSendToAllFeature) {
-				throw Error("sendMessageToAll feature is disabled by MvcExpress.disableSendToAllFeature set to true.");
-			}
-			
-			MvcExpress.debug(new TraceMessenger_sendToAll(MvcTraceActions.MESSENGER_SENDTOALL, moduleName, type, params))
-		}
-		ModuleManager.sendMessageToAll(type, params);
-		//
-		// clean up loging the action
-		CONFIG::debug {
-			MvcExpress.debug(new TraceMessenger_sendToAll_clean(MvcTraceActions.MESSENGER_SENDTOALL_CLEAN, moduleName, type, params))
 		}
 	}
 	
@@ -218,8 +191,9 @@ public class Messenger {
 				var handlerVo:HandlerVO = msgList[i];
 				if (handlerVo.isExecutable) {
 					messageHandlers += "[EXECUTES:" + commandMap.listMessageCommands(key) + "], ";
-				} else {
-					messageHandlers += "[" + handlerVo.handlerClassName + "], ";
+					CONFIG::debug {
+						messageHandlers += "[" + handlerVo.handlerClassName + "], ";
+					}
 				}
 			}
 			
