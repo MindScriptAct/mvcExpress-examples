@@ -42,6 +42,9 @@ public class Console extends ModuleSprite {
 			checkClassStringConstants(ConsoleMsg, ConsoleDataMsg, ConsoleViewMsg);
 		}
 		
+		// set permision te receive messages to this scope. Commands use received messages to trigger.
+		registerScope(ScopeNames.CONSOLE_SCOPE, false, true);
+		
 		// set up commands
 		commandMap.map(ConsoleViewMsg.INPUT_MESSAGE, HandleInputCommand);
 		commandMap.scopeMap(ScopeNames.CONSOLE_SCOPE, GlobalMessage.SEND_INPUT_MESSAGE_TO_ALL, HandleInputCommand);

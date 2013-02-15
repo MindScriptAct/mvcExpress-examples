@@ -12,10 +12,7 @@ public class HomeViewMediator extends Mediator{
 	
 	[Inject]
 	public var view:HomeView;
-	
-	//[Inject]
-	//public var myProxy:MyProxy;
-	
+		
 	override public function onRegister():void {
 		trace( "HomeViewMediator.onRegister", view );
 		

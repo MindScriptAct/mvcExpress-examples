@@ -51,7 +51,8 @@
   </includeLibraries>
   <!-- SWC Libraries -->
   <libraryPaths>
-    <!-- example: <element path="..." /> -->
+    <element path="libs\mvcExpress_v1_3_1-logger_v1_0.swc" />
+    <element path="libs\mvcExpress-debug_v1_4_0.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
