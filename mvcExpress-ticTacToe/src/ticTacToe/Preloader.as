@@ -1,4 +1,4 @@
-package helloWorld {
+package ticTacToe {
 import flash.display.DisplayObject;
 import flash.display.MovieClip;
 import flash.display.StageAlign;
@@ -51,7 +51,7 @@ public class Preloader extends MovieClip {
 	}
 
 	private function startup():void {
-		var mainClass:Class = getDefinitionByName("helloWorld.Main") as Class;
+		var mainClass:Class = getDefinitionByName("ticTacToe.Main") as Class;
 		addChild(new mainClass() as DisplayObject);
 	}
 

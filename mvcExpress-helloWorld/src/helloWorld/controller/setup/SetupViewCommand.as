@@ -1,7 +1,8 @@
-package helloWorld.controller.setup{
-import mvcexpress.mvc.Command;
+package helloWorld.controller.setup {
 import helloWorld.Main;
 import helloWorld.view.main.MainMediator;
+
+import mvcexpress.mvc.Command;
 
 /**
  * Initial set up of maping mediator class to view class.
@@ -11,7 +12,7 @@ import helloWorld.view.main.MainMediator;
 public class SetupViewCommand extends Command {
 
 	public function execute(blank:Object):void {
-		trace( "SetupViewCommand.execute > blank : " + blank );
+		trace("SetupViewCommand.execute > blank : " + blank);
 
 		// Will map mediator class to view class.
 		// Mediator(MainMediator) will be automaticaly created every time you will try to mediatorMap.mediate() viewObject of mapped class(Main).

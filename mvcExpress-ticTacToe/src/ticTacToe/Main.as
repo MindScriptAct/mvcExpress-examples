@@ -1,5 +1,6 @@
-package helloWorld {
+package ticTacToe {
 //import com.mindscriptact.mvcExpressLogger.MvcExpressLogger;
+
 import flash.display.Sprite;
 import flash.events.Event;
 
@@ -7,13 +8,14 @@ import flash.events.Event;
  * Main application class.
  */
 
-[Frame(factoryClass="helloWorld.Preloader")]
+[Frame(factoryClass="ticTacToe.Preloader")]
 
 public class Main extends Sprite {
 
 	private var module:MainModule;
 
 	public function Main():void {
+
 		if (stage) {
 			init();
 		} else {
@@ -22,12 +24,11 @@ public class Main extends Sprite {
 	}
 
 	private function init(event:Event = null):void {
-		trace("Main.init > event : " + event);
 		removeEventListener(Event.ADDED_TO_STAGE, init);
 
 		// add mvcExpress logger for debugging. (press CTRL + ` to open it.)
 		//CONFIG::debug {
-		//MvcExpressLogger.init(this.stage);
+			//MvcExpressLogger.init(this.stage);
 		//}
 
 		// entry point

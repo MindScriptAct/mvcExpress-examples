@@ -1,14 +1,14 @@
-package helloWorld.services {
+package ticTacToe.services {
 import mvcexpress.mvc.Proxy;
 
 /**
  * Blank service.
  * Service technicaly is just another proxy.
- * But conceptualy we use services to hadle remote data or other asynchronous data manipulations.
+ * But conceptualy we use services to hadle remote data or other asincronous data manipulations.
  */
-public class TestService extends Proxy {
+public class BlankService extends Proxy {
 
-	public function TestService() {
+	public function BlankService() {
 
 	}
 

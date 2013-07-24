@@ -1,5 +1,6 @@
 package helloWorld.model {
 import helloWorld.messages.DataMsg;
+
 import mvcexpress.mvc.Proxy;
 
 /**

@@ -1,11 +1,13 @@
-package helloWorld{
+package helloWorld {
 import flash.geom.Point;
+
 import helloWorld.controller.setup.SetupControllerCommand;
 import helloWorld.controller.setup.SetupModelCommand;
 import helloWorld.controller.setup.SetupViewCommand;
 import helloWorld.messages.DataMsg;
 import helloWorld.messages.Msg;
 import helloWorld.messages.ViewMsg;
+
 import mvcexpress.modules.ModuleCore;
 import mvcexpress.utils.checkClassStringConstants;
 
@@ -16,7 +18,7 @@ import mvcexpress.utils.checkClassStringConstants;
 public class MainModule extends ModuleCore {
 
 	override protected function onInit():void {
-		trace( "MainModule.onInit" );
+		trace("MainModule.onInit");
 
 		// little utility to prevent accidental message constant dublications.
 		CONFIG::debug {
@@ -33,8 +35,8 @@ public class MainModule extends ModuleCore {
 		commandMap.execute(SetupViewCommand);
 	}
 
-    public function start(main:Main):void {
-		trace( "MainModule.start > main : " + main );
+	public function start(main:Main):void {
+		trace("MainModule.start > main : " + main);
 
 		// mediate main view.
 		mediatorMap.mediate(main);
@@ -45,8 +47,8 @@ public class MainModule extends ModuleCore {
 		// params object is optional.
 		sendMessage(Msg.TEST, new Point(1, 5));
 
-        trace("Hello mvcExpress!!!");
-    }
+		trace("Hello mvcExpress!!!");
+	}
 
 }
 }
