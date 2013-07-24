@@ -1,3 +1,6 @@
 /*/obj
 /*/bin/mvcExpressExample.swf
 *.zip
+/.idea/workspace.xml
+/bin
+/obj
