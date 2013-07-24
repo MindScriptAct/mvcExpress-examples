@@ -214,7 +214,6 @@ public class ModuleCore {
 	 */
 	protected function registerScope(scopeName:String, messageSending:Boolean = true, messageReceiving:Boolean = true, proxieMapping:Boolean = false):void {
 		use namespace pureLegsCore;
-
 		ModuleManager.registerScope(_moduleName, scopeName, messageSending, messageReceiving, proxieMapping);
 	}
 
@@ -225,7 +224,6 @@ public class ModuleCore {
 	 */
 	protected function unregisterScope(scopeName:String):void {
 		use namespace pureLegsCore;
-
 		ModuleManager.unregisterScope(_moduleName, scopeName);
 	}
 
@@ -250,7 +248,6 @@ public class ModuleCore {
 
 	public function listMessageCommands(messageType:String):String {
 		use namespace pureLegsCore;
-
 		return "SENDING MESSAGE:'" + messageType + "'\t> WILL EXECUTE  > " + String(commandMap.listMessageCommands(messageType)) + "\n";
 	}
 
@@ -294,7 +291,6 @@ public class ModuleCore {
 	pureLegsCore function get messenger():Messenger {
 		return _messenger;
 	}
-
 
 }
 }

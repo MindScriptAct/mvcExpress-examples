@@ -8,6 +8,10 @@ import flash.text.TextFieldType;
 
 import modularProject.global.ModuleNames;
 import modularProject.modules.console.controller.setup.InitConsoleCommand;
+import modularProject.modules.console.controller.setup.SetUpConsoleControllerCommand;
+import modularProject.modules.console.controller.setup.SetUpConsolePermissionsCommand;
+import modularProject.modules.console.controller.setup.SetUpConsoleModelCommand;
+import modularProject.modules.console.controller.setup.SetUpConsoleViewCommand;
 import modularProject.modules.console.msg.ConsoleDataMessages;
 import modularProject.modules.console.msg.ConsoleMessages;
 import modularProject.modules.console.msg.ConsoleViewMessages;
@@ -43,6 +47,12 @@ public class Console extends Sprite {
 
 		renderConsoleView();
 
+		module.executeCommand(SetUpConsolePermissionsCommand);
+
+		module.executeCommand(SetUpConsoleControllerCommand);
+		module.executeCommand(SetUpConsoleModelCommand, this.consoleId);
+		module.executeCommand(SetUpConsoleViewCommand);
+
 		module.executeCommand(InitConsoleCommand, this);
 
 	}
@@ -75,7 +85,7 @@ public class Console extends Sprite {
 		inputBtn.width = 50;
 
 	}
-	
+
 	public function dispose():void {
 		module.disposeModule();
 	}

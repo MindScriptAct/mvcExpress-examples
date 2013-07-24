@@ -5,6 +5,8 @@ import flash.display.StageScaleMode;
 
 import modularProject.global.ModuleNames;
 import modularProject.modularSample.controller.setup.InitModularSampleCommand;
+import modularProject.modularSample.controller.setup.SetUpPermissionsCommand;
+import modularProject.modularSample.controller.setup.SetUpViewCommand;
 import modularProject.modularSample.msg.DataMessages;
 import modularProject.modularSample.msg.Messages;
 import modularProject.modularSample.msg.ViewMessages;
@@ -36,8 +38,11 @@ public class ModularSample extends Sprite {
 
 		trace("ModularSampleShellModule.onInit");
 
-		module.executeCommand(InitModularSampleCommand, this);
+		module.executeCommand(SetUpPermissionsCommand);
 
+		module.executeCommand(SetUpViewCommand);
+
+		module.executeCommand(InitModularSampleCommand, this);
 
 	}
 
