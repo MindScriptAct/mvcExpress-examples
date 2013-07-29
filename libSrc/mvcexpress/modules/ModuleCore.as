@@ -234,6 +234,11 @@ public class ModuleCore {
 
 	/**
 	 * Instantiates and executes provided command class, and sends params to it.
+	 * <p>
+	 * If you extend ModuleCore - use commandMap.execute() instead - it is faster.
+	 * </p><p>
+	 * This function is designed to be used from outside, if you don't want to extend ModuleCore. ()
+	 * </p>
 	 * @param    commandClass    Command class to be instantiated and executed.
 	 * @param    params            Object to be sent to execute() function.
 	 */
