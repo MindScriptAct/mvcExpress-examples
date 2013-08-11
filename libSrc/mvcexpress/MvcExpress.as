@@ -13,7 +13,7 @@ public class MvcExpress {
 	public static const WEBSITE_URL:String = "http://mvcexpress.org";
 
 	/** Framework name */
-	public static const NAME:String = "mvcExpress 2";
+	public static const NAME:String = "mvcExpress 2 beta 2";
 
 	/** Current framework major version */
 	public static const MAJOR_VERSION:uint = 2;
@@ -47,7 +47,7 @@ public class MvcExpress {
 	public static var pendingInjectsTimeOut:int = 0;
 
 	/**
-	 * Sets a debug function that will get framework activity messages as String's.
+	 * Sets a debug function that will get framework activity constants as String's.
 	 * CONFIG:debug  MUST be set to true for debugFunction to get any trace data from framework.
 	 * For example you can use : MvcExpress.debugFunction = trace; to trace all debug data.
 	 * it is good idea to set it before initializing first module.
@@ -60,7 +60,7 @@ public class MvcExpress {
 	//----------------------------------
 
 	/**
-	 * Function to get more detailed framework activity information in TraceObj objects.
+	 * Function to get more detailed framework activity information as TraceObj objects.
 	 * @private
 	 */
 	static pureLegsCore var loggerFunction:Function = null;

@@ -8,13 +8,12 @@ import mvcexpress.core.ProxyMap;
 import mvcexpress.core.messenger.Messenger;
 import mvcexpress.core.namespace.pureLegsCore;
 import mvcexpress.core.traceObjects.moduleBase.TraceModuleBase_sendMessage;
-import mvcexpress.core.traceObjects.moduleBase.TraceModuleBase_sendScopeMessage;
 import mvcexpress.utils.checkClassSuperclass;
 
 /**
  * Core Module class, represents single application unit in mvcExpress framework.
  * <p>
- * It starts framework and lets you set up your application. (or execute Commands for set up.)
+ * It starts framework and lets you set up your application. (or execute Commands to do it)
  * You can create modular application by having more then one module.
  * </p>
  * @author Raimundas Banevicius (http://www.mindscriptact.com/)
@@ -22,10 +21,10 @@ import mvcexpress.utils.checkClassSuperclass;
 public class ModuleCore {
 
 	// name of the module
-	protected var _moduleName:String;
+	private var _moduleName:String;
 
 	/** for communication. */
-	protected var _messenger:Messenger;
+	pureLegsCore var messenger:Messenger;
 
 	/** Handles application Proxies. */
 	protected var proxyMap:ProxyMap;
@@ -88,17 +87,17 @@ public class ModuleCore {
 
 		// create module messenger.
 		Messenger.allowInstantiation = true;
-		_messenger = new messengerClass(_moduleName);
+		messenger = new messengerClass(_moduleName);
 		Messenger.allowInstantiation = false;
 
 		// create module proxyMap
-		proxyMap = new proxyMapClass(_moduleName, _messenger);
+		proxyMap = new proxyMapClass(_moduleName, messenger);
 
 		// create module mediatorMap
-		mediatorMap = new mediatorMapClass(_moduleName, _messenger, proxyMap);
+		mediatorMap = new mediatorMapClass(_moduleName, messenger, proxyMap);
 
 		// create module commandMap
-		commandMap = new commandMapClass(_moduleName, _messenger, proxyMap, mediatorMap);
+		commandMap = new commandMapClass(_moduleName, messenger, proxyMap, mediatorMap);
 		proxyMap.setCommandMap(commandMap);
 
 		onInit();
@@ -141,8 +140,8 @@ public class ModuleCore {
 		proxyMap.dispose();
 		proxyMap = null;
 
-		_messenger.dispose();
-		_messenger = null;
+		messenger.dispose();
+		messenger = null;
 		//
 		ModuleManager.disposeModule(_moduleName);
 	}
@@ -166,14 +165,14 @@ public class ModuleCore {
 	 * @param    params    Object that will be send to Command execute() or to handle function as parameter.
 	 */
 	public function sendMessage(type:String, params:Object = null):void {
+		use namespace pureLegsCore;
+
 		// log the action
 		CONFIG::debug {
-			use namespace pureLegsCore;
-
 			MvcExpress.debug(new TraceModuleBase_sendMessage(_moduleName, this, type, params, true));
 		}
 		//
-		_messenger.send(type, params);
+		messenger.send(type, params);
 		//
 		// clean up logging the action
 		CONFIG::debug {
@@ -181,66 +180,12 @@ public class ModuleCore {
 		}
 	}
 
-	/**
-	 * Sends scoped module to module message, all modules that are listening to specified scopeName and message type will get it.
-	 * @param    scopeName    both sending and receiving modules must use same scope to make module to module communication.
-	 * @param    type        type of the message for Commands or Mediator's handle function to react to.
-	 * @param    params        Object that will be passed to Command execute() function or to handle functions.
-	 */
-	public function sendScopeMessage(scopeName:String, type:String, params:Object = null):void {
-		use namespace pureLegsCore;
-
-		// log the action
-		CONFIG::debug {
-			MvcExpress.debug(new TraceModuleBase_sendScopeMessage(_moduleName, this, type, params, true));
-		}
-		//
-		ModuleManager.sendScopeMessage(_moduleName, scopeName, type, params);
-		//
-		// clean up logging the action
-		CONFIG::debug {
-			MvcExpress.debug(new TraceModuleBase_sendScopeMessage(_moduleName, this, type, params, false));
-		}
-	}
-
-	/**
-	 * Registers scope name.
-	 * If scope name is not registered - module to module communication via scope and mapping proxies to scope is not possible.
-	 * What features module can use with that scope is defined by parameters.
-	 * @param    scopeName            Name of the scope.
-	 * @param    messageSending        Modules can send messages to this scope.
-	 * @param    messageReceiving    Modules can receive and handle messages from this scope.(or map commands to scoped messages);
-	 * @param    proxieMap            Modules can map proxies to this scope.
-	 */
-	protected function registerScope(scopeName:String, messageSending:Boolean = true, messageReceiving:Boolean = true, proxieMapping:Boolean = false):void {
-		use namespace pureLegsCore;
-
-		ModuleManager.registerScope(_moduleName, scopeName, messageSending, messageReceiving, proxieMapping);
-	}
-
-	/**
-	 * Unregisters scope name.
-	 * Then scope is not registered module to module communication via scope and mapping proxies to scope becomes not possible.
-	 * @param    scopeName            Name of the scope.
-	 */
-	protected function unregisterScope(scopeName:String):void {
-		use namespace pureLegsCore;
-
-		ModuleManager.unregisterScope(_moduleName, scopeName);
-	}
-
-
 	//----------------------------------
 	//     Execute module command.
 	//----------------------------------
 
 	/**
 	 * Instantiates and executes provided command class, and sends params to it.
-	 * <p>
-	 * If you extend ModuleCore - use commandMap.execute() instead - it is faster.
-	 * </p><p>
-	 * This function is designed to be used from outside, if you don't want to extend ModuleCore. ()
-	 * </p>
 	 * @param    commandClass    Command class to be instantiated and executed.
 	 * @param    params            Object to be sent to execute() function.
 	 */
@@ -263,7 +208,9 @@ public class ModuleCore {
 	 * List all message mappings.
 	 */
 	public function listMappedMessages():String {
-		return _messenger.listMappings(commandMap);
+		use namespace pureLegsCore;
+
+		return messenger.listMappings(commandMap);
 	}
 
 	/**
@@ -287,18 +234,6 @@ public class ModuleCore {
 		return commandMap.listMappings();
 	}
 
-
-	//----------------------------------
-	//     Internal
-	//----------------------------------
-
-	/**
-	 * framework access to module messenger
-	 * @private
-	 */
-	pureLegsCore function get messenger():Messenger {
-		return _messenger;
-	}
 
 }
 }

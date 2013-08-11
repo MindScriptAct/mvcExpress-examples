@@ -24,10 +24,10 @@ public class Messenger {
 	static pureLegsCore var allowInstantiation:Boolean; // = false;
 
 	// keeps ALL HandlerVO's in vectors by message type that they have to respond to.
-	private var messageRegistry:Dictionary = new Dictionary(); //* of Vector.<HandlerVO> by String */
+	protected var messageRegistry:Dictionary = new Dictionary(); //* of Vector.<HandlerVO> by String */
 
 	// keeps ALL HandlerVO's in Dictionaries by message type, mapped by handlers for fast disabling and duplicated handler checks.
-	private var handlerRegistry:Dictionary = new Dictionary(); //* of Dictionary by String */
+	protected var handlerRegistry:Dictionary = new Dictionary(); //* of Dictionary by String */
 
 	/**
 	 * CONSTRUCTOR - internal class. Not available for use.
@@ -82,7 +82,6 @@ public class Messenger {
 			handlerRegistry[type][handler] = msgData;
 		}
 		return msgData;
-		//}
 	}
 
 	/**
@@ -130,7 +129,7 @@ public class Messenger {
 					delCount++;
 				} else {
 
-					// if some MsgVOs marked to be removed - move all other messages to there place.
+					// if some MsgVOs marked to be removed - move all other constants to there place.
 					if (delCount) {
 						messageList[i - delCount] = messageList[i];
 					}
@@ -174,6 +173,22 @@ public class Messenger {
 	//     Debug
 	//----------------------------------
 
+
+	/**
+	 * Checks if handler is added to specific message type.
+	 * @param    type                message type that handler had to react
+	 * @param    handler                function called on sent message.
+	 */
+	public function isHandlerAdded(type:String, handler:Function):Boolean {
+		var retVal:Boolean = false;
+		if (handlerRegistry[type]) {
+			if (handlerRegistry[type][handler]) {
+				retVal = true;
+			}
+		}
+		return retVal;
+	}
+
 	/**
 	 * List all message mappings.
 	 * Intended to be used by ModuleCore.as
@@ -183,7 +198,7 @@ public class Messenger {
 
 		var retVal:String = "";
 		retVal = "====================== Message Mappings: ======================\n";
-		var warningText:String = "WARNING: If you want to see Classes that handles messages - you must run with CONFIG::debug compile variable set to 'true'.\n";
+		var warningText:String = "WARNING: If you want to see Classes that handles constants - you must run with CONFIG::debug compile variable set to 'true'.\n";
 		CONFIG::debug {
 			warningText = "";
 		}
