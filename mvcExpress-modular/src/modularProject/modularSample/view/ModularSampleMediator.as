@@ -1,21 +1,24 @@
 package modularProject.modularSample.view {
 import com.bit101.components.PushButton;
-import modularProject.global.messages.GlobalMessage;
-import modularProject.global.ScopeNames;
-import modularProject.modularSample.ModularSample;
-import modularProject.modules.console.Console;
-import modularProject.modules.console.msg.ConsoleMessages;
-import modularProject.modules.console.msg.ConsoleViewMessages;
-import modularProject.modules.console.view.ConsoleParams;
+
 import flash.events.Event;
 import flash.events.MouseEvent;
+
+import modularProject.global.ScopeNames;
+import modularProject.global.messages.GlobalMessage;
+import modularProject.modularSample.ModularSample;
+import modularProject.modules.console.Console;
+import modularProject.modules.console.view.ConsoleParams;
+
+import mvcexpress.extensions.scoped.mvc.MediatorScoped;
+
 import mvcexpress.mvc.Mediator;
 
 /**
  * COMMENT
  * @author Raimundas Banevicius (http://www.mindscriptact.com/)
  */
-public class ModularSampleMediator extends Mediator {
+public class ModularSampleMediator extends MediatorScoped {
 
 	[Inject]
 	public var view:ModularSample;
@@ -119,11 +122,11 @@ public class ModularSampleMediator extends Mediator {
 	}
 
 	//public function handleMessageToAllNoStore(event:MouseEvent):void {
-		//sendMessageToAll(GlobalMessage.SEND_INPUT_MESSAGE_TO_ALL_DONT_STORE, "Global message to all modules without using proxy!!!");
+	//sendMessageToAll(GlobalMessage.SEND_INPUT_MESSAGE_TO_ALL_DONT_STORE, "Global message to all modules without using proxy!!!");
 	//}
 	//
 	//public function handleMessageToAllDublicate(event:MouseEvent):void {
-		//sendMessageToAll(ConsoleViewMsg.INPUT_MESSAGE, "Global message to all modules without using proxy!!!");
+	//sendMessageToAll(ConsoleViewMsg.INPUT_MESSAGE, "Global message to all modules without using proxy!!!");
 	//}
 }
 }

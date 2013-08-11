@@ -1,8 +1,10 @@
 package modularProject.modules.console.view {
+import flash.events.MouseEvent;
+
 import modularProject.modules.console.Console;
 import modularProject.modules.console.msg.ConsoleDataMessages;
 import modularProject.modules.console.msg.ConsoleViewMessages;
-import flash.events.MouseEvent;
+
 import mvcexpress.mvc.Mediator;
 
 /**

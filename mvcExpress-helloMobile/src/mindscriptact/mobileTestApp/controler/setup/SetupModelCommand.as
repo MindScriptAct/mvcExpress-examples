@@ -1,5 +1,6 @@
-package com.mindscriptact.mobileTestApp.controler.setup {
+package mindscriptact.mobileTestApp.controler.setup {
 import com.mindscriptact.mobileTestApp.model.TestProxy;
+
 import mvcexpress.mvc.Command;
 
 /**
@@ -11,7 +12,7 @@ import mvcexpress.mvc.Command;
 public class SetupModelCommand extends Command {
 
 	public function execute(blank:Object):void {
-		trace( "SetupModelCommand.execute > blank : " + blank);
+		trace("SetupModelCommand.execute > blank : " + blank);
 
 		// construct and map a proxy object for injection.
 		// after this you will be able to [Inject] proxies in your commands, mediators and ather proxies.

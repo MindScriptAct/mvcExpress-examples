@@ -2,6 +2,7 @@ package modularProject.modules.console.controller {
 import modularProject.modules.console.model.ConsoleLogProxy;
 import modularProject.modules.console.msg.ConsoleViewMessages;
 import modularProject.modules.console.view.ConsoleParams;
+
 import mvcexpress.mvc.Command;
 
 /**

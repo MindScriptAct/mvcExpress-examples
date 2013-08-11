@@ -1,20 +1,22 @@
 package com.mindscriptact.mobileTestApp.view.homeView {
 import com.mindscriptact.mobileTestApp.messages.DataMsg;
 import com.mindscriptact.mobileTestApp.messages.ViewMsg;
+
 import flash.events.MouseEvent;
+
 import mvcexpress.mvc.Mediator;
 
 /**
  * TODO:CLASS COMMENT
  * @author Raimundas Banevicius (raima156@yahoo.com)
  */
-public class HomeViewMediator extends Mediator{
+public class HomeViewMediator extends Mediator {
 
 	[Inject]
 	public var view:HomeView;
 
 	override public function onRegister():void {
-		trace( "HomeViewMediator.onRegister", view );
+		trace("HomeViewMediator.onRegister", view);
 
 		view.testLabel.text = "Hello mobile!!!";
 
@@ -32,7 +34,7 @@ public class HomeViewMediator extends Mediator{
 		sendMessage(ViewMsg.TEST_CLICK);
 	}
 
-	override public function onRemove():void{
+	override public function onRemove():void {
 
 	}
 

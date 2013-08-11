@@ -11,6 +11,8 @@ import modularProject.modularSample.msg.DataMessages;
 import modularProject.modularSample.msg.Messages;
 import modularProject.modularSample.msg.ViewMessages;
 
+import mvcexpress.extensions.scoped.modules.ModuleScoped;
+
 import mvcexpress.modules.ModuleCore;
 import mvcexpress.utils.checkClassStringConstants;
 
@@ -21,7 +23,7 @@ import mvcexpress.utils.checkClassStringConstants;
  */
 public class ModularSample extends Sprite {
 
-	public var module:ModuleCore = new ModuleCore(ModuleNames.SHELL);
+	public var module:ModuleScoped = new ModuleScoped(ModuleNames.SHELL);
 
 	public function ModularSample() {
 		CONFIG::debug {

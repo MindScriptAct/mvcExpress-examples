@@ -1,11 +1,14 @@
-package com.mindscriptact.mobileTestApp.view.main{
+package mindscriptact.mobileTestApp.view.main {
 import com.mindscriptact.mobileTestApp.Main;
 import com.mindscriptact.mobileTestApp.messages.DataMsg;
 import com.mindscriptact.mobileTestApp.messages.ViewMsg;
 import com.mindscriptact.mobileTestApp.model.TestProxy;
+
 import flash.events.MouseEvent;
 import flash.globalization.StringTools;
+
 import mvcexpress.mvc.Mediator;
+
 import spark.components.View;
 
 /**
@@ -24,13 +27,11 @@ public class MainMediator extends Mediator {
 	public var testProxy:TestProxy;
 
 	override public function onRegister():void {
-		trace( "MainMediator.onRegister", "view:" + view);
+		trace("MainMediator.onRegister", "view:" + view);
 
 
 		var childView:Object = view.navigator.getElementAt(0);
 		mediatorMap.mediate(childView);
-
-
 
 
 		// to handle user ineraction you will want to listen for view events, and handle them.
@@ -41,16 +42,15 @@ public class MainMediator extends Mediator {
 	}
 
 
-
 	private function handleStageClick(event:MouseEvent):void {
-		trace( "MainMediator.handleMainClick > event : " + event );
+		trace("MainMediator.handleMainClick > event : " + event);
 
 		// in many cases you will want to send a message then user makes input.
 		sendMessage(ViewMsg.MAIN_CLICKED);
 	}
 
 	private function handleTestDataChange(testData:String):void {
-		trace( "MainMediator.handleTestDataChange > testData : " + testData );
+		trace("MainMediator.handleTestDataChange > testData : " + testData);
 
 		// then handling messages you will have 2 options from there you get your data.
 		// 1 - handler function parameter. (for this examle )

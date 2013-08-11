@@ -5,7 +5,7 @@ import flash.utils.Dictionary;
 import mvcexpress.MvcExpress;
 import mvcexpress.core.inject.InjectRuleVO;
 import mvcexpress.core.inject.PendingInject;
-import mvcexpress.core.inject.testInject;
+import mvcexpress.core.inject.InjectTester;
 import mvcexpress.core.messenger.HandlerVO;
 import mvcexpress.core.messenger.Messenger;
 import mvcexpress.core.namespace.pureLegsCore;
@@ -65,7 +65,7 @@ public class ModuleManager {
 		// tests if framework can read 'Inject' metadata tag.
 		if (needMetadataTest) {
 			needMetadataTest = false;
-			var injectTest:testInject = new testInject();
+			var injectTest:InjectTester = new InjectTester();
 			if (!injectTest.testInjectMetaTag()) {
 				throw Error("mvcExpress framework failed to use 'Inject' metadata. Please add '-keep-as3-metadata+=Inject' to compile arguments.");
 			}

@@ -15,7 +15,7 @@ public class testInject {
 	public function testInjectMetaTag():Boolean {
 		var retVal:Boolean = false;
 
-		var classDescription:XML = describeType(testInject);
+		var classDescription:XML = describeType(InjectTester);
 		var factoryNodes:XMLList = classDescription.factory.*;
 		var nodeCount:int = factoryNodes.length();
 		for (var i:int; i < nodeCount; i++) {

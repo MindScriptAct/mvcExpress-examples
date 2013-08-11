@@ -1,4 +1,4 @@
-package com.mindscriptact.mobileTestApp.services{
+package com.mindscriptact.mobileTestApp.services {
 import mvcexpress.mvc.Proxy;
 
 /**

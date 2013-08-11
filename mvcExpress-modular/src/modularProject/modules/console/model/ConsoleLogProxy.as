@@ -1,5 +1,6 @@
 package modularProject.modules.console.model {
 import modularProject.modules.console.msg.ConsoleDataMessages;
+
 import mvcexpress.mvc.Proxy;
 
 /**

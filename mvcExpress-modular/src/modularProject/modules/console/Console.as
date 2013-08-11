@@ -9,12 +9,14 @@ import flash.text.TextFieldType;
 import modularProject.global.ModuleNames;
 import modularProject.modules.console.controller.setup.InitConsoleCommand;
 import modularProject.modules.console.controller.setup.SetUpConsoleControllerCommand;
-import modularProject.modules.console.controller.setup.SetUpConsolePermissionsCommand;
 import modularProject.modules.console.controller.setup.SetUpConsoleModelCommand;
+import modularProject.modules.console.controller.setup.SetUpConsolePermissionsCommand;
 import modularProject.modules.console.controller.setup.SetUpConsoleViewCommand;
 import modularProject.modules.console.msg.ConsoleDataMessages;
 import modularProject.modules.console.msg.ConsoleMessages;
 import modularProject.modules.console.msg.ConsoleViewMessages;
+
+import mvcexpress.extensions.scoped.modules.ModuleScoped;
 
 import mvcexpress.modules.ModuleCore;
 import mvcexpress.utils.checkClassStringConstants;
@@ -25,7 +27,7 @@ import mvcexpress.utils.checkClassStringConstants;
  */
 public class Console extends Sprite {
 
-	public var module:ModuleCore;
+	public var module:ModuleScoped;
 
 	public var consoleId:int;
 
@@ -36,7 +38,7 @@ public class Console extends Sprite {
 	public function Console(consoleId:int = 0) {
 		this.consoleId = consoleId;
 
-		module = new ModuleCore(ModuleNames.CONSOLE + this.consoleId);
+		module = new ModuleScoped(ModuleNames.CONSOLE + this.consoleId);
 
 		trace("Console.onInit");
 

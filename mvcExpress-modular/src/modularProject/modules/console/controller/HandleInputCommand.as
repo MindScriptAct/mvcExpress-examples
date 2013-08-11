@@ -1,5 +1,6 @@
 package modularProject.modules.console.controller {
 import modularProject.modules.console.model.ConsoleLogProxy;
+
 import mvcexpress.mvc.Command;
 
 /**

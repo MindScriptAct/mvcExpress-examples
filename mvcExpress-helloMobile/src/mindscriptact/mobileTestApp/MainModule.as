@@ -1,11 +1,11 @@
-package com.mindscriptact.mobileTestApp {
+package mindscriptact.mobileTestApp {
 import com.mindscriptact.mobileTestApp.controler.setup.SetupControlerCommand;
 import com.mindscriptact.mobileTestApp.controler.setup.SetupModelCommand;
 import com.mindscriptact.mobileTestApp.controler.setup.SetupViewCommand;
 import com.mindscriptact.mobileTestApp.messages.DataMsg;
 import com.mindscriptact.mobileTestApp.messages.Msg;
 import com.mindscriptact.mobileTestApp.messages.ViewMsg;
-import flash.geom.Point;
+
 import mvcexpress.modules.ModuleCore;
 import mvcexpress.utils.checkClassStringConstants;
 

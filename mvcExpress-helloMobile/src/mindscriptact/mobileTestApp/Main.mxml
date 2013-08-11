@@ -6,20 +6,18 @@
 
 	<fx:Script>
 		<![CDATA[
-			import com.mindscriptact.mvcExpressLogger.MvcExpressLogger;
-			
-			private function handleAddedToStoge():void {
-				trace("Main.handleAddedToStoge");
-				//
-				
-				// add mvcExpress logger for debugging. (press CTRL + ` to open it.)
-				CONFIG::debug {
-					MvcExpressLogger.init(stage);
-				}
-				
-				var mainModule:MainModule = new MainModule();
-				mainModule.start(this);
+		private function handleAddedToStoge():void {
+			trace("Main.handleAddedToStoge");
+			//
+
+			// add mvcExpress logger for debugging. (press CTRL + ` to open it.)
+			CONFIG::debug {
+				MvcExpressLogger.init(stage);
 			}
+
+			var mainModule:MainModule = new MainModule();
+			mainModule.start(this);
+		}
 		]]>
 	</fx:Script>
 
