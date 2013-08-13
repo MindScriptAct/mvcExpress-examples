@@ -1,5 +1,6 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package mvcexpress.core {
+import flash.display.Sprite;
 import flash.utils.Dictionary;
 import flash.utils.getDefinitionByName;
 import flash.utils.getQualifiedClassName;
@@ -34,13 +35,13 @@ public class MediatorMap implements IMediatorMap {
 	protected var messenger:Messenger;
 
 	// stores all mediator classes using view class(mediator must mediate) as a key.
-	protected var mediatorClassRegistry:Dictionary = new Dictionary(); //* of Class by Class */
+	protected var mediatorMappingRegistry:Dictionary = new Dictionary(); //* of Dictionary of Class) by Class */
 
-	// stores all view inject classes using view class(mediator must mediate) as a key.
-	protected var mediatorInjectRegistry:Dictionary = new Dictionary(); //* of Class by Class */
+	// stores all mediator is sequence they were mapped.
+	protected var mediatorMapOrderRegistry:Dictionary = new Dictionary(); //* of Vector.<Class> by Class */
 
 	// stores all mediators using use view object(mediator is mediating) as a key.
-	protected var mediatorRegistry:Dictionary = new Dictionary(); //* of Mediator by Object */
+	protected var mediatorRegistry:Dictionary = new Dictionary(); //* of Vector.<Mediator> by Object */
 
 	/** CONSTRUCTOR */
 	public function MediatorMap($moduleName:String, $messenger:Messenger, $proxyMap:ProxyMap) {
@@ -54,53 +55,97 @@ public class MediatorMap implements IMediatorMap {
 	//----------------------------------
 
 	/**
-	 * Maps mediator class to view class. Only one mediator class can mediate single instance of view class.
+	 * Maps mediator classes to view class.
 	 * @param    viewClass        view class that has to be mediated by mediator class then mediate() is called on the view object.
 	 * @param    mediatorClass    mediator class that will be instantiated then viewClass object is passed to mediate() function.
 	 * @param    injectClass        inject mediator as this class.
+	 * @param    restClassPairs        rest or mediatorClass and injectClass pairs if you want your view mediated by more then one mediator.
 	 */
-	public function map(viewClass:Class, mediatorClass:Class, injectClass:Class = null):void {
+	public function map(viewClass:Class, mediatorClass:Class, injectClass:Class = null, ...restClassPairs:Array):void {
 		// debug this action
-		CONFIG::debug {
-			use namespace pureLegsCore;
+		while (mediatorClass) {
 
-			MvcExpress.debug(new TraceMediatorMap_map(moduleName, viewClass, mediatorClass));
-			// check if mediatorClass is subclass of Mediator class
-			if (!checkClassSuperclass(mediatorClass, "mvcexpress.mvc::Mediator")) {
-				throw Error("mediatorClass:" + mediatorClass + " you are trying to map is not extended from 'mvcexpress.mvc::Mediator' class.");
+			CONFIG::debug {
+				use namespace pureLegsCore;
+
+				MvcExpress.debug(new TraceMediatorMap_map(moduleName, viewClass, mediatorClass, injectClass));
+				// check if mediatorClass is subclass of Mediator class
+				if (!checkClassSuperclass(mediatorClass, "mvcexpress.mvc::Mediator")) {
+					throw Error("mediatorClass:" + mediatorClass + " you are trying to map is not extended from 'mvcexpress.mvc::Mediator' class.");
+				}
+			}
+
+			// check if mapping is not created already
+			if (mediatorMappingRegistry[viewClass] != null) {
+				if (mediatorMappingRegistry[viewClass][mediatorClass] != null) {
+					throw Error("Mediator class:" + mediatorClass + " is already mapped with this view class:" + viewClass + "");
+				}
+			}
+
+			// map mediatorClass to viewClass
+			if (mediatorMappingRegistry[viewClass] == null) {
+				mediatorMappingRegistry[viewClass] = new Dictionary();
+			}
+
+			if (mediatorMapOrderRegistry[viewClass] == null) {
+				mediatorMapOrderRegistry[viewClass] = new Vector.<Class>();
+			}
+
+
+			// map injectClass to viewClass and mediatarClass.
+			if (!injectClass) {
+				injectClass = viewClass;
+			}
+			mediatorMappingRegistry[viewClass][mediatorClass] = injectClass;
+			mediatorMapOrderRegistry[viewClass].push(mediatorClass);
+
+			// set multi Mediators.
+			if (restClassPairs) {
+				if (restClassPairs.length) {
+					mediatorClass = restClassPairs.shift();
+					if (restClassPairs.length) {
+						injectClass = restClassPairs.shift();
+					} else {
+						injectClass = null;
+					}
+				} else {
+					mediatorClass = null;
+				}
 			}
 		}
-
-		// check if mapping is not created already
-		if (mediatorClassRegistry[viewClass]) {
-			throw Error("Mediator class:" + mediatorClassRegistry[viewClass] + " is already mapped with this view class:" + viewClass + "");
-		}
-
-		// map mediatorClass to viewClass
-		mediatorClassRegistry[viewClass] = mediatorClass;
-
-		// map injectClass to viewClass
-		if (!injectClass) {
-			injectClass = viewClass;
-		}
-		mediatorInjectRegistry[viewClass] = injectClass;
 	}
 
 	/**
-	 * Unmaps any mediator class to given view class.
-	 * If view is not mediated - it will fail silently.
+	 * Unmaps all or specific mediator class from given view class.
+	 * If view is not mapped - it will fail silently.
 	 * @param    viewClass    view class to remove mapped mediator class from.
+	 * @param    mediatorClass    optional parameter if you want to unmap specific mediator. If this is not set - all mediators will be unmapped.
 	 */
-	public function unmap(viewClass:Class):void {
+	public function unmap(viewClass:Class, mediatorClass:Class = null):void {
 		// debug this action
 		CONFIG::debug {
 			use namespace pureLegsCore;
 
-			MvcExpress.debug(new TraceMediatorMap_unmap(moduleName, viewClass));
+			MvcExpress.debug(new TraceMediatorMap_unmap(moduleName, viewClass, mediatorClass));
 		}
 		// clear mapping
-		delete mediatorClassRegistry[viewClass];
-		delete mediatorInjectRegistry[viewClass];
+		if (mediatorMappingRegistry[viewClass] != null) {
+			if (mediatorClass) {
+				delete mediatorMappingRegistry[viewClass][mediatorClass];
+				//
+				var mediators:Vector.<Class> = mediatorMapOrderRegistry[viewClass];
+				for (var i:int = 0; i < mediators.length; i++) {
+					if (mediators[i] == mediatorClass) {
+						mediators.splice(i, 1);
+						break;
+					}
+				}
+			} else {
+				delete mediatorMappingRegistry[viewClass];
+				delete mediatorMapOrderRegistry[viewClass];
+			}
+
+		}
 	}
 
 	//----------------------------------
@@ -108,9 +153,9 @@ public class MediatorMap implements IMediatorMap {
 	//----------------------------------
 
 	/**
-	 * Mediates provided viewObject with mapped mediator.
-	 * Automatically instantiates mediator class(if mapped), handles all injections(including viewObject), and calls onRegister function.
-	 * Throws error if mediator class is not mapped to viewObject class.
+	 * Mediates provided viewObject with all mapped mediator.
+	 * Automatically instantiates mediator class(es)(if mapped), handles all injections(including view object injection), and calls onRegister function.
+	 * Throws error if no mediator classes are mapped to viewObject class.
 	 * @param    viewObject    view object to mediate.
 	 */
 	public function mediate(viewObject:Object):void {
@@ -126,31 +171,38 @@ public class MediatorMap implements IMediatorMap {
 			viewClass = getDefinitionByName(getQualifiedClassName(viewObject)) as Class;
 		}
 
-		var injectClass:Class = mediatorInjectRegistry[viewClass];
+		var mediators:Vector.<Class> = mediatorMapOrderRegistry[viewClass];
+		if (mediators) {
 
-		// get mapped mediator class.
-		var mediatorClass:Class = mediatorClassRegistry[viewClass];
-		if (mediatorClass) {
+			var mappedMediators:Dictionary = mediatorMappingRegistry[viewClass];
+			for (var i:int = 0; i < mediators.length; i++) {
 
-			CONFIG::debug {
-				// Allows Mediator to be constructed. (removed from release build to save some performance.)
-				Mediator.canConstruct = true;
-			}
+				var mediatorClass:Class = mediators[i];
+				var injectClass:Class = mappedMediators[mediatorClass];
 
-			// create mediator.
-			var mediator:Mediator = new mediatorClass();
 
-			// debug this action
-			CONFIG::debug {
-				MvcExpress.debug(new TraceMediatorMap_mediate(moduleName, viewObject, mediator, viewClass, mediatorClass, getQualifiedClassName(mediatorClass)));
-			}
+				// get mapped mediator class.
 
-			CONFIG::debug {
-				// Block Mediator construction.
-				Mediator.canConstruct = false;
-			}
-			if (prepareMediator(mediator, mediatorClass, viewObject, injectClass)) {
-				mediator.register();
+				CONFIG::debug {
+					// Allows Mediator to be constructed. (removed from release build to save some performance.)
+					Mediator.canConstruct = true;
+				}
+
+				// create mediator.
+				var mediator:Mediator = new mediatorClass();
+
+				// debug this action
+				CONFIG::debug {
+					MvcExpress.debug(new TraceMediatorMap_mediate(moduleName, viewObject, mediator, viewClass, mediatorClass, getQualifiedClassName(mediatorClass)));
+				}
+
+				CONFIG::debug {
+					// Block Mediator construction.
+					Mediator.canConstruct = false;
+				}
+				if (prepareMediator(mediator, mediatorClass, viewObject, injectClass)) {
+					mediator.register();
+				}
 			}
 		} else {
 			throw Error("View object" + viewObject + " class is not mapped with any mediator class. use mediatorMap.map()");
@@ -177,14 +229,19 @@ public class MediatorMap implements IMediatorMap {
 		mediator.mediatorMap = this;
 
 		retVal = proxyMap.injectStuff(mediator, mediatorClass, viewObject, injectClass);
-		mediatorRegistry[viewObject] = mediator;
+
+		if (mediatorRegistry[viewObject] == null) {
+			mediatorRegistry[viewObject] = new Vector.<Mediator>;
+		}
+		mediatorRegistry[viewObject].push(mediator);
 
 		return retVal;
 	}
 
 	/**
-	 * Mediates viewObject with specified mediator class.
-	 * It is usually better practice to use 2 step mediation(map(), mediate()) instead of this function. But sometimes it is not possible.
+	 * Mediates viewObject with specified mediator class.                     																				<br>
+	 * This function will mediate your view without mapping view class to mediator class.																	<br>
+	 * It is usually better practice to use 2 step mediation(map() then mediate()) instead of this function. But sometimes it is not possible/useful.
 	 * @param    viewObject        view object to mediate.
 	 * @param    mediatorClass    mediator class that will be instantiated and used to mediate view object
 	 * @param    injectClass        inject mediator as this class.
@@ -193,7 +250,12 @@ public class MediatorMap implements IMediatorMap {
 		use namespace pureLegsCore;
 
 		if (mediatorRegistry[viewObject]) {
-			throw Error("This view object is already mediated by " + mediatorRegistry[viewObject]);
+			var mediators:Vector.<Mediator> = mediatorRegistry[viewObject];
+			for (var i:int = 0; i < mediators.length; i++) {
+				if ((mediators[i] as Object).constructor == mediatorClass) {
+					throw Error("This view object is already mediated by " + mediators[i]);
+				}
+			}
 		}
 
 		CONFIG::debug {
@@ -239,11 +301,12 @@ public class MediatorMap implements IMediatorMap {
 	}
 
 	/**
-	 * Unmediated view object
-	 * If any mediator is mediating viewObject - it calls onRemove on that mediator, automatically removes all message handlers, all event listeners and disposes it.
+	 * Remove mediation of view object by all or specific mediators.																						<br>
+	 * If any mediator is mediating this viewObject - it calls onRemove mediator function, automatically removes all message handlers, all event listeners and dispose it.
 	 * @param    viewObject    view object witch mediator will be destroyed.
+	 * @param    mediatorClass    optional parameter to unmediate specific mediator class. If this not set - all mediators will be removed.
 	 */
-	public function unmediate(viewObject:Object):void {
+	public function unmediate(viewObject:Object, mediatorClass:Class = null):void {
 		use namespace pureLegsCore;
 
 		// debug this action
@@ -251,12 +314,26 @@ public class MediatorMap implements IMediatorMap {
 			MvcExpress.debug(new TraceMediatorMap_unmediate(moduleName, viewObject));
 		}
 		// get object mediator
-		var mediator:Mediator = mediatorRegistry[viewObject];
-		if (mediator) {
-			mediator.remove();
-			delete mediatorRegistry[viewObject];
+		var mediators:Vector.<Mediator> = mediatorRegistry[viewObject];
+		if (mediators && mediators.length) {
+			if (mediatorClass) {
+				for (var i:int = 0; i < mediators.length; i++) {
+					var mediator:Mediator = mediators[i];
+					if ((mediator as Object).constructor == mediatorClass) {
+						mediator.remove();
+						mediators.splice(i, 1);
+						break;
+					}
+				}
+			} else {
+				while (mediators.length) {
+					mediator = mediators.shift();
+					mediator.remove();
+				}
+				delete mediatorRegistry[viewObject];
+			}
 		} else {
-			throw Error("View object:" + viewObject + " has no mediator created for it.");
+			throw Error("View object:" + viewObject + " has no mediators created for it.");
 		}
 	}
 
@@ -272,9 +349,9 @@ public class MediatorMap implements IMediatorMap {
 	 */
 	public function isMapped(viewClass:Class, mediatorClass:Class = null):Boolean {
 		var retVal:Boolean; // = false;
-		if (mediatorClassRegistry[viewClass]) {
+		if (mediatorMappingRegistry[viewClass] != null) {
 			if (mediatorClass) {
-				if (mediatorClassRegistry[viewClass] == mediatorClass) {
+				if (mediatorMappingRegistry[viewClass][mediatorClass] != null) {
 					retVal = true;
 				}
 			} else {
@@ -289,8 +366,23 @@ public class MediatorMap implements IMediatorMap {
 	 * @param    viewObject        View object to check if it is mediated.
 	 * @return     true if view object is mediated.
 	 */
-	public function isMediated(viewObject:Object):Boolean {
-		return (mediatorRegistry[viewObject] != null);
+	public function isMediated(viewObject:Object, mediatorClass:Class = null):Boolean {
+		var retVal:Boolean;// = false;
+		var mediators:Vector.<Mediator> = mediatorRegistry[viewObject]
+		if (mediators && mediators.length) {
+			if (mediatorClass) {
+				for (var i:int = 0; i < mediators.length; i++) {
+					if ((mediators[i] as Object).constructor == mediatorClass) {
+						retVal = true;
+						break;
+					}
+				}
+			} else {
+				retVal = true;
+			}
+		}
+		return retVal;
+		(mediatorRegistry[viewObject] != null);
 	}
 
 	/**
@@ -300,8 +392,8 @@ public class MediatorMap implements IMediatorMap {
 	public function listMappings():String {
 		var retVal:String = "";
 		retVal = "==================== MediatorMap Mappings: =====================\n";
-		for (var key:Object in mediatorClassRegistry) {
-			retVal += "VIEW:'" + key + "'\t> MEDIATED BY > " + mediatorClassRegistry[key] + "\n";
+		for (var viewClass:Object in mediatorMappingRegistry) {
+			retVal += "VIEW:'" + viewClass + "'\t> MEDIATED BY > " + mediatorMapOrderRegistry[viewClass] + "\n";
 		}
 		retVal += "================================================================\n";
 		return retVal;
@@ -321,11 +413,12 @@ public class MediatorMap implements IMediatorMap {
 		for (var viewObject:Object in mediatorRegistry) {
 			unmediate(viewObject);
 		}
+		mediatorRegistry = null;
+		//
 		proxyMap = null;
 		messenger = null;
-		mediatorClassRegistry = null;
-		mediatorInjectRegistry = null;
-		mediatorRegistry = null;
+		mediatorMappingRegistry = null;
+		mediatorMapOrderRegistry = null;
 	}
 
 }
