@@ -10,10 +10,14 @@ import mvcexpress.core.traceObjects.messenger.TraceMessenger_removeHandler;
 import mvcexpress.core.traceObjects.messenger.TraceMessenger_send;
 import mvcexpress.core.traceObjects.messenger.TraceMessenger_send_handler;
 
+use namespace pureLegsCore;
+
 /**
  * FOR INTERNAL USE ONLY.
  * Handles framework communications.
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version 2.0.rc1
  */
 public class Messenger {
 
@@ -107,8 +111,8 @@ public class Messenger {
 
 	/**
 	 * Runs all handler functions associated with message type, and send params object as single parameter.
-	 * @param    type                message type to find needed handlers
-	 * @param    params                parameter object that will be sent to all handler functions as single parameter.
+	 * @param    type        message type to find needed handlers
+	 * @param    params        parameter object that will be sent to all handler functions as single parameter.
 	 */
 	public function send(type:String, params:Object = null):void {
 		use namespace pureLegsCore;
@@ -173,11 +177,10 @@ public class Messenger {
 	//     Debug
 	//----------------------------------
 
-
 	/**
 	 * Checks if handler is added to specific message type.
-	 * @param    type                message type that handler had to react
-	 * @param    handler                function called on sent message.
+	 * @param    type        message type that handler had to react
+	 * @param    handler    function called on sent message.
 	 */
 	public function isHandlerAdded(type:String, handler:Function):Boolean {
 		var retVal:Boolean = false;
@@ -231,6 +234,18 @@ public class Messenger {
 	public function dispose():void {
 		messageRegistry = null;
 		handlerRegistry = null;
+	}
+
+	//----------------------------------
+	//    Extension checking: INTERNAL, DEBUG ONLY.
+	//----------------------------------
+
+	CONFIG::debug
+	pureLegsCore var SUPPORTED_EXTENSIONS:Dictionary;
+
+	CONFIG::debug
+	pureLegsCore function setSupportedExtensions(supportedExtensions:Dictionary):void {
+		pureLegsCore::SUPPORTED_EXTENSIONS = supportedExtensions;
 	}
 
 }

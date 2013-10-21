@@ -1,19 +1,23 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package mvcexpress.extensions.scoped.core {
+import flash.utils.Dictionary;
+
 import mvcexpress.core.*;
 import mvcexpress.core.messenger.HandlerVO;
 import mvcexpress.core.messenger.Messenger;
 import mvcexpress.core.namespace.pureLegsCore;
+import mvcexpress.extensions.scoped.modules.ModuleScoped;
 import mvcexpress.extensions.scoped.mvc.CommandScoped;
 import mvcexpress.mvc.Command;
 
-/**
- * Handles command mappings, and executes them on constants
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
- */
-
 use namespace pureLegsCore;
 
+/**
+ * Handles command mappings, and executes them on constants
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version scoped.1.0.beta2
+ */
 public class CommandMapScoped extends CommandMap {
 
 	protected var scopeHandlers:Vector.<HandlerVO> = new Vector.<HandlerVO>();
@@ -103,6 +107,19 @@ public class CommandMapScoped extends CommandMap {
 			(command as CommandScoped).proxyMapScoped = proxyMap as ProxyMapScoped;
 		}
 		super.prepareCommand(command, commandClass);
+	}
+
+
+	//----------------------------------
+	//    Extension checking: INTERNAL, DEBUG ONLY.
+	//----------------------------------
+
+	CONFIG::debug
+	override pureLegsCore function setSupportedExtensions(supportedExtensions:Dictionary):void {
+		super.setSupportedExtensions(supportedExtensions);
+		if (!SUPPORTED_EXTENSIONS[ModuleScoped.EXTENSION_SCOPED_ID]) {
+			throw Error("This extension is not supported by current module. You need " + ModuleScoped.EXTENSION_SCOPED_NAME + " extension enabled.");
+		}
 	}
 }
 }

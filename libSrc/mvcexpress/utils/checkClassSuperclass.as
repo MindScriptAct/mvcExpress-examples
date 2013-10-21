@@ -5,7 +5,9 @@ import flash.utils.getQualifiedClassName;
 import flash.utils.getQualifiedSuperclassName;
 
 /**
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version 2.0.rc1
  */
 
 /**
@@ -43,5 +45,4 @@ public function checkClassSuperclass(classObject:Class, superClassName:String, a
 	}
 	return retVal;
 }
-
 }

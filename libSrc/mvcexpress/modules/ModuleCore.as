@@ -1,7 +1,10 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package mvcexpress.modules {
+import flash.utils.Dictionary;
+
 import mvcexpress.MvcExpress;
 import mvcexpress.core.CommandMap;
+import mvcexpress.core.ExtensionManager;
 import mvcexpress.core.MediatorMap;
 import mvcexpress.core.ModuleManager;
 import mvcexpress.core.ProxyMap;
@@ -16,14 +19,17 @@ import mvcexpress.utils.checkClassSuperclass;
  * It starts framework and lets you set up your application. (or execute Commands to do it)
  * You can create modular application by having more then one module.
  * </p>
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version 2.0.rc1
  */
 public class ModuleCore {
 
 	// name of the module
 	private var _moduleName:String;
 
-	/** for communication. */
+	/** used internally for communication
+	 * @private */
 	pureLegsCore var messenger:Messenger;
 
 	/** Handles application Proxies. */
@@ -37,47 +43,51 @@ public class ModuleCore {
 	/**
 	 * CONSTRUCTOR
 	 * @param moduleName        module name that is used for referencing a module. (if not provided - unique name will be generated automatically.)
-	 * @param mediatorMapClass  OPTIONAL class to change default MediatorMap class. (For advanced users only.)
-	 * @param proxyMapClass     OPTIONAL class to change default ProxyMap class. (For advanced users only.)
-	 * @param commandMapClass   OPTIONAL class to change default CommandMap class. (For advanced users only.)
-	 * @param messengerClass    OPTIONAL class to change default Messenger class. (For advanced users only.)
+	 * @param extendedMediatorMapClass  OPTIONAL class to change default MediatorMap class. (For advanced use only, like custom extensions.)
+	 * @param extendedProxyMapClass     OPTIONAL class to change default ProxyMap class. (For advanced use only, like custom extensions.)
+	 * @param extendedCommandMapClass   OPTIONAL class to change default CommandMap class. (For advanced use only, like custom extensions.)
+	 * @param extendedMessengerClass    OPTIONAL class to change default Messenger class. (For advanced use only, like custom extensions.)
 	 */
-	public function ModuleCore(moduleName:String = null, mediatorMapClass:Class = null, proxyMapClass:Class = null, commandMapClass:Class = null, messengerClass:Class = null) {
+	public function ModuleCore(moduleName:String = null, extendedMediatorMapClass:Class = null, extendedProxyMapClass:Class = null, extendedCommandMapClass:Class = null, extendedMessengerClass:Class = null) {
 		use namespace pureLegsCore;
 
-		if (!mediatorMapClass) {
-			mediatorMapClass = MediatorMap;
+		CONFIG::debug {
+			enableExtension(EXTENSION_CORE_ID);
+		}
+
+		if (!extendedMediatorMapClass) {
+			extendedMediatorMapClass = MediatorMap;
 		} else {
 			CONFIG::debug {
-				if (!checkClassSuperclass(mediatorMapClass, "mvcexpress.core::MediatorMap", true)) {
-					throw Error("ModuleCore can use only mediatorMapClass that extends MediatorMap. (" + mediatorMapClass + " will not work)");
+				if (!checkClassSuperclass(extendedMediatorMapClass, "mvcexpress.core::MediatorMap", true)) {
+					throw Error("ModuleCore can use only mediatorMapClass that extends MediatorMap. (" + extendedMediatorMapClass + " will not work)");
 				}
 			}
 		}
-		if (!proxyMapClass) {
-			proxyMapClass = ProxyMap;
+		if (!extendedProxyMapClass) {
+			extendedProxyMapClass = ProxyMap;
 		} else {
 			CONFIG::debug {
-				if (!checkClassSuperclass(proxyMapClass, "mvcexpress.core::ProxyMap", true)) {
-					throw Error("ModuleCore can use only proxyMapClass that extends ProxyMap. (" + proxyMapClass + " will not work)");
+				if (!checkClassSuperclass(extendedProxyMapClass, "mvcexpress.core::ProxyMap", true)) {
+					throw Error("ModuleCore can use only proxyMapClass that extends ProxyMap. (" + extendedProxyMapClass + " will not work)");
 				}
 			}
 		}
-		if (!commandMapClass) {
-			commandMapClass = CommandMap;
+		if (!extendedCommandMapClass) {
+			extendedCommandMapClass = CommandMap;
 		} else {
 			CONFIG::debug {
-				if (!checkClassSuperclass(commandMapClass, "mvcexpress.core::CommandMap", true)) {
-					throw Error("ModuleCore can use only commandMapClass that extends CommandMap. (" + commandMapClass + " will not work)");
+				if (!checkClassSuperclass(extendedCommandMapClass, "mvcexpress.core::CommandMap", true)) {
+					throw Error("ModuleCore can use only commandMapClass that extends CommandMap. (" + extendedCommandMapClass + " will not work)");
 				}
 			}
 		}
-		if (!messengerClass) {
-			messengerClass = Messenger;
+		if (!extendedMessengerClass) {
+			extendedMessengerClass = Messenger;
 		} else {
 			CONFIG::debug {
-				if (!checkClassSuperclass(messengerClass, "mvcexpress.core.messenger::Messenger", true)) {
-					throw Error("ModuleCore can use only messengerClass that extends Messenger. (" + messengerClass + " will not work)");
+				if (!checkClassSuperclass(extendedMessengerClass, "mvcexpress.core.messenger::Messenger", true)) {
+					throw Error("ModuleCore can use only messengerClass that extends Messenger. (" + extendedMessengerClass + " will not work)");
 				}
 			}
 		}
@@ -87,18 +97,25 @@ public class ModuleCore {
 
 		// create module messenger.
 		Messenger.allowInstantiation = true;
-		messenger = new messengerClass(_moduleName);
+		messenger = new extendedMessengerClass(_moduleName);
 		Messenger.allowInstantiation = false;
 
 		// create module proxyMap
-		proxyMap = new proxyMapClass(_moduleName, messenger);
+		proxyMap = new extendedProxyMapClass(_moduleName, messenger);
 
 		// create module mediatorMap
-		mediatorMap = new mediatorMapClass(_moduleName, messenger, proxyMap);
+		mediatorMap = new extendedMediatorMapClass(_moduleName, messenger, proxyMap);
 
 		// create module commandMap
-		commandMap = new commandMapClass(_moduleName, messenger, proxyMap, mediatorMap);
+		commandMap = new extendedCommandMapClass(_moduleName, messenger, proxyMap, mediatorMap);
 		proxyMap.setCommandMap(commandMap);
+
+		CONFIG::debug {
+			messenger.setSupportedExtensions(SUPPORTED_EXTENSIONS);
+			proxyMap.setSupportedExtensions(SUPPORTED_EXTENSIONS);
+			mediatorMap.setSupportedExtensions(SUPPORTED_EXTENSIONS);
+			commandMap.setSupportedExtensions(SUPPORTED_EXTENSIONS);
+		}
 
 		onInit();
 	}
@@ -119,16 +136,16 @@ public class ModuleCore {
 	}
 
 	/**
-	 * Function to get rid of module.
+	 * Function to get rid of module.                                                                                            <p>
 	 * - All module commands are unmapped.
 	 * - All module mediators are unmediated
 	 * - All module proxies are unmapped
-	 * - All internals are nulled.
+	 * - All internals are set to null.                                                                                            </p>
 	 */
 	public function disposeModule():void {
-		onDispose();
-
 		use namespace pureLegsCore;
+
+		onDispose();
 
 		//
 		commandMap.dispose();
@@ -144,6 +161,10 @@ public class ModuleCore {
 		messenger = null;
 		//
 		ModuleManager.disposeModule(_moduleName);
+
+		CONFIG::debug {
+			SUPPORTED_EXTENSIONS = null;
+		}
 	}
 
 	/**
@@ -160,8 +181,8 @@ public class ModuleCore {
 	//----------------------------------
 
 	/**
-	 * Message sender.
-	 * @param    type    type of the message. (Commands and handle functions must bu map to it to react.)
+	 * Sends message for other framework actors to react to.
+	 * @param    type    type of the message. (Commands and handle functions must be mapped to type to be triggered.)
 	 * @param    params    Object that will be send to Command execute() or to handle function as parameter.
 	 */
 	public function sendMessage(type:String, params:Object = null):void {
@@ -185,11 +206,12 @@ public class ModuleCore {
 	//----------------------------------
 
 	/**
-	 * Instantiates and executes provided command class, and sends params to it.
+	 * Public function to execute provided command cass, meant to be used from outside of module class. In all other cases use commandMap.execute()                <p>
+	 * This function can be used to initialize, set up and start the framework without creating custom module class.                                        </p>
 	 * @param    commandClass    Command class to be instantiated and executed.
-	 * @param    params            Object to be sent to execute() function.
+	 * @param    params          Object to be sent to execute() function.
 	 */
-	public function executeCommand(commandClass:Class, params:Object = null):void {
+	public function externalExecuteCommand(commandClass:Class, params:Object = null):void {
 		commandMap.execute(commandClass, params);
 	}
 
@@ -234,6 +256,79 @@ public class ModuleCore {
 		return commandMap.listMappings();
 	}
 
+	//----------------------------------
+	//   INTERNAL. Getting module core classes.
+	//----------------------------------
+
+	/** INTERNAL, for extension development.
+	 * gets messenger.
+	 * @private */
+	pureLegsCore function getMessenger():Messenger {
+		return pureLegsCore::messenger;
+	}
+
+	/** INTERNAL, for extension development.
+	 * gets proxyMap.
+	 * @private */
+	pureLegsCore function getProxyMap():ProxyMap {
+		return proxyMap;
+	}
+
+	/** INTERNAL, for extension development.
+	 * gets mediatorMap.
+	 * @private */
+	pureLegsCore function getMediatorMap():MediatorMap {
+		return mediatorMap;
+	}
+
+	/** INTERNAL, for extension development.
+	 * gets commandMap.
+	 * @private */
+	pureLegsCore function getCommandMap():CommandMap {
+		return commandMap;
+	}
+
+	//----------------------------------
+	//    INTERNAL, DEBUG ONLY. Extension handling.
+	//----------------------------------
+
+	CONFIG::debug
+	pureLegsCore var SUPPORTED_EXTENSIONS:Dictionary;
+
+	CONFIG::debug
+	pureLegsCore function enableExtension(extensionId:int):void {
+		use namespace pureLegsCore;
+
+		if (SUPPORTED_EXTENSIONS == null) {
+			SUPPORTED_EXTENSIONS = new Dictionary();
+		}
+		SUPPORTED_EXTENSIONS[extensionId] = true;
+	}
+
+	CONFIG::debug
+	pureLegsCore function listExtensions():String {
+		use namespace pureLegsCore;
+
+		var retVal:String = "";
+		for (var key:Object in SUPPORTED_EXTENSIONS) {
+			if (retVal) {
+				retVal += ",";
+			}
+			retVal += ExtensionManager.getExtensionNameById(key as int);
+		}
+		return retVal;
+	}
+
+
+	//----------------------------------
+	//    Extension checking: INTERNAL, DEBUG ONLY.
+	//----------------------------------
+
+	CONFIG::debug
+	static pureLegsCore const EXTENSION_CORE_ID:int = ExtensionManager.getExtensionIdByName(pureLegsCore::EXTENSION_CORE_NAME);
+
+	CONFIG::debug
+	static pureLegsCore const EXTENSION_CORE_NAME:String = "CORE";
 
 }
 }

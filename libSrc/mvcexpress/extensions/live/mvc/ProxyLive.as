@@ -4,6 +4,7 @@ import flash.utils.Dictionary;
 
 import mvcexpress.core.namespace.pureLegsCore;
 import mvcexpress.extensions.live.core.ProcessMapLive;
+import mvcexpress.extensions.live.modules.ModuleLive;
 import mvcexpress.mvc.Proxy;
 
 use namespace pureLegsCore;
@@ -11,7 +12,9 @@ use namespace pureLegsCore;
 /**
  * Proxy holds and manages application data, provide API to work with it.                </br>
  * Can send constants. (Usually sends one with each data update)                            </br>
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version live.1.0.beta2
  */
 
 use namespace pureLegsCore;
@@ -85,5 +88,15 @@ public class ProxyLive extends Proxy {
 
 		super.remove();
 	}
+
+	//----------------------------------
+	//    Extension checking: INTERNAL, DEBUG ONLY.
+	//----------------------------------
+
+	CONFIG::debug
+	static pureLegsCore var extension_id:int = ModuleLive.EXTENSION_LIVE_ID;
+
+	CONFIG::debug
+	static pureLegsCore var extension_name:String = ModuleLive.EXTENSION_LIVE_NAME
 }
 }

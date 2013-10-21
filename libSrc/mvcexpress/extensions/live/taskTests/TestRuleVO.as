@@ -4,7 +4,9 @@ import mvcexpress.extensions.live.core.inject.InjectRuleTaskVO;
 
 /**
  * FOR INTERNAL USE ONLY.
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version live.1.0.beta2
  */
 public class TestRuleVO extends InjectRuleTaskVO {
 

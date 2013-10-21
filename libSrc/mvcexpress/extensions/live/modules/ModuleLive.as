@@ -1,5 +1,6 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package mvcexpress.extensions.live.modules {
+import mvcexpress.core.ExtensionManager;
 import mvcexpress.core.namespace.pureLegsCore;
 import mvcexpress.extensions.live.core.CommandMapLive;
 import mvcexpress.extensions.live.core.MediatorMapLive;
@@ -14,7 +15,9 @@ import mvcexpress.modules.ModuleCore;
  * It starts framework and lets you set up your application. (or execute Commands for set up.)
  * You can create modular application by having more then one module.
  * </p>
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version live.1.0.beta2
  */
 public class ModuleLive extends ModuleCore {
 
@@ -27,6 +30,12 @@ public class ModuleLive extends ModuleCore {
 	 * @param    autoInit    if set to false framework is not initialized for this module. If you want to use framework features you will have to manually init() it first.
 	 */
 	public function ModuleLive(moduleName:String = null, mediatorMapClass:Class = null, proxyMapClass:Class = null, commandMapClass:Class = null, messengerClass:Class = null) {
+		use namespace pureLegsCore
+
+		CONFIG::debug {
+			enableExtension(EXTENSION_LIVE_ID);
+		}
+
 		if (!mediatorMapClass) {
 			mediatorMapClass = MediatorMapLive;
 		} else {
@@ -43,8 +52,6 @@ public class ModuleLive extends ModuleCore {
 			// TODO : in DEBUG chceck if subclasses right class
 		}
 		super(moduleName, mediatorMapClass, proxyMapClass, commandMapClass, messengerClass);
-
-		use namespace pureLegsCore
 
 		processMap = new ProcessMapLive(moduleName, messenger, proxyMap as ProxyMapLive);
 		(proxyMap as ProxyMapLive).setProcessMap(processMap);
@@ -70,6 +77,16 @@ public class ModuleLive extends ModuleCore {
 	public function listMappedProcesses():String {
 		return processMap.listProcesses();
 	}
+
+	//----------------------------------
+	//    Extension checking: INTERNAL, DEBUG ONLY.
+	//----------------------------------
+
+	CONFIG::debug
+	static pureLegsCore const EXTENSION_LIVE_ID:int = ExtensionManager.getExtensionIdByName(pureLegsCore::EXTENSION_LIVE_NAME);
+
+	CONFIG::debug
+	static pureLegsCore const EXTENSION_LIVE_NAME:String = "live";
 
 }
 }

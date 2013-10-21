@@ -13,6 +13,8 @@ import mvcexpress.mvc.Mediator;
  * A base <code>IMediator</code> implementation.
  *
  * @see mvcexpress.extensions.unpuremvc.unpureCore.view.View View
+ *
+ * @version unpuremvc.1.0.beta2
  */
 public class UnpureMediator extends Mediator {
 
@@ -41,9 +43,13 @@ public class UnpureMediator extends Mediator {
 
 		use namespace pureLegsCore;
 
-		Mediator.canConstruct = true;
+		CONFIG::debug {
+			Mediator.canConstruct = true;
+		}
 		super();
-		Mediator.canConstruct = false;
+		CONFIG::debug {
+			Mediator.canConstruct = false;
+		}
 
 
 		this.mediatorName = (mediatorName != null) ? mediatorName : NAME;

@@ -7,16 +7,21 @@ import mvcexpress.core.ProxyMap;
 import mvcexpress.core.messenger.Messenger;
 import mvcexpress.core.namespace.pureLegsCore;
 import mvcexpress.core.traceObjects.command.TraceCommand_sendMessage;
+import mvcexpress.modules.ModuleCore;
+
+use namespace pureLegsCore;
 
 /**
- * Command, handles business logic of your application.                                                                                                    </br>
- * Commands can get proxies injected and can send messages                                                                                                 </br>
+ * Command, handles business logic of your application.                                                                                                    <br/>
+ * Commands can get proxies injected and can send messages
  * <b><p>
- * It MUST contain custom execute(params:Object) function. Parameter can be typed as you wish.                                                             </br>
- * It is best practice to use same type as you use in message, that triggers this command.                                                                 </br>
- * If message does not send any parameter object - you still must have singe parameter that will get null value, for example: execute(blank:Object).       </br>
+ * It MUST contain custom execute(params:Object) function. Parameter can be typed as you wish.                                                             <br/>
+ * It is best practice to use same type as you use in message, that triggers this command.                                                                 <br/>
+ * If message does not send any parameter object - you still must have singe parameter that will get null value, for example: execute(blank:Object).
  * </p></b>
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version 2.0.rc1
  */
 dynamic public class Command {
 
@@ -61,7 +66,7 @@ dynamic public class Command {
 	//----------------------------------
 
 	/**
-	 * Sends a message with optional params object inside of current module.
+	 * Sends a message with optional params object
 	 * @param    type    type of the message for Commands or Mediator's handle function to react to.
 	 * @param    params    Object that will be passed to Command execute() function or to handle functions.
 	 */
@@ -103,6 +108,17 @@ dynamic public class Command {
 	// You have to manually create execute() function in your commands, this gives possibility to set any type to params object.
 	//public function execute(params:Object):void {
 	//}
+
+
+	//----------------------------------
+	//    Extension checking: INTERNAL, DEBUG ONLY.
+	//----------------------------------
+
+	CONFIG::debug
+	static pureLegsCore var extension_id:int = ModuleCore.pureLegsCore::EXTENSION_CORE_ID;
+
+	CONFIG::debug
+	static pureLegsCore var extension_name:String = ModuleCore.pureLegsCore::EXTENSION_CORE_NAME;
 
 }
 }

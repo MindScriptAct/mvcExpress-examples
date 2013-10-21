@@ -15,6 +15,10 @@ import mvcexpress.extensions.scoped.modules.ModuleScoped;
 import mvcexpress.extensions.scoped.mvc.ProxyScoped;
 import mvcexpress.mvc.Proxy;
 
+/**
+ * Static class for scope managment.
+ * @version scoped.1.0.beta2
+ */
 public class ScopeManager {
 
 	/* all messengers by scope name */
@@ -273,7 +277,20 @@ public class ScopeManager {
 			Messenger.allowInstantiation = false;
 			scopedMessengers[scopeName] = scopedMesanger;
 		}
-		scopedProxyMaps[scopeName] = new ProxyMap("$scope_" + scopeName, scopedMesanger);
+		var scopedProxyMap:ProxyMap = new ProxyMap("$scope_" + scopeName, scopedMesanger);
+		CONFIG::debug {
+			// TODO : rethink.
+			// enable first 32 extensions for scoped proxy map, as this does not apply to scoped proxies.
+			if (!SUPPORTED_EXTENSIONS) {
+				SUPPORTED_EXTENSIONS = new Dictionary();
+				for (var i:int = 0; i < 32; i++) {
+					SUPPORTED_EXTENSIONS[i] = true;
+				}
+			}
+			scopedProxyMap.setSupportedExtensions(SUPPORTED_EXTENSIONS);
+		}
+		scopedProxyMaps[scopeName] = scopedProxyMap;
+
 	}
 
 
@@ -365,6 +382,13 @@ public class ScopeManager {
 
 	}
 
+
+	//----------------------------------
+	//    Extension checking: INTERNAL, DEBUG ONLY.
+	//----------------------------------
+
+	CONFIG::debug
+	static pureLegsCore var SUPPORTED_EXTENSIONS:Dictionary;
 }
 }
 

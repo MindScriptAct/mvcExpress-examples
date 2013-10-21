@@ -4,16 +4,18 @@ import mvcexpress.MvcExpress;
 import mvcexpress.core.namespace.pureLegsCore;
 import mvcexpress.core.traceObjects.proxy.TraceProxy_sendScopeMessage;
 import mvcexpress.extensions.scoped.core.ScopeManager;
+import mvcexpress.extensions.scoped.modules.ModuleScoped;
 import mvcexpress.mvc.Proxy;
+
+use namespace pureLegsCore;
 
 /**
  * Proxy holds and manages application data, implements API to work with it.                  </br>
  * Can send constants. (Usually sends one with each data update)                            </br>
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version scoped.1.0.beta2
  */
-
-use namespace pureLegsCore;
-
 public class ProxyScoped extends Proxy {
 
 
@@ -96,5 +98,15 @@ public class ProxyScoped extends Proxy {
 		}
 	}
 
+
+	//----------------------------------
+	//    Extension checking: INTERNAL, DEBUG ONLY.
+	//----------------------------------
+
+	CONFIG::debug
+	static pureLegsCore var extension_id:int = ModuleScoped.EXTENSION_SCOPED_ID;
+
+	CONFIG::debug
+	static pureLegsCore var extension_name:String = ModuleScoped.EXTENSION_SCOPED_NAME;
 }
 }

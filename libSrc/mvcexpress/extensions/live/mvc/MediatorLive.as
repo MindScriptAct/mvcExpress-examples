@@ -4,6 +4,7 @@ import flash.utils.Dictionary;
 
 import mvcexpress.core.namespace.pureLegsCore;
 import mvcexpress.extensions.live.core.ProcessMapLive;
+import mvcexpress.extensions.live.modules.ModuleLive;
 import mvcexpress.mvc.Mediator;
 
 use namespace pureLegsCore;
@@ -14,7 +15,9 @@ use namespace pureLegsCore;
  *  Can get proxies injected.                                                                                                                                </br>
  *  Can send constants. (sends constants then user interacts with the view)                                                                                    </br>
  *  Can handle constants. (handles data change or other framework constants)
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version live.1.0.beta2
  */
 
 use namespace pureLegsCore;
@@ -84,5 +87,16 @@ public class MediatorLive extends Mediator {
 		provideRegistry = null;
 		super.remove();
 	}
+
+
+	//----------------------------------
+	//    Extension checking: INTERNAL, DEBUG ONLY.
+	//----------------------------------
+
+	CONFIG::debug
+	static pureLegsCore var extension_id:int = ModuleLive.EXTENSION_LIVE_ID;
+
+	CONFIG::debug
+	static pureLegsCore var extension_name:String = ModuleLive.EXTENSION_LIVE_NAME
 }
 }

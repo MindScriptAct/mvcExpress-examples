@@ -3,6 +3,12 @@ package mvcexpress.utils {
 import flash.utils.describeType;
 
 /**
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version 2.0.rc1
+ */
+
+/**
  * utility function to check class string constant values for accidental duplications.                                                                     </br>
  * Error will be thrown if 2 classes has constants with same string value.                                                                                 </br>
  * Usage:                                                                                                                                                  </br>
@@ -11,7 +17,8 @@ import flash.utils.describeType;
  *			checkClassStringConstants(ClassName1,ClassName2...ClassNameX);																				   </br>
  *		}                                                                                                                                                  </br>
  * @param    ... args    array of Class objects, to be checked for constants.
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
  */
 public function checkClassStringConstants(...args:Array):void {
 	var argCount:int = args.length;

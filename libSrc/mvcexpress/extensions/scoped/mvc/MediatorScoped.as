@@ -4,7 +4,10 @@ import mvcexpress.MvcExpress;
 import mvcexpress.core.namespace.pureLegsCore;
 import mvcexpress.core.traceObjects.mediator.TraceMediator_sendScopeMessage;
 import mvcexpress.extensions.scoped.core.ScopeManager;
+import mvcexpress.extensions.scoped.modules.ModuleScoped;
 import mvcexpress.mvc.Mediator;
+
+use namespace pureLegsCore;
 
 /**
  * Mediates single view object.                                                                                                                            </br>
@@ -12,11 +15,10 @@ import mvcexpress.mvc.Mediator;
  *  Can get proxies injected.                                                                                                                                </br>
  *  Can send constants. (sends constants then user interacts with the view)                                                                                    </br>
  *  Can handle constants. (handles data change or other framework constants)
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version scoped.1.0.beta2
  */
-
-use namespace pureLegsCore;
-
 public class MediatorScoped extends Mediator {
 
 
@@ -75,5 +77,15 @@ public class MediatorScoped extends Mediator {
 		ScopeManager.removeScopeHandler(scopeName, type, handler);
 	}
 
+
+	//----------------------------------
+	//    Extension checking: INTERNAL, DEBUG ONLY.
+	//----------------------------------
+
+	CONFIG::debug
+	static pureLegsCore var extension_id:int = ModuleScoped.pureLegsCore::EXTENSION_SCOPED_ID;
+
+	CONFIG::debug
+	static pureLegsCore var extension_name:String = ModuleScoped.pureLegsCore::EXTENSION_SCOPED_NAME;
 }
 }

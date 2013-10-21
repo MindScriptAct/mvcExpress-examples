@@ -6,6 +6,7 @@ import mvcexpress.core.traceObjects.command.TraceCommand_sendScopeMessage;
 import mvcexpress.extensions.scoped.core.CommandMapScoped;
 import mvcexpress.extensions.scoped.core.ProxyMapScoped;
 import mvcexpress.extensions.scoped.core.ScopeManager;
+import mvcexpress.extensions.scoped.modules.ModuleScoped;
 import mvcexpress.mvc.Command;
 
 /**
@@ -19,7 +20,9 @@ import mvcexpress.mvc.Command;
  * It is best practice to use same type as you use in message, that triggers this command.                                                                    </br>
  * If message does not send any parameter object - you still must have singe parameter, for example: execute(blank:Object). This parameter will be null.    </br>
  * </p></b>
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version scoped.1.0.beta2
  */
 dynamic public class CommandScoped extends Command {
 
@@ -79,6 +82,16 @@ dynamic public class CommandScoped extends Command {
 		ScopeManager.unregisterScope(messenger.moduleName, scopeName);
 	}
 
+
+	//----------------------------------
+	//    Extension checking: INTERNAL, DEBUG ONLY.
+	//----------------------------------
+
+	CONFIG::debug
+	static pureLegsCore var extension_id:int = ModuleScoped.pureLegsCore::EXTENSION_SCOPED_ID;
+
+	CONFIG::debug
+	static pureLegsCore var extension_name:String = ModuleScoped.pureLegsCore::EXTENSION_SCOPED_NAME;
 
 }
 }

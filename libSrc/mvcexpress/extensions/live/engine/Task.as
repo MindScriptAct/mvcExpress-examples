@@ -7,7 +7,9 @@ import mvcexpress.extensions.live.taskTests.TaskTestVO;
 
 /**
  * COMMENT
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version live.1.0.beta2
  */
 public class Task {
 
@@ -33,6 +35,9 @@ public class Task {
 
 	// to covers _isEnabled and _missingDependencyCount
 	pureLegsCore var _isRunning:Boolean = true;
+
+	// stores time that passes in beatwean process runs.
+	public var timer:ProcessTimerVO;
 
 	/**
 	 * Vector of all tests for this task.
@@ -157,6 +162,7 @@ public class Task {
 		prev = null;
 		next = null;
 		injectPointRegistry = null;
+		timer = null;
 		CONFIG::debug {
 			var taskCount:int = tests.length;
 			for (var i:int = 0; i < taskCount; i++) {

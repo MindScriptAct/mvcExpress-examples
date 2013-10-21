@@ -1,20 +1,24 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package mvcexpress.extensions.live.core {
+import flash.utils.Dictionary;
+
 import mvcexpress.core.*;
 import mvcexpress.core.messenger.Messenger;
 import mvcexpress.core.namespace.pureLegsCore;
+import mvcexpress.extensions.live.modules.ModuleLive;
 import mvcexpress.extensions.live.mvc.ProxyLive;
 import mvcexpress.mvc.Proxy;
 
 use namespace pureLegsCore;
 
-/**
- * ProxyMap is responsible for storing proxy objects and handling injection.
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
- */
-
 use namespace pureLegsCore;
 
+/**
+ * ProxyMap is responsible for storing proxy objects and handling injection.
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version live.1.0.beta2
+ */
 public class ProxyMapLive extends ProxyMap {
 
 	// pushed into proxies so they could provide data objects
@@ -38,13 +42,13 @@ public class ProxyMapLive extends ProxyMap {
 	 * @param    proxyObject
 	 * @private
 	 */
-	override pureLegsCore function initProxy(proxyObject:Proxy, proxyClass:Class, injectId:String):void {
+	override pureLegsCore function initProxy(proxyObject:Proxy, proxyClass:Class, injectId:String):Boolean {
 		use namespace pureLegsCore;
 
 		if (proxyObject is ProxyLive) {
 			(proxyObject as ProxyLive).setProcessMap(processMap);
 		}
-		super.initProxy(proxyObject, proxyClass, injectId);
+		return super.initProxy(proxyObject, proxyClass, injectId);
 	}
 
 	/**
@@ -58,6 +62,18 @@ public class ProxyMapLive extends ProxyMap {
 		super.dispose();
 	}
 
+
+	//----------------------------------
+	//    Extension checking: INTERNAL, DEBUG ONLY.
+	//----------------------------------
+
+	CONFIG::debug
+	override pureLegsCore function setSupportedExtensions(supportedExtensions:Dictionary):void {
+		super.setSupportedExtensions(supportedExtensions);
+		if (!SUPPORTED_EXTENSIONS[ModuleLive.EXTENSION_LIVE_ID]) {
+			throw Error("This extension is not supported by current module. You need " + ModuleLive.EXTENSION_LIVE_NAME + " extension enabled.");
+		}
+	}
 
 }
 }

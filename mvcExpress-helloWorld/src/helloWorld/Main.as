@@ -1,5 +1,6 @@
 package helloWorld {
 //import com.mindscriptact.mvcExpressLogger.MvcExpressLogger;
+
 import flash.display.Sprite;
 import flash.events.Event;
 
@@ -27,7 +28,7 @@ public class Main extends Sprite {
 
 		// add mvcExpress logger for debugging. (press CTRL + ` to open it.)
 		//CONFIG::debug {
-		//MvcExpressLogger.init(this.stage);
+		//	MvcExpressLogger.init(this.stage);
 		//}
 
 		// entry point

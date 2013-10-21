@@ -4,8 +4,10 @@ import mvcexpress.core.namespace.pureLegsCore;
 
 /**
  * Trace action id's.
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
  * @private
+ *
+ * @version live.1.0.beta2
  */
 public class MvcTraceActionsLive {
 

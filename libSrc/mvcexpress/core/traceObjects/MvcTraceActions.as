@@ -4,10 +4,14 @@ import mvcexpress.core.namespace.pureLegsCore;
 
 /**
  * Trace action id's.
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
  * @private
+ *
+ * @version 2.0.rc1
  */
 public class MvcTraceActions {
+
+	static public const ERROR_MESSAGE:String = "ERROR!";
 
 	static public const MODULEMANAGER_CREATEMODULE:String = "ModuleManager.createModule";
 	static public const MODULEMANAGER_DISPOSEMODULE:String = "ModuleManager.disposeModule";

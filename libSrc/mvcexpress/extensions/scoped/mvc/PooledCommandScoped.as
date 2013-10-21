@@ -4,13 +4,16 @@ import mvcexpress.MvcExpress;
 import mvcexpress.core.namespace.pureLegsCore;
 import mvcexpress.core.traceObjects.command.TraceCommand_sendScopeMessage;
 import mvcexpress.extensions.scoped.core.ScopeManager;
+import mvcexpress.extensions.scoped.modules.ModuleScoped;
 import mvcexpress.mvc.*;
 
 /**
  * Command that is automatically pooled.
  * All PooledCommand's are automatically pooled after execution for later reuse(except then they are locked)
  * You can lock() command to prevent it from being pooled after execute, locked commands are pooled after you unlock() it.
- * @author Raimundas Banevicius (http://www.mindscriptact.com/)
+ * @author Raimundas Banevicius (http://mvcexpress.org/)
+ *
+ * @version scoped.1.0.beta2
  */
 public class PooledCommandScoped extends PooledCommand {
 
@@ -66,6 +69,15 @@ public class PooledCommandScoped extends PooledCommand {
 		ScopeManager.unregisterScope(messenger.moduleName, scopeName);
 	}
 
+	//----------------------------------
+	//    Extension checking: INTERNAL, DEBUG ONLY.
+	//----------------------------------
+
+	CONFIG::debug
+	static pureLegsCore var extension_id:int = ModuleScoped.pureLegsCore::EXTENSION_SCOPED_ID;
+
+	CONFIG::debug
+	static pureLegsCore var extension_name:String = ModuleScoped.pureLegsCore::EXTENSION_SCOPED_NAME;
 
 }
 }
