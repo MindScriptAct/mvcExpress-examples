@@ -1,7 +1,7 @@
 package com.mindscriptact.mobileTestApp.controler.test {
 import flash.geom.Point;
 
-import helloWorld.model.TestProxy;
+import wiewManagement.model.TestProxy;
 
 import mvcexpress.mvc.Command;
 

@@ -4,7 +4,7 @@ import flash.geom.Point;
 import mvcexpress.mvc.Proxy;
 
 import ticTacToe.constants.TokenId;
-import ticTacToe.messages.DataMsg;
+import ticTacToe.messages.DataMessages;
 
 /**
  * Game board state proxy.
@@ -29,12 +29,12 @@ public class GameBoardProxy extends Proxy {
 	}
 
 	public function isCellEmpty(cellCords:Point):Boolean {
-		return (boardData[cellCords.x][cellCords.y] == TokenId.TAC)
+		return (boardData[cellCords.x][cellCords.y] == TokenId.EMPTY)
 	}
 
-	public function setCellToken(cellCords:Point, tockenId:int):void {
-		boardData[cellCords.x][cellCords.y] = tockenId;
-		sendMessage(DataMsg.CELL_SET, cellCords);
+	public function setCellToken(cellCords:Point, tokenId:int):void {
+		boardData[cellCords.x][cellCords.y] = tokenId;
+		sendMessage(DataMessages.CELL_SET, cellCords);
 	}
 
 	public function getCellToken(cellCords:Point):int {
@@ -47,7 +47,7 @@ public class GameBoardProxy extends Proxy {
 				boardData[i][j] = 0;
 			}
 		}
-		sendMessage(DataMsg.BOARD_CLEARED);
+		sendMessage(DataMessages.BOARD_CLEARED);
 	}
 
 	public function findLine():LineVO {
@@ -92,7 +92,7 @@ public class GameBoardProxy extends Proxy {
 			retVal.tokenId = lineToken;
 		}
 		if (retVal) {
-			sendMessage(DataMsg.LINE_FOUND, retVal);
+			sendMessage(DataMessages.LINE_FOUND, retVal);
 		}
 
 		return retVal;

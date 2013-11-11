@@ -450,7 +450,7 @@ public class CommandMap {
 	}
 
 	// used for debugging
-	pureLegsCore function listMessageCommands(messageType:String):Class {
+	pureLegsCore function getMessageCommand(messageType:String):Class {
 		return classRegistry[messageType];
 	}
 

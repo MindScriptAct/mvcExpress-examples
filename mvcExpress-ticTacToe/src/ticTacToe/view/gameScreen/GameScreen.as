@@ -34,7 +34,7 @@ public class GameScreen extends Sprite {
 		// add game board view.
 		backGround = new BoardBackground();
 		this.addChild(backGround);
-		backGround.x = 50;
+		backGround.x = 10;
 		backGround.y = 50;
 
 		// listen for board clicks

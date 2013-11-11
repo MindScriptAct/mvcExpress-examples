@@ -1,6 +1,6 @@
 package helloWorld.controller.setup {
 import helloWorld.controller.test.TestCommand;
-import helloWorld.messages.Msg;
+import helloWorld.messages.Message;
 
 import mvcexpress.mvc.Command;
 
@@ -16,7 +16,7 @@ public class SetupControllerCommand extends Command {
 
 		// map a command to message string.
 		// command class will be executed then messange with that string is sent.
-		commandMap.map(Msg.TEST, TestCommand);
+		commandMap.map(Message.TEST, TestCommand);
 	}
 
 }

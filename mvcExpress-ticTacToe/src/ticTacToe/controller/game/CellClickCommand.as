@@ -29,9 +29,8 @@ public class CellClickCommand extends Command {
 				//
 				var lineVo:LineVO = gameBoardProxy.findLine();
 				if (lineVo) {
-					trace("lineVo : " + lineVo);
 					// block game...
-					gameProxy.disable();
+					gameProxy.disableGame();
 				}
 			}
 		}

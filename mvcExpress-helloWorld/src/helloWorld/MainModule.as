@@ -4,9 +4,9 @@ import flash.geom.Point;
 import helloWorld.controller.setup.SetupControllerCommand;
 import helloWorld.controller.setup.SetupModelCommand;
 import helloWorld.controller.setup.SetupViewCommand;
-import helloWorld.messages.DataMsg;
-import helloWorld.messages.Msg;
-import helloWorld.messages.ViewMsg;
+import helloWorld.messages.DataMessage;
+import helloWorld.messages.Message;
+import helloWorld.messages.ViewMessage;
 
 import mvcexpress.modules.ModuleCore;
 import mvcexpress.utils.checkClassStringConstants;
@@ -22,7 +22,7 @@ public class MainModule extends ModuleCore {
 
 		// little utility to prevent accidental message constant dublications.
 		CONFIG::debug {
-			checkClassStringConstants(Msg, DataMsg, ViewMsg);
+			checkClassStringConstants(Message, DataMessage, ViewMessage);
 		}
 
 		// map commands (you can map them here.. or move it to command.)
@@ -45,7 +45,7 @@ public class MainModule extends ModuleCore {
 		// messages can be sent from modules, commands, proxies and mediators.
 		// messages can execute commands, and be handled by mediators.
 		// params object is optional.
-		sendMessage(Msg.TEST, new Point(1, 5));
+		sendMessage(Message.TEST, new Point(1, 5));
 
 		trace("Hello mvcExpress!!!");
 	}

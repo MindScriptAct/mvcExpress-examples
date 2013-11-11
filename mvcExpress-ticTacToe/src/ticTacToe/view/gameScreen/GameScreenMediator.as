@@ -4,8 +4,8 @@ import flash.geom.Point;
 
 import mvcexpress.mvc.Mediator;
 
-import ticTacToe.messages.DataMsg;
-import ticTacToe.messages.ViewMsg;
+import ticTacToe.messages.DataMessages;
+import ticTacToe.messages.ViewMessages;
 import ticTacToe.model.GameBoardProxy;
 import ticTacToe.model.LineVO;
 
@@ -29,18 +29,18 @@ public class GameScreenMediator extends Mediator {
 
 		view.newGameDispatcher.addEventListener(MouseEvent.CLICK, handleNewGameClick);
 
-		addHandler(DataMsg.CELL_SET, handleCellSet);
-		addHandler(DataMsg.BOARD_CLEARED, handleBoardCleared);
-		addHandler(DataMsg.LINE_FOUND, handleLineFound);
+		addHandler(DataMessages.CELL_SET, handleCellSet);
+		addHandler(DataMessages.BOARD_CLEARED, handleBoardCleared);
+		addHandler(DataMessages.LINE_FOUND, handleLineFound);
 	}
 
 	private function handleCellClick(event:GameScreenEvent):void {
-		sendMessage(ViewMsg.CELL_CLICKED, new Point(event.xCell, event.yCell));
+		sendMessage(ViewMessages.CELL_CLICKED, new Point(event.xCell, event.yCell));
 	}
 
 	private function handleNewGameClick(event:MouseEvent):void {
 		//trace("GameScreenMediator.handleNewGameClick > event : " + event);
-		sendMessage(ViewMsg.NEW_GAME_CLICKED);
+		sendMessage(ViewMessages.NEW_GAME_CLICKED);
 	}
 
 	public function handleCellSet(cellCords:Point):void {

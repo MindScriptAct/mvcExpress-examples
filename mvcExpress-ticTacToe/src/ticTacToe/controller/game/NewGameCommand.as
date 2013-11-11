@@ -18,7 +18,7 @@ public class NewGameCommand extends Command {
 
 	public function execute(params:Object):void {
 		gameBoardProxy.clearBoard();
-		gameProxy.enable();
+		gameProxy.enableGame();
 	}
 
 }

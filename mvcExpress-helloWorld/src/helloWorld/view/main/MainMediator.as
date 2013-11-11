@@ -2,8 +2,8 @@ package helloWorld.view.main {
 import flash.events.MouseEvent;
 
 import helloWorld.Main;
-import helloWorld.messages.DataMsg;
-import helloWorld.messages.ViewMsg;
+import helloWorld.messages.DataMessage;
+import helloWorld.messages.ViewMessage;
 import helloWorld.model.TestProxy;
 
 import mvcexpress.mvc.Mediator;
@@ -30,7 +30,7 @@ public class MainMediator extends Mediator {
 		view.stage.addEventListener(MouseEvent.CLICK, handleStageClick);
 
 		// to handle framework messages you will add message handler.
-		addHandler(DataMsg.TEST_DATA_CHANGED, handleTestDataChange);
+		addHandler(DataMessage.TEST_DATA_CHANGED, handleTestDataChange);
 	}
 
 
@@ -38,7 +38,7 @@ public class MainMediator extends Mediator {
 		trace("MainMediator.handleMainClick > event : " + event);
 
 		// in many cases you will want to send a message then user makes input.
-		sendMessage(ViewMsg.MAIN_CLICKED);
+		sendMessage(ViewMessage.MAIN_CLICKED);
 	}
 
 	private function handleTestDataChange(testData:String):void {

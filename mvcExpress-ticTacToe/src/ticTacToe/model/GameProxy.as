@@ -25,11 +25,11 @@ public class GameProxy extends Proxy {
 
 	// game enabled
 
-	public function disable():void {
+	public function disableGame():void {
 		isEnabled = false;
 	}
 
-	public function enable():void {
+	public function enableGame():void {
 		isEnabled = true;
 	}
 

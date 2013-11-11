@@ -1,5 +1,5 @@
 package helloWorld.model {
-import helloWorld.messages.DataMsg;
+import helloWorld.messages.DataMessage;
 
 import mvcexpress.mvc.Proxy;
 
@@ -27,7 +27,7 @@ public class TestProxy extends Proxy {
 		testData = value;
 
 		// in many cases then dada is chaned, you want to send a message so any interested mediators or commands colud react.
-		sendMessage(DataMsg.TEST_DATA_CHANGED, testData);
+		sendMessage(DataMessage.TEST_DATA_CHANGED, testData);
 	}
 
 	//----------------------------------

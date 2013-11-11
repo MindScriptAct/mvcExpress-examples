@@ -6,9 +6,9 @@ import mvcexpress.utils.checkClassStringConstants;
 import ticTacToe.controller.setup.SetupControllerCommand;
 import ticTacToe.controller.setup.SetupModelCommand;
 import ticTacToe.controller.setup.SetupViewCommand;
-import ticTacToe.messages.DataMsg;
-import ticTacToe.messages.Msg;
-import ticTacToe.messages.ViewMsg;
+import ticTacToe.messages.DataMessages;
+import ticTacToe.messages.Messages;
+import ticTacToe.messages.ViewMessages;
 
 /**
  * Main application module.
@@ -17,13 +17,6 @@ import ticTacToe.messages.ViewMsg;
 public class MainModule extends ModuleCore {
 
 	override protected function onInit():void {
-
-		// little utility to prevent accidental message constant dublications.
-		CONFIG::debug {
-			checkClassStringConstants(Msg, DataMsg, ViewMsg);
-
-			MvcExpress.debugFunction = trace;
-		}
 
 		// map commands
 		commandMap.execute(SetupControllerCommand);

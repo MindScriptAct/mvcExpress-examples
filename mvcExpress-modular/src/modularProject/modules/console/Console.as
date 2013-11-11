@@ -49,13 +49,13 @@ public class Console extends Sprite {
 
 		renderConsoleView();
 
-		module.externalExecuteCommand(SetUpConsolePermissionsCommand);
+		module.commandMap.execute(SetUpConsolePermissionsCommand);
 
-		module.externalExecuteCommand(SetUpConsoleControllerCommand);
-		module.externalExecuteCommand(SetUpConsoleModelCommand, this.consoleId);
-		module.externalExecuteCommand(SetUpConsoleViewCommand);
+		module.commandMap.execute(SetUpConsoleControllerCommand);
+		module.commandMap.execute(SetUpConsoleModelCommand, this.consoleId);
+		module.commandMap.execute(SetUpConsoleViewCommand);
 
-		module.externalExecuteCommand(InitConsoleCommand, this);
+		module.commandMap.execute(InitConsoleCommand, this);
 
 	}
 

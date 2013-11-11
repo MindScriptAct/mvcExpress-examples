@@ -1,9 +1,16 @@
 package ticTacToe {
 
 //import com.mindscriptact.mvcExpressLogger.MvcExpressLogger;
+import com.mindscriptact.mvcExpressLogger.MvcExpressLogger;
 
 import flash.display.Sprite;
 import flash.events.Event;
+
+import mvcexpress.utils.checkClassStringConstants;
+
+import ticTacToe.messages.DataMessages;
+import ticTacToe.messages.Messages;
+import ticTacToe.messages.ViewMessages;
 
 /**
  * Main application class.
@@ -27,10 +34,11 @@ public class Main extends Sprite {
 	private function init(event:Event = null):void {
 		removeEventListener(Event.ADDED_TO_STAGE, init);
 
-		// add mvcExpress logger for debugging. (press CTRL + ` to open it.)
-		//CONFIG::debug {
-		//	MvcExpressLogger.init(this.stage);
-		//}
+		// add mvcExpress logger for debugging. (press CTRL + ` to toggle it.)
+		CONFIG::debug {
+			MvcExpressLogger.init(this.stage, 330, 0, 870, 400, 1, true);
+			checkClassStringConstants(Messages, DataMessages, ViewMessages);
+		}
 
 		// entry point
 		module = new MainModule();
