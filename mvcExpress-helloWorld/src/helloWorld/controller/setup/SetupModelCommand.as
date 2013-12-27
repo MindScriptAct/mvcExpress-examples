@@ -16,7 +16,8 @@ public class SetupModelCommand extends Command {
 
 		// construct and map a proxy object for injection.
 		// after this you will be able to [Inject] proxies in your commands, mediators and ather proxies.
-		proxyMap.map(new TestProxy());
+		// We planning to allow TestProxy to be injected into Mediator, to enable it we set fourth parameter to class we will inject this proxy into mediator as.
+		proxyMap.map(new TestProxy(), null, null, TestProxy);
 
 	}
 

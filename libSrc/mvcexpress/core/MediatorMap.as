@@ -31,6 +31,9 @@ public class MediatorMap implements IMediatorMap {
 	// used internally to work with proxies.
 	protected var proxyMap:ProxyMap;
 
+	// used internally to work with proxies.
+	protected var viewProxyMap:ProxyMapForMediator;
+
 	// used internally for communications
 	protected var messenger:Messenger;
 
@@ -48,6 +51,7 @@ public class MediatorMap implements IMediatorMap {
 		moduleName = $moduleName;
 		messenger = $messenger;
 		proxyMap = $proxyMap;
+		viewProxyMap = new ProxyMapForMediator(proxyMap);
 	}
 
 	//----------------------------------
@@ -70,7 +74,7 @@ public class MediatorMap implements IMediatorMap {
 
 				MvcExpress.debug(new TraceMediatorMap_map(moduleName, viewClass, mediatorClass, injectClass));
 				// check if mediatorClass is subclass of Mediator class
-				if (!checkClassSuperclass(mediatorClass, "mvcexpress.mvc::Mediator")) {
+				if (!checkClassSuperclass(mediatorClass, "mvcexpress.mvc::Mediator", true)) {
 					throw Error("mediatorClass:" + mediatorClass + " you are trying to map is not extended from 'mvcexpress.mvc::Mediator' class.");
 				}
 
@@ -82,17 +86,17 @@ public class MediatorMap implements IMediatorMap {
 			}
 
 			// check if mapping is not created already
-			if (mediatorMappingRegistry[viewClass] != null) {
-				if (mediatorMappingRegistry[viewClass][mediatorClass] != null) {
+			if ((viewClass in mediatorMappingRegistry)) {
+				if (mediatorClass in mediatorMappingRegistry[viewClass]) {
 					throw Error("Mediator class:" + mediatorClass + " is already mapped with this view class:" + viewClass + "");
 				}
 			}
 
 			// map mediatorClass to viewClass
-			if (mediatorMappingRegistry[viewClass] == null) {
+			if (!(viewClass in mediatorMappingRegistry)) {
 				mediatorMappingRegistry[viewClass] = new Dictionary();
 			}
-			if (mediatorMapOrderRegistry[viewClass] == null) {
+			if (!(viewClass in mediatorMapOrderRegistry)) {
 				mediatorMapOrderRegistry[viewClass] = new Vector.<Class>();
 			}
 
@@ -133,7 +137,7 @@ public class MediatorMap implements IMediatorMap {
 			MvcExpress.debug(new TraceMediatorMap_unmap(moduleName, viewClass, mediatorClass));
 		}
 		// clear mapping
-		if (mediatorMappingRegistry[viewClass] != null) {
+		if (viewClass in mediatorMappingRegistry) {
 			if (mediatorClass) {
 
 				var mediators:Vector.<Class> = mediatorMapOrderRegistry[viewClass];
@@ -171,7 +175,7 @@ public class MediatorMap implements IMediatorMap {
 	public function mediate(viewObject:Object):void {
 		use namespace pureLegsCore;
 
-		if (mediatorRegistry[viewObject]) {
+		if (viewObject in mediatorRegistry) {
 			throw Error("This view object is already mediated by " + mediatorRegistry[viewObject]);
 		}
 
@@ -232,12 +236,12 @@ public class MediatorMap implements IMediatorMap {
 
 		mediator.moduleName = moduleName;
 		mediator.messenger = messenger;
-		mediator.proxyMap = proxyMap;
+		mediator.proxyMap = viewProxyMap;
 		mediator.mediatorMap = this;
 
 		retVal = proxyMap.injectStuff(mediator, mediatorClass, viewObject, injectClass);
 
-		if (mediatorRegistry[viewObject] == null) {
+		if (!(viewObject in mediatorRegistry)) {
 			mediatorRegistry[viewObject] = new Vector.<Mediator>;
 		}
 		mediatorRegistry[viewObject].push(mediator);
@@ -257,7 +261,7 @@ public class MediatorMap implements IMediatorMap {
 	public function mediateWith(viewObject:Object, mediatorClass:Class, injectClass:Class = null):void {
 		use namespace pureLegsCore;
 
-		if (mediatorRegistry[viewObject]) {
+		if (viewObject in mediatorRegistry) {
 			var mediators:Vector.<Mediator> = mediatorRegistry[viewObject];
 			for (var i:int = 0; i < mediators.length; i++) {
 				if ((mediators[i] as Object).constructor == mediatorClass) {
@@ -268,7 +272,7 @@ public class MediatorMap implements IMediatorMap {
 
 		CONFIG::debug {
 			// check if mediatorClass is subclass of Mediator class
-			if (!checkClassSuperclass(mediatorClass, "mvcexpress.mvc::Mediator")) {
+			if (!checkClassSuperclass(mediatorClass, "mvcexpress.mvc::Mediator", true)) {
 				throw Error("mediatorClass:" + mediatorClass + " you are trying to use is not extended from 'mvcexpress.mvc::Mediator' class.");
 			}
 
@@ -361,7 +365,7 @@ public class MediatorMap implements IMediatorMap {
 	 */
 	public function isMapped(viewClass:Class, mediatorClass:Class = null):Boolean {
 		var retVal:Boolean; // = false;
-		if (mediatorMappingRegistry[viewClass] != null) {
+		if (viewClass in mediatorMappingRegistry) {
 			if (mediatorClass) {
 				if (mediatorMappingRegistry[viewClass][mediatorClass] != null) {
 					retVal = true;
@@ -407,15 +411,35 @@ public class MediatorMap implements IMediatorMap {
 
 	/**
 	 * Returns String of all view classes that are mapped to mediator classes. (for debugging)
+	 * @param       verbose     if set to true, will return readable string, false will return pairs of view class definition and mediator class list(separated by ',') definition separated by '>', all pairs are separated by ';'.
 	 * @return        Text with all mapped mediators.
 	 */
-	public function listMappings():String {
+	public function listMappings(verbose:Boolean = true):String {
 		var retVal:String = "";
-		retVal = "==================== MediatorMap Mappings: =====================\n";
-		for (var viewClass:Object in mediatorMappingRegistry) {
-			retVal += "VIEW:'" + viewClass + "'\t> MEDIATED BY > " + mediatorMapOrderRegistry[viewClass] + "\n";
+		if (verbose) {
+			retVal = "==================== MediatorMap Mappings: =====================\n";
 		}
-		retVal += "================================================================\n";
+		for (var viewClass:Object in mediatorMappingRegistry) {
+			if (verbose) {
+				retVal += "VIEW:'" + viewClass + "'\t> MEDIATED BY > " + mediatorMapOrderRegistry[viewClass] + "\n";
+			} else {
+				if (retVal) {
+					retVal += ";";
+				}
+				retVal += getQualifiedClassName(viewClass) + ">";
+				var mediators:Vector.<Class> = mediatorMapOrderRegistry[viewClass];
+				var mediatorCount:int = mediators.length;
+				for (var i:int = 0; i < mediatorCount; i++) {
+					if (i > 0) {
+						retVal += ",";
+					}
+					retVal += getQualifiedClassName(mediators[i]);
+				}
+			}
+		}
+		if (verbose) {
+			retVal += "================================================================\n";
+		}
 		return retVal;
 	}
 
@@ -446,9 +470,11 @@ public class MediatorMap implements IMediatorMap {
 	//    Extension checking: INTERNAL, DEBUG ONLY.
 	//----------------------------------
 
+	/** @private */
 	CONFIG::debug
 	pureLegsCore var SUPPORTED_EXTENSIONS:Dictionary;
 
+	/** @private */
 	CONFIG::debug
 	pureLegsCore function setSupportedExtensions(supportedExtensions:Dictionary):void {
 		SUPPORTED_EXTENSIONS = supportedExtensions;

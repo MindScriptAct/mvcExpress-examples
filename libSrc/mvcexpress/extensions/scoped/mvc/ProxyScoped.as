@@ -2,7 +2,7 @@
 package mvcexpress.extensions.scoped.mvc {
 import mvcexpress.MvcExpress;
 import mvcexpress.core.namespace.pureLegsCore;
-import mvcexpress.core.traceObjects.proxy.TraceProxy_sendScopeMessage;
+import mvcexpress.extensions.scoped.core.traceObjects.TraceProxy_sendScopeMessage;
 import mvcexpress.extensions.scoped.core.ScopeManager;
 import mvcexpress.extensions.scoped.modules.ModuleScoped;
 import mvcexpress.mvc.Proxy;
@@ -103,9 +103,11 @@ public class ProxyScoped extends Proxy {
 	//    Extension checking: INTERNAL, DEBUG ONLY.
 	//----------------------------------
 
+	/** @private */
 	CONFIG::debug
 	static pureLegsCore var extension_id:int = ModuleScoped.EXTENSION_SCOPED_ID;
 
+	/** @private */
 	CONFIG::debug
 	static pureLegsCore var extension_name:String = ModuleScoped.EXTENSION_SCOPED_NAME;
 }

@@ -6,6 +6,7 @@ import mvcexpress.core.inject.InjectRuleVO;
  * FOR INTERNAL USE ONLY.
  * Value Object to keep injection rules - what have to be injected there.
  * @author Raimundas Banevicius (http://mvcexpress.org/)
+ * @private
  *
  * @version live.1.0.beta2
  */
@@ -16,7 +17,7 @@ public class InjectRuleTaskVO extends InjectRuleVO {
 
 	CONFIG::debug
 	override public function toString():String {
-		return "[InjectRuleVO varName=" + varName + " injectClassAndName=" + injectClassAndName + " scopeName=" + scopeName + "]";
+		return "[InjectRuleVO varName=" + varName + " injectId=" + injectId + " scopeName=" + scopeName + "]";
 	}
 }
 }

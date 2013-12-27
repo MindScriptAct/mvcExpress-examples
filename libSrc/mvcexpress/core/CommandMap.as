@@ -36,7 +36,7 @@ public class CommandMap {
 	// used internally to handles application mediators.
 	protected var mediatorMap:MediatorMap;
 
-	// collection of class arrays, stored by message type. Then message with this type is sent, all mapped classes are executed.
+	// commands class stored by message type. Then message with this type is sent, mapped class is executed.
 	protected var classRegistry:Dictionary = new Dictionary(); //* of Class by String */
 
 	// holds pooled command objects, stared by command class.
@@ -89,7 +89,7 @@ public class CommandMap {
 			}
 		}
 
-		if (classRegistry[type]) {
+		if (type in classRegistry) {
 			if (!canMapOver) {
 				throw Error("Only one command class can be mapped to one message type. You are trying to map " + commandClass + " to " + type + ", but it is already mapped to " + classRegistry[type]);
 			}
@@ -212,16 +212,20 @@ public class CommandMap {
 	 * @return    true if command pool is created.
 	 */
 	public function isCommandPooled(commandClass:Class):Boolean {
-		return (commandPools[commandClass] != null);
+		return (commandClass in commandPools && commandPools[commandClass].length);
 	}
 
 	/**
-	 * Clears pool created for specified command.
+	 * Clears all command pools, or specific one.
 	 * (if commands are not pooled - function fails silently.)
-	 * @param    commandClass Command class to clear
+	 * @param    commandClass Optional Command class to clear specific command pool
 	 */
-	public function clearCommandPool(commandClass:Class):void {
-		delete commandPools[commandClass];
+	public function clearCommandPool(commandClass:Class = null):void {
+		if (commandClass) {
+			delete commandPools[commandClass];
+		} else {
+			commandPools = new Dictionary();
+		}
 	}
 
 
@@ -237,7 +241,7 @@ public class CommandMap {
 	 */
 	public function isMapped(type:String, commandClass:Class = null):Boolean {
 		var retVal:Boolean; // = false;
-		if (classRegistry[type]) {
+		if (type in classRegistry) {
 			if (commandClass) {
 				retVal = (classRegistry[type] == commandClass);
 			} else {
@@ -249,15 +253,27 @@ public class CommandMap {
 
 	/**
 	 * Returns text of all command classes that are mapped to constants. (for debugging)
+	 * @param       verbose     if set to true, will return readable string, false will return pairs of message type and command class definition separated by '>', all pairs are separated by ';'.
 	 * @return        Text with all mapped commands.
 	 */
-	public function listMappings():String {
+	public function listMappings(verbose:Boolean = true):String {
 		var retVal:String = "";
-		retVal = "===================== CommandMap Mappings: =====================\n";
-		for (var key:String in classRegistry) {
-			retVal += "SENDING MESSAGE:'" + key + "'\t> EXECUTES > " + classRegistry[key] + "\n";
+		if (verbose) {
+			retVal = "===================== CommandMap Mappings: =====================\n";
 		}
-		retVal += "================================================================\n";
+		for (var key:String in classRegistry) {
+			if (verbose) {
+				retVal += "SENDING MESSAGE:'" + key + "'\t> EXECUTES > " + classRegistry[key] + "\n";
+			} else {
+				if (retVal) {
+					retVal += ";"
+				}
+				retVal += key + ">" + getQualifiedClassName(classRegistry[key]);
+			}
+		}
+		if (verbose) {
+			retVal += "================================================================\n";
+		}
 		return retVal;
 	}
 
@@ -317,7 +333,10 @@ public class CommandMap {
 		commandPools = null;
 	}
 
-	/** function to be called by messenger on needed message type sent */
+	/**
+	 * function to be called by messenger on needed message type sent
+	 * @private
+	 */
 	pureLegsCore function handleCommandExecute(messageType:String, params:Object):void {
 		use namespace pureLegsCore;
 
@@ -326,11 +345,6 @@ public class CommandMap {
 
 		commandClass = classRegistry[messageType];
 		if (commandClass) {
-
-			// debug this action
-			CONFIG::debug {
-				MvcExpress.debug(new TraceCommandMap_handleCommandExecute(moduleName, command, commandClass, messageType, params));
-			}
 
 			//////////////////////////////////////////////
 			////// INLINE FUNCTION runCommand() START
@@ -358,6 +372,11 @@ public class CommandMap {
 			}
 
 			command.messageType = messageType;
+
+			// debug this action
+			CONFIG::debug {
+				MvcExpress.debug(new TraceCommandMap_handleCommandExecute(moduleName, command, commandClass, messageType, params));
+			}
 
 			if (command is PooledCommand) {
 				// init pool if needed.
@@ -395,13 +414,13 @@ public class CommandMap {
 	pureLegsCore function validateCommandClass(commandClass:Class):void {
 
 		// skip already validated classes.
-		if (validatedCommands[commandClass] != true) {
+		if (!(commandClass in validatedCommands)) {
 
 			if (!checkClassSuperclass(commandClass, "mvcexpress.mvc::Command")) {
 				throw Error("commandClass:" + commandClass + " you are trying to map MUST extend: 'mvcexpress.mvc::Command' class.");
 			}
 
-			if (!commandClassParamTypes[commandClass]) {
+			if (!(commandClass in commandClassParamTypes)) {
 
 				var classDescription:XML = describeType(commandClass);
 				var hasExecute:Boolean; // = false;
@@ -435,6 +454,7 @@ public class CommandMap {
 		}
 	}
 
+	/** @private */
 	CONFIG::debug
 	protected function validateCommandParams(commandClass:Class, params:Object):void {
 		use namespace pureLegsCore;
@@ -449,7 +469,10 @@ public class CommandMap {
 		}
 	}
 
-	// used for debugging
+	/**
+	 * used for debugging
+	 * @private
+	 */
 	pureLegsCore function getMessageCommand(messageType:String):Class {
 		return classRegistry[messageType];
 	}
@@ -459,9 +482,11 @@ public class CommandMap {
 	//    Extension checking: INTERNAL, DEBUG ONLY.
 	//----------------------------------
 
+	/** @private */
 	CONFIG::debug
 	pureLegsCore var SUPPORTED_EXTENSIONS:Dictionary;
 
+	/** @private */
 	CONFIG::debug
 	pureLegsCore function setSupportedExtensions(supportedExtensions:Dictionary):void {
 		SUPPORTED_EXTENSIONS = supportedExtensions;

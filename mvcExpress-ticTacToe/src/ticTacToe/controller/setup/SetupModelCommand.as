@@ -14,7 +14,7 @@ public class SetupModelCommand extends Command {
 
 	public function execute(params:Object):void {
 		proxyMap.map(new GameProxy());
-		proxyMap.map(new GameBoardProxy());
+		proxyMap.map(new GameBoardProxy(), null, null, GameBoardProxy);
 	}
 
 }

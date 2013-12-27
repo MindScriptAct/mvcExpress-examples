@@ -37,7 +37,7 @@ public class ModuleCore {
 	/** Handles application Mediators. */
 	protected var mediatorMap:MediatorMap;
 	/** Handles application Commands. */
-	protected var commandMap:CommandMap;
+	public var commandMap:CommandMap;
 
 
 	/**
@@ -195,7 +195,7 @@ public class ModuleCore {
 		//
 		messenger.send(type, params);
 		//
-		// clean up logging the action
+		// clean up logging the actioDebugConfign
 		CONFIG::debug {
 			MvcExpress.debug(new TraceModuleBase_sendMessage(_moduleName, this, type, params, false));
 		}
@@ -207,32 +207,40 @@ public class ModuleCore {
 
 	/**
 	 * List all message mappings.
+	 * @param    verbose     if set to true, will return readable string, false will return pairs of message strings and list of class names(separated by ',') that will handle it separated by '>', all pairs are separated by ';'.
+	 * @return    Text with all masseges, and what will handle it.
 	 */
-	public function listMappedMessages():String {
+	public function listMappedMessages(verbose:Boolean = true):String {
 		use namespace pureLegsCore;
 
-		return messenger.listMappings(commandMap);
+		return messenger.listMappings(commandMap, verbose);
 	}
 
 	/**
 	 * List all view mappings.
+	 * @param    verbose     if set to true, will return readable string, false will return pairs of view class definition and mediator class list(separated by ',') definition separated by '>', all pairs are separated by ';'.
+	 * @return    Text with all mapped mediators.
 	 */
-	public function listMappedMediators():String {
-		return mediatorMap.listMappings();
+	public function listMappedMediators(verbose:Boolean = true):String {
+		return mediatorMap.listMappings(verbose);
 	}
 
 	/**
 	 * List all model mappings.
+	 * @param    verbose     if set to true, will return readable string, false will return pairs of object class name and key it is mapped to separated by '>', all pairs are separated by ';'.
+	 * @return    Text string with all mapped proxies.
 	 */
-	public function listMappedProxies():String {
-		return proxyMap.listMappings();
+	public function listMappedProxies(verbose:Boolean = true):String {
+		return proxyMap.listMappings(verbose);
 	}
 
 	/**
 	 * List all controller mappings.
+	 * @param    verbose     if set to true, will return readable string, false will return pairs of message type and command class definition separated by '>', all pairs are separated by ';'.
+	 * @return    Text with all mapped commands.
 	 */
-	public function listMappedCommands():String {
-		return commandMap.listMappings();
+	public function listMappedCommands(verbose:Boolean = true):String {
+		return commandMap.listMappings(verbose);
 	}
 
 	//----------------------------------
@@ -271,9 +279,11 @@ public class ModuleCore {
 	//    INTERNAL, DEBUG ONLY. Extension handling.
 	//----------------------------------
 
+	/** @private */
 	CONFIG::debug
 	pureLegsCore var SUPPORTED_EXTENSIONS:Dictionary;
 
+	/** @private */
 	CONFIG::debug
 	pureLegsCore function enableExtension(extensionId:int):void {
 		use namespace pureLegsCore;
@@ -284,6 +294,7 @@ public class ModuleCore {
 		SUPPORTED_EXTENSIONS[extensionId] = true;
 	}
 
+	/** @private */
 	CONFIG::debug
 	pureLegsCore function listExtensions():String {
 		use namespace pureLegsCore;
@@ -303,9 +314,11 @@ public class ModuleCore {
 	//    Extension checking: INTERNAL, DEBUG ONLY.
 	//----------------------------------
 
+	/** @private */
 	CONFIG::debug
 	static pureLegsCore const EXTENSION_CORE_ID:int = ExtensionManager.getExtensionIdByName(pureLegsCore::EXTENSION_CORE_NAME);
 
+	/** @private */
 	CONFIG::debug
 	static pureLegsCore const EXTENSION_CORE_NAME:String = "CORE";
 

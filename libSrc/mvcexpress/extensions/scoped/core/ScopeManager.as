@@ -8,8 +8,8 @@ import mvcexpress.core.inject.PendingInject;
 import mvcexpress.core.messenger.HandlerVO;
 import mvcexpress.core.messenger.Messenger;
 import mvcexpress.core.namespace.pureLegsCore;
-import mvcexpress.core.traceObjects.moduleManager.TraceModuleManager_registerScope;
-import mvcexpress.core.traceObjects.moduleManager.TraceModuleManager_unregisterScope;
+import mvcexpress.extensions.scoped.core.traceObjects.TraceModuleManager_registerScope;
+import mvcexpress.extensions.scoped.core.traceObjects.TraceModuleManager_unregisterScope;
 import mvcexpress.extensions.scoped.core.inject.InjectRuleScopedVO;
 import mvcexpress.extensions.scoped.modules.ModuleScoped;
 import mvcexpress.extensions.scoped.mvc.ProxyScoped;
@@ -136,7 +136,13 @@ public class ScopeManager {
 		return scopeMessenger.addCommandHandler(scopeName + "_^~_" + type, handleCommandExecute, commandClass);
 	}
 
-
+	/**
+	 * Unmap command to scoped message.
+	 * @param handleCommandExecute
+	 * @param scopeName
+	 * @param type
+	 * @private
+	 */
 	static pureLegsCore function scopedCommandUnmap(handleCommandExecute:Function, scopeName:String, type:String):void {
 		var scopeMessenger:Messenger = scopedMessengers[scopeName];
 		if (scopeMessenger) {
@@ -177,7 +183,7 @@ public class ScopeManager {
 			initScopedProxyMap(scopeName);
 			scopedProxyMap = scopedProxyMaps[scopeName];
 		}
-		var injectId:String = scopedProxyMap.map(proxyObject, injectClass, name);
+		var injectId:String = scopedProxyMap.map(proxyObject, name, injectClass);
 
 		// add scope to proxy so it could send scoped constants.
 		proxyObject.addScope(scopeName);
@@ -236,7 +242,7 @@ public class ScopeManager {
 		if (scopedProxyMap) {
 			use namespace pureLegsCore;
 
-			var ijectProxy:Proxy = scopedProxyMap.getProxyById(injectRule.injectClassAndName);
+			var ijectProxy:Proxy = scopedProxyMap.getProxyById(injectRule.injectId);
 			if (ijectProxy) {
 				recipientObject[injectRule.varName] = ijectProxy;
 				return true;
@@ -298,6 +304,7 @@ public class ScopeManager {
 	//     Scope managment
 	//----------------------------------
 
+	/** @private */
 	static pureLegsCore function registerScope(moduleName:String, scopeName:String, messageSending:Boolean, messageReceiving:Boolean, proxieMapping:Boolean):void {
 		// debug this action
 		CONFIG::debug {
@@ -322,6 +329,7 @@ public class ScopeManager {
 		scopePermission.proxieMapping = proxieMapping;
 	}
 
+	/** @private */
 	static pureLegsCore function unregisterScope(moduleName:String, scopeName:String):void {
 		// debug this action
 		CONFIG::debug {
@@ -339,6 +347,10 @@ public class ScopeManager {
 
 	}
 
+	/**
+	 * Dispose module scoped.
+	 * @param moduleName
+	 */
 	public static function disposeModule(moduleName:String):void {
 		use namespace pureLegsCore;
 
@@ -387,6 +399,7 @@ public class ScopeManager {
 	//    Extension checking: INTERNAL, DEBUG ONLY.
 	//----------------------------------
 
+	/** @private */
 	CONFIG::debug
 	static pureLegsCore var SUPPORTED_EXTENSIONS:Dictionary;
 }

@@ -330,7 +330,8 @@ public class ProcessMapLive {
 	//     INTERNAL
 	//----------------------------------
 
-	// start process timer or add it to running enter frame processes.
+	/** start process timer or add it to running enter frame processes.
+	 * @private */
 	pureLegsCore function startProcessObject(process:Process):void {
 		use namespace pureLegsCore;
 
@@ -376,7 +377,8 @@ public class ProcessMapLive {
 		}
 	}
 
-	// stop process
+	/** stop process
+	 * @private */
 	pureLegsCore function stopProcessObject(process:Process):void {
 		use namespace pureLegsCore;
 
@@ -413,7 +415,8 @@ public class ProcessMapLive {
 	//     provide/unprovide
 	//----------------------------------
 
-	// provides existing tasks with objects(fill or replaces them), stores provided objects for new tasks.
+	/** provides existing tasks with objects(fill or replaces them), stores provided objects for new tasks.
+	 * @private */
 	pureLegsCore function provide(object:Object, name:String):void {
 		use namespace pureLegsCore;
 
@@ -458,7 +461,8 @@ public class ProcessMapLive {
 		}
 	}
 
-	// removes injected objects from tasks
+	/** removes injected objects from tasks
+	 * @private */
 	pureLegsCore function unprovide(name:String):void {
 		use namespace pureLegsCore;
 
@@ -499,6 +503,7 @@ public class ProcessMapLive {
 	//     INTERNAL - tasks
 	//----------------------------------
 
+	/** @private */
 	pureLegsCore function initTask(task:Task, signatureClass:Class):void {
 		use namespace pureLegsCore;
 
@@ -528,7 +533,7 @@ public class ProcessMapLive {
 					continue;
 				}
 			}
-			var injectName:String = rules[i].injectClassAndName;
+			var injectName:String = rules[i].injectId;
 			var injectObject:Object = provideRegistry[injectName];
 
 			task.setInjectPoint(injectName, rules[i].varName);
@@ -547,7 +552,8 @@ public class ProcessMapLive {
 		}
 	}
 
-	// DOIT : vector search used... think if it's posible to optimize it. (use linked list?)
+	/** DOIT : vector search used... think if it's possible to optimize it. (use linked list?)
+	 * @private */
 	pureLegsCore function removeTask(task:Task, signatureClass:Class):void {
 		// get class injection rules. (cache is used.)
 		var rules:Vector.<InjectRuleTaskVO> = classInjectRules[signatureClass];
@@ -555,7 +561,7 @@ public class ProcessMapLive {
 		// find task by inject object name and remove it.
 		var ruleCount:int = rules.length;
 		for (var i:int = 0; i < ruleCount; i++) {
-			var allTasks:Vector.<Task> = injectObjectRegistry[rules[i].injectClassAndName];
+			var allTasks:Vector.<Task> = injectObjectRegistry[rules[i].injectId];
 			if (allTasks) {
 				var taskCount:int = allTasks.length;
 				for (var j:int = 0; j < taskCount; j++) {
@@ -568,7 +574,8 @@ public class ProcessMapLive {
 		}
 	}
 
-	// clear inject object registry then all tasks are removed.
+	/** clear inject object registry then all tasks are removed.
+	 * @private */
 	pureLegsCore function removeAllTasks():void {
 		injectObjectRegistry = new Dictionary();
 	}
@@ -611,7 +618,7 @@ public class ProcessMapLive {
 						}
 						var mapRule:InjectRuleTaskVO = new InjectRuleTaskVO();
 						mapRule.varName = node.@name.toString();
-						mapRule.injectClassAndName = injectName;
+						mapRule.injectId = injectName;
 						mapRule.scopeName = scopeName;
 						retVal[retVal.length] = mapRule
 					}
@@ -675,7 +682,8 @@ public class ProcessMapLive {
 		return classConstRegistry[constName];
 	}
 
-	// stop and remove all process, tasks, all dictionaries, remove timer events and stage event.
+	/** stop and remove all process, tasks, all dictionaries, remove timer events and stage event.
+	 * @private */
 	pureLegsCore function dispose():void {
 		use namespace pureLegsCore;
 

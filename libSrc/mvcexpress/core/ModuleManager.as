@@ -40,6 +40,8 @@ public class ModuleManager {
 	 * @param moduleName    name for module
 	 * @param moduleCore    module object for given name
 	 * @return    returns name (same as provided or generated new one) of the module.
+	 *
+	 * @private
 	 */
 	static pureLegsCore function registerModule(moduleName:String, moduleCore:ModuleCore):String {
 
@@ -66,7 +68,7 @@ public class ModuleManager {
 
 			MvcExpress.debug(new TraceModuleManager_createModule(moduleName));
 		}
-		if (moduleRegistry[moduleName] == null) {
+		if (!(moduleName in moduleRegistry)) {
 			_moduleId++;
 			//
 			if (!moduleName) {
@@ -142,7 +144,7 @@ public class ModuleManager {
 		CONFIG::debug {
 			MvcExpress.debug(new TraceModuleManager_disposeModule(moduleName));
 		}
-		if (moduleRegistry[moduleName]) {
+		if (moduleName in moduleRegistry) {
 			delete moduleRegistry[moduleName];
 		} else {
 			throw Error("Module with moduleName:" + moduleName + " doesn't exist.");
@@ -184,7 +186,7 @@ public class ModuleManager {
 	 * @return
 	 */
 	static public function listMappedMessages(moduleName:String):String {
-		if (moduleRegistry[moduleName]) {
+		if (moduleName in moduleRegistry) {
 			return (moduleRegistry[moduleName] as ModuleCore).listMappedMessages();
 		} else {
 			return "Module with name :" + moduleName + " is not found.";
@@ -197,7 +199,7 @@ public class ModuleManager {
 	 * @return
 	 */
 	static public function listMappedMediators(moduleName:String):String {
-		if (moduleRegistry[moduleName]) {
+		if (moduleName in moduleRegistry) {
 			return (moduleRegistry[moduleName] as ModuleCore).listMappedMediators();
 		} else {
 			return "Module with name :" + moduleName + " is not found.";
@@ -210,7 +212,7 @@ public class ModuleManager {
 	 * @return
 	 */
 	static public function listMappedProxies(moduleName:String):String {
-		if (moduleRegistry[moduleName]) {
+		if (moduleName in moduleRegistry) {
 			return (moduleRegistry[moduleName] as ModuleCore).listMappedProxies();
 		} else {
 			return "Module with name :" + moduleName + " is not found.";
@@ -223,24 +225,8 @@ public class ModuleManager {
 	 * @return
 	 */
 	static public function listMappedCommands(moduleName:String):String {
-		if (moduleRegistry[moduleName]) {
+		if (moduleName in moduleRegistry) {
 			return (moduleRegistry[moduleName] as ModuleCore).listMappedCommands();
-		} else {
-			return "Module with name :" + moduleName + " is not found.";
-		}
-	}
-
-	/**
-	 * lists message commands.
-	 * @param moduleName    module name to debug
-	 * @param messageType    message type
-	 * @return
-	 */
-	static public function listModuleMessageCommands(moduleName:String, messageType:String):String {
-		use namespace pureLegsCore;
-
-		if (moduleRegistry[moduleName]) {
-			return ((moduleRegistry[moduleName] as ModuleCore).listMessageCommands(messageType) as String);
 		} else {
 			return "Module with name :" + moduleName + " is not found.";
 		}
@@ -250,15 +236,15 @@ public class ModuleManager {
 	 * EXPERIMENTAL
 	 * Invokes custom module function.
 	 * Experimental function for mvcLogger and extension development.
-	 * @private
 	 *
 	 * @param moduleName    Name of module.
 	 * @param functionName    name of the function
 	 * @param params        optional function params
 	 * @return        returns object.
+	 * @private
 	 */
 	static pureLegsCore function invokeModuleFunction(moduleName:String, functionName:String, params:Array = null):Object {
-		if (moduleRegistry[moduleName]) {
+		if (moduleName in moduleRegistry) {
 			try {
 				var callFunct:Function = moduleRegistry[moduleName][functionName]
 				if (params) {

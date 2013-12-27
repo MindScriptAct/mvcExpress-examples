@@ -1,8 +1,10 @@
 package modularProject.modularSample {
 //import com.mindscriptact.mvcExpressLogger.MvcExpressLogger;
+import com.mindscriptact.mvcExpressLogger.MvcExpressLogger;
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
+import modularProject.global.ModuleNames;
 
 import modularProject.modularSample.controller.setup.InitModularSampleCommand;
 import modularProject.modularSample.controller.setup.SetUpPermissionsCommand;
@@ -10,8 +12,6 @@ import modularProject.modularSample.controller.setup.SetUpViewCommand;
 import modularProject.modularSample.msg.DataMessages;
 import modularProject.modularSample.msg.Messages;
 import modularProject.modularSample.msg.ViewMessages;
-
-import modules.ModuleNames;
 
 import mvcexpress.extensions.scoped.modules.ModuleScoped;
 import mvcexpress.utils.checkClassStringConstants;
@@ -28,8 +28,7 @@ public class ModularSample extends Sprite {
 	public function ModularSample() {
 		CONFIG::debug {
 			// add mvcExpress logger for debugging. (press CTRL + ` to open it.)
-			//MvcExpressLogger.init(this.stage);
-
+			MvcExpressLogger.init(this.stage);
 			checkClassStringConstants(Messages, DataMessages, ViewMessages);
 		}
 

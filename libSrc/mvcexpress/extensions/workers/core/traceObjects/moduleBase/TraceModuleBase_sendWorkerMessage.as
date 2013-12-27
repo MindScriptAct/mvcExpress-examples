@@ -1,9 +1,9 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
-package mvcexpress.core.traceObjects.command {
+package mvcexpress.extensions.workers.core.traceObjects.moduleBase {
 import mvcexpress.core.namespace.pureLegsCore;
 import mvcexpress.core.traceObjects.MvcTraceActions;
 import mvcexpress.core.traceObjects.TraceObj_SendMessage;
-import mvcexpress.mvc.Command;
+import mvcexpress.modules.ModuleCore;
 
 /**
  * Class for mvcExpress tracing. (debug mode only)
@@ -12,16 +12,16 @@ import mvcexpress.mvc.Command;
  *
  * @version 2.0.rc1
  */
-public class TraceCommand_sendScopeMessage extends TraceObj_SendMessage {
+public class TraceModuleBase_sendWorkerMessage extends TraceObj_SendMessage {
 
 	public var type:String;
 	public var params:Object;
 
-	public function TraceCommand_sendScopeMessage(moduleName:String, $commandObject:Command, $type:String, $params:Object, preSend:Boolean) {
+	public function TraceModuleBase_sendWorkerMessage(moduleName:String, $moduleObject:ModuleCore, $type:String, $params:Object, preSend:Boolean) {
 		use namespace pureLegsCore;
 
-		super(((preSend) ? MvcTraceActions.COMMAND_SENDSCOPEMESSAGE : MvcTraceActions.COMMAND_SENDSCOPEMESSAGE_CLEAN), moduleName);
-		commandObject = $commandObject;
+		super(((preSend) ? MvcTraceActions.MODULEBASE_SENDSCOPEMESSAGE : MvcTraceActions.MODULEBASE_SENDSCOPEMESSAGE_CLEAN), moduleName);
+		moduleObject = $moduleObject;
 		type = $type;
 		params = $params;
 		//

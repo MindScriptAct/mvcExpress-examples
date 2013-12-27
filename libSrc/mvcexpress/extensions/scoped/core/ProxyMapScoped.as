@@ -12,9 +12,9 @@ import mvcexpress.core.messenger.Messenger;
 import mvcexpress.core.namespace.pureLegsCore;
 import mvcexpress.core.traceObjects.proxyMap.TraceProxyMap_injectPending;
 import mvcexpress.core.traceObjects.proxyMap.TraceProxyMap_injectStuff;
-import mvcexpress.core.traceObjects.proxyMap.TraceProxyMap_scopeMap;
-import mvcexpress.core.traceObjects.proxyMap.TraceProxyMap_scopeUnmap;
-import mvcexpress.core.traceObjects.proxyMap.TraceProxyMap_scopedInjectPending;
+import mvcexpress.extensions.scoped.core.traceObjects.TraceProxyMap_scopeMap;
+import mvcexpress.extensions.scoped.core.traceObjects.TraceProxyMap_scopeUnmap;
+import mvcexpress.extensions.scoped.core.traceObjects.TraceProxyMap_scopedInjectPending;
 import mvcexpress.extensions.scoped.core.inject.InjectRuleScopedVO;
 import mvcexpress.extensions.scoped.modules.ModuleScoped;
 import mvcexpress.extensions.scoped.mvc.ProxyScoped;
@@ -143,7 +143,7 @@ public class ProxyMapScoped extends ProxyMap {
 		for (var i:int; i < ruleCount; i++) {
 			var rule:InjectRuleScopedVO = rules[i] as InjectRuleScopedVO;
 			var scopename:String = rule.scopeName;
-			var injectClassAndName:String = rule.injectClassAndName;
+			var injectClassAndName:String = rule.injectId;
 			if (scopename) {
 				if (!ScopeManager.injectScopedProxy(object, rule)) {
 					if (MvcExpress.pendingInjectsTimeOut && !(object is Command)) {
@@ -209,7 +209,7 @@ public class ProxyMapScoped extends ProxyMap {
 						} else {
 							lazyProxy = new lazyProxyData.proxyClass();
 						}
-						map(lazyProxy, lazyProxyData.injectClass, lazyProxyData.name);
+						map(lazyProxy, lazyProxyData.name, lazyProxyData.injectClass);
 
 						i--;
 
@@ -273,7 +273,7 @@ public class ProxyMapScoped extends ProxyMap {
 		}
 		var mapRule:InjectRuleScopedVO = new InjectRuleScopedVO();
 		mapRule.varName = varName;
-		mapRule.injectClassAndName = injectClass + injectName;
+		mapRule.injectId = injectClass + injectName;
 		mapRule.scopeName = scopeName;
 		return mapRule;
 	}
@@ -283,6 +283,7 @@ public class ProxyMapScoped extends ProxyMap {
 	//    Extension checking: INTERNAL, DEBUG ONLY.
 	//----------------------------------
 
+	/** @private */
 	CONFIG::debug
 	override pureLegsCore function setSupportedExtensions(supportedExtensions:Dictionary):void {
 		super.setSupportedExtensions(supportedExtensions);

@@ -1,6 +1,7 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
 package mvcexpress.core.messenger {
 import flash.utils.Dictionary;
+import flash.utils.getQualifiedClassName;
 
 import mvcexpress.MvcExpress;
 import mvcexpress.core.CommandMap;
@@ -21,10 +22,12 @@ use namespace pureLegsCore;
  */
 public class Messenger {
 
-	// name of the module messenger is working for.
+	/** name of the module messenger is working for.
+	 * @private */
 	pureLegsCore var moduleName:String;
 
-	// defines if messenger can be instantiated.
+	/** defines if messenger can be instantiated.
+	 * @private */
 	static pureLegsCore var allowInstantiation:Boolean; // = false;
 
 	// keeps ALL HandlerVO's in vectors by message type that they have to respond to.
@@ -78,15 +81,25 @@ public class Messenger {
 		}
 		if (!msgData) {
 			msgData = new HandlerVO();
-			CONFIG::debug {
-				msgData.handlerClassName = handlerClassName;
-			}
+			msgData.handlerClassName = handlerClassName;
 			msgData.handler = handler;
 			messageList[messageList.length] = msgData;
 			handlerRegistry[type][handler] = msgData;
 		}
 		return msgData;
 	}
+
+	/**
+	 * Checks if messanger has handler for this message type.
+	 * @param    type                message type that handler had to react
+	 * @param    handler                function called on sent message.
+	 * @return    true if messenger has specific handler for message type.
+	 */
+	public function hasHandler(type:String, handler:Function):Boolean {
+		//return (handlerRegistry[type] && handlerRegistry[type][handler]);
+		return false;
+	}
+
 
 	/**
 	 * Removes handler function that will be called then message of specified type is sent.
@@ -101,7 +114,7 @@ public class Messenger {
 
 			MvcExpress.debug(new TraceMessenger_removeHandler(moduleName, type, handler));
 		}
-		if (handlerRegistry[type]) {
+		if (type in handlerRegistry) {
 			if (handlerRegistry[type][handler]) {
 				(handlerRegistry[type][handler] as HandlerVO).handler = null;
 				delete handlerRegistry[type][handler];
@@ -184,7 +197,7 @@ public class Messenger {
 	 */
 	public function isHandlerAdded(type:String, handler:Function):Boolean {
 		var retVal:Boolean = false;
-		if (handlerRegistry[type]) {
+		if (type in handlerRegistry) {
 			if (handlerRegistry[type][handler]) {
 				retVal = true;
 			}
@@ -196,17 +209,19 @@ public class Messenger {
 	 * List all message mappings.
 	 * Intended to be used by ModuleCore.as
 	 */
-	public function listMappings(commandMap:CommandMap):String {
+	public function listMappings(commandMap:CommandMap, verbose:Boolean = true):String {
 		use namespace pureLegsCore;
 
 		var retVal:String = "";
-		retVal = "====================== Message Mappings: ======================\n";
-		var warningText:String = "WARNING: If you want to see Classes that handles constants - you must run with CONFIG::debug compile variable set to 'true'.\n";
-		CONFIG::debug {
-			warningText = "";
-		}
-		if (warningText) {
-			retVal += warningText;
+		if (verbose) {
+			retVal = "====================== Message Mappings: ======================\n";
+			var warningText:String = "WARNING: If you want to see Classes that handles constants - you must run with CONFIG::debug compile variable set to 'true'.\n";
+			CONFIG::debug {
+				warningText = "";
+			}
+			if (warningText) {
+				retVal += warningText;
+			}
 		}
 		for (var key:String in messageRegistry) {
 			var msgList:Vector.<HandlerVO> = messageRegistry[key];
@@ -214,17 +229,35 @@ public class Messenger {
 			var msgCount:int = msgList.length;
 			for (var i:int = 0; i < msgCount; i++) {
 				var handlerVo:HandlerVO = msgList[i];
-				if (handlerVo.isExecutable) {
-					messageHandlers += "[EXECUTES:" + commandMap.getMessageCommand(key) + "], ";
-					CONFIG::debug {
-						messageHandlers += "[" + handlerVo.handlerClassName + "], ";
+				if (messageHandlers) {
+					messageHandlers += ",";
+				}
+				if (verbose) {
+					if (handlerVo.isExecutable) {
+						messageHandlers += commandMap.getMessageCommand(key);
+					} else {
+						messageHandlers += handlerVo.handlerClassName.split("::")[1];
+					}
+				} else {
+					if (handlerVo.isExecutable) {
+						messageHandlers += getQualifiedClassName(commandMap.getMessageCommand(key));
+					} else {
+						messageHandlers += handlerVo.handlerClassName;
 					}
 				}
 			}
-
-			retVal += "SENDING MESSAGE:'" + key + "'\t> HANDLED BY: > " + messageHandlers + "\n";
+			if (verbose) {
+				retVal += "SENDING MESSAGE:'" + key + "'\t> HANDLED BY: > " + messageHandlers + "\n";
+			} else {
+				if (retVal) {
+					retVal += ";";
+				}
+				retVal += key + ">" + messageHandlers;
+			}
 		}
-		retVal += "================================================================";
+		if (verbose) {
+			retVal += "================================================================";
+		}
 		return retVal;
 	}
 
@@ -240,9 +273,11 @@ public class Messenger {
 	//    Extension checking: INTERNAL, DEBUG ONLY.
 	//----------------------------------
 
+	/** @private */
 	CONFIG::debug
 	pureLegsCore var SUPPORTED_EXTENSIONS:Dictionary;
 
+	/** @private */
 	CONFIG::debug
 	pureLegsCore function setSupportedExtensions(supportedExtensions:Dictionary):void {
 		pureLegsCore::SUPPORTED_EXTENSIONS = supportedExtensions;

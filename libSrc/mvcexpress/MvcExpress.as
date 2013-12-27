@@ -15,14 +15,14 @@ public class MvcExpress {
 	public static const WEBSITE_URL:String = "http://mvcExpress.org";
 
 	/** Framework name */
-	public static const NAME:String = "mvcExpress 2 RC1";
+	public static const NAME:String = "mvcExpress 2 RC3";
 
 	/** Current framework major version */
 	public static const MAJOR_VERSION:uint = 2;
 	/** Current framework minor version */
 	public static const MINOR_VERSION:uint = 0;
 	/** Current framework revision version */
-	public static const REVISION:uint = 0;
+	public static const REVISION:uint = 3;
 
 	/** Current framework version */
 	public static const VERSION:String = "v" + MAJOR_VERSION + "." + MINOR_VERSION + "." + REVISION;
@@ -46,7 +46,7 @@ public class MvcExpress {
 	 * If dependency is mapped during this waiting time - framework will find missing dependencies and resolve them.
 	 * If in this time dependencies will not be resolved - error will be thrown.
 	 */
-	public static var pendingInjectsTimeOut:int = 0;
+	public static var pendingInjectsTimeOut:uint = 0;
 
 	/**
 	 * Sets a debug function that will get framework activity constants as String's.

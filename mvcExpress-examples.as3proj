@@ -8,8 +8,8 @@
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
-    <movie version="10" />
-    <movie minorVersion="1" />
+    <movie version="11" />
+    <movie minorVersion="9" />
     <movie platform="Flash Player" />
     <movie background="#FFFFFF" />
   </output>
@@ -29,6 +29,7 @@
     <option allowSourcePathOverlap="False" />
     <option benchmark="False" />
     <option es="False" />
+    <option inline="False" />
     <option locale="" />
     <option loadConfig="" />
     <option optimize="True" />
@@ -59,6 +60,8 @@
     <element path="libs\mvcExpress_v1_3_1-logger_v1_0.swc" />
     <element path="libs\mvcExpress-debug_v1_4_0.swc" />
     <element path="libs\MinimalComps_0_9_10.swc" />
+    <element path="libs\mvcExpress-debug_v2_0_rc3.swc" />
+    <element path="libs\mvcExpress_v2_0_rc3-logger_v1_3.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
@@ -78,11 +81,11 @@
   </library>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
-    <compile path="mvcExpress-ticTacToe\src\ticTacToe\Main.as" />
+    <compile path="mvcExpress-modular\src\modularProject\modularSample\ModularSample.as" />
   </compileTargets>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
-    <!-- example: <hidden path="..." /> -->
+    <hidden path="obj" />
   </hiddenPaths>
   <!-- Executed before build -->
   <preBuildCommand />
@@ -92,6 +95,7 @@
   <options>
     <option showHiddenPaths="False" />
     <option testMovie="Default" />
+    <option testMovieCommand="" />
   </options>
   <!-- Plugin storage -->
   <storage />

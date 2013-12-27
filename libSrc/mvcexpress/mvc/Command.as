@@ -49,7 +49,8 @@ dynamic public class Command {
 	CONFIG::debug
 	static pureLegsCore var canConstruct:Boolean; // = false;
 
-	/** CONSTRUCTOR */
+	/** CONSTRUCTOR
+	 * @private */
 	public function Command() {
 		CONFIG::debug {
 			use namespace pureLegsCore;
@@ -114,9 +115,11 @@ dynamic public class Command {
 	//    Extension checking: INTERNAL, DEBUG ONLY.
 	//----------------------------------
 
+	/** @private */
 	CONFIG::debug
 	static pureLegsCore var extension_id:int = ModuleCore.pureLegsCore::EXTENSION_CORE_ID;
 
+	/** @private */
 	CONFIG::debug
 	static pureLegsCore var extension_name:String = ModuleCore.pureLegsCore::EXTENSION_CORE_NAME;
 

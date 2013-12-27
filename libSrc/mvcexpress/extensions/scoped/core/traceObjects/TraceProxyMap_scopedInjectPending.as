@@ -1,5 +1,5 @@
 // Licensed under the MIT license: http://www.opensource.org/licenses/mit-license.php
-package mvcexpress.core.traceObjects.proxyMap {
+package mvcexpress.extensions.scoped.core.traceObjects {
 import mvcexpress.core.inject.InjectRuleVO;
 import mvcexpress.core.traceObjects.MvcTraceActions;
 import mvcexpress.core.traceObjects.TraceObj;
@@ -27,7 +27,7 @@ public class TraceProxyMap_scopedInjectPending extends TraceObj {
 	}
 
 	override public function toString():String {
-		return "!!!!! " + MvcTraceActions.PROXYMAP_INJECTPENDING + " > for scopeName:" + scopeName + " with id:" + rule.injectClassAndName + "(needed in " + hostObject + ")" + "     {" + moduleName + "}";
+		return "!!!!! " + MvcTraceActions.PROXYMAP_INJECTPENDING + " > for scopeName:" + scopeName + " with id:" + rule.injectId + "(needed in " + hostObject + ")" + "     {" + moduleName + "}";
 	}
 }
 }

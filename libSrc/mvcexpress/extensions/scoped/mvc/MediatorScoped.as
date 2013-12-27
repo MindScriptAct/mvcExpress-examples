@@ -2,7 +2,7 @@
 package mvcexpress.extensions.scoped.mvc {
 import mvcexpress.MvcExpress;
 import mvcexpress.core.namespace.pureLegsCore;
-import mvcexpress.core.traceObjects.mediator.TraceMediator_sendScopeMessage;
+import mvcexpress.extensions.scoped.core.traceObjects.TraceMediator_sendScopeMessage;
 import mvcexpress.extensions.scoped.core.ScopeManager;
 import mvcexpress.extensions.scoped.modules.ModuleScoped;
 import mvcexpress.mvc.Mediator;
@@ -82,9 +82,11 @@ public class MediatorScoped extends Mediator {
 	//    Extension checking: INTERNAL, DEBUG ONLY.
 	//----------------------------------
 
+	/** @private */
 	CONFIG::debug
 	static pureLegsCore var extension_id:int = ModuleScoped.pureLegsCore::EXTENSION_SCOPED_ID;
 
+	/** @private */
 	CONFIG::debug
 	static pureLegsCore var extension_name:String = ModuleScoped.pureLegsCore::EXTENSION_SCOPED_NAME;
 }
