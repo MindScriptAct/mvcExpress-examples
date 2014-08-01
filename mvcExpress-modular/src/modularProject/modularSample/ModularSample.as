@@ -1,6 +1,6 @@
 package modularProject.modularSample {
-//import com.mindscriptact.mvcExpressLogger.MvcExpressLogger;
-import com.mindscriptact.mvcExpressLogger.MvcExpressLogger;
+//import mindscriptact.mvcExpressLogger.MvcExpressLogger;
+import mindscriptact.mvcExpressLogger.MvcExpressLogger;
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
@@ -16,7 +16,7 @@ import modularProject.modularSample.msg.ViewMessages;
 import mvcexpress.extensions.scoped.modules.ModuleScoped;
 import mvcexpress.utils.checkClassStringConstants;
 
-//import com.mindscriptact.mvcExpressLogger.MvcExpressLogger;
+//import mindscriptact.mvcExpressLogger.MvcExpressLogger;
 /**
  * COMMENT
  * @author Raimundas Banevicius (http://www.mindscriptact.com/)

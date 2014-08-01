@@ -1,4 +1,4 @@
-package com.mindscriptact.mobileTestApp.messages {
+package mindscriptact.mobileTestApp.messages {
 
 /**
  * Constants for view messages. (Usualy for user interactions.)

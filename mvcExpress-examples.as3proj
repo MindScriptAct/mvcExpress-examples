@@ -21,6 +21,7 @@
     <class path="mvcExpress-ticTacToe\src" />
     <class path="mvcExpress-helloMobile\src" />
     <class path="mvcExpress-modular\src" />
+    <class path="tempSrc" />
   </classpaths>
   <!-- Build options -->
   <build>

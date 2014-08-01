@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="FlexBuildConfigurationManager" active="example-modular">
+    <configurations>
+      <configuration name="example-modular" main-class="modularProject.modularSample.ModularSample" output-file="modularSample.swf" output-folder="$MODULE_DIR$/../bin">
+        <dependencies target-player="13.0">
+          <entries>
+            <entry module-name="mvcExpress-framework-v2" build-configuration-name="mvcExpress-v2-debug">
+              <dependency linkage="Loaded" />
+            </entry>
+          </entries>
+          <sdk name="flex_sdk_12" />
+        </dependencies>
+        <compiler-options />
+        <packaging-air-desktop />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+    </configurations>
+    <compiler-options />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="flex_sdk_12" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="mvcExpress-framework-v2" exported="" />
+  </component>
+</module>
+

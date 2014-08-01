@@ -1,10 +1,10 @@
-package com.mindscriptact.mobileTestApp {
-import com.mindscriptact.mobileTestApp.controler.setup.SetupControlerCommand;
-import com.mindscriptact.mobileTestApp.controler.setup.SetupModelCommand;
-import com.mindscriptact.mobileTestApp.controler.setup.SetupViewCommand;
-import com.mindscriptact.mobileTestApp.messages.DataMsg;
-import com.mindscriptact.mobileTestApp.messages.Msg;
-import com.mindscriptact.mobileTestApp.messages.ViewMsg;
+package mindscriptact.mobileTestApp {
+import mindscriptact.mobileTestApp.controler.setup.SetupControlerCommand;
+import mindscriptact.mobileTestApp.controler.setup.SetupModelCommand;
+import mindscriptact.mobileTestApp.controler.setup.SetupViewCommand;
+import mindscriptact.mobileTestApp.messages.DataMsg;
+import mindscriptact.mobileTestApp.messages.Msg;
+import mindscriptact.mobileTestApp.messages.ViewMsg;
 
 import flash.geom.Point;
 

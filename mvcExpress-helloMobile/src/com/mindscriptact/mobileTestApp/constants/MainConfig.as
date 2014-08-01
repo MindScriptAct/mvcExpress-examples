@@ -1,4 +1,4 @@
-package com.mindscriptact.mobileTestApp.constants {
+package mindscriptact.mobileTestApp.constants {
 
 /**
  * Example file to store constants.

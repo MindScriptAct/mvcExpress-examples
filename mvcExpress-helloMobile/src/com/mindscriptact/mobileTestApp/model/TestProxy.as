@@ -1,5 +1,5 @@
-package com.mindscriptact.mobileTestApp.model {
-import com.mindscriptact.mobileTestApp.messages.DataMsg;
+package mindscriptact.mobileTestApp.model {
+import mindscriptact.mobileTestApp.messages.DataMsg;
 
 import mvcexpress.mvc.Proxy;
 

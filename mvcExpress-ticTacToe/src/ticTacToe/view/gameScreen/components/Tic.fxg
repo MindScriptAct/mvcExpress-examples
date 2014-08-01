@@ -1,4 +1,6 @@
-<Graphic version="2.0" viewHeight="100" viewWidth="100" xmlns="http://ns.adobe.com/fxg/2008" xmlns:fxg="http://ns.adobe.com/fxg/2008"
+<Graphic version="2.0" viewHeight="100" viewWidth="100"
+         xmlns="http://ns.adobe.com/fxg/2008"
+         xmlns:fxg="http://ns.adobe.com/fxg/2008"
 		 xmlns:d="http://ns.adobe.com/fxg/2008/dt">
 	<Line xFrom="80" xTo="20" yFrom="20" yTo="80">
 		<stroke>

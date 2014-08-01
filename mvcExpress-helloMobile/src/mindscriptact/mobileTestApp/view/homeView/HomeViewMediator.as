@@ -1,6 +1,6 @@
 package mindscriptact.mobileTestApp.view.homeView {
-import com.mindscriptact.mobileTestApp.messages.DataMsg;
-import com.mindscriptact.mobileTestApp.messages.ViewMsg;
+import mindscriptact.mobileTestApp.messages.DataMsg;
+import mindscriptact.mobileTestApp.messages.ViewMsg;
 
 import flash.events.MouseEvent;
 

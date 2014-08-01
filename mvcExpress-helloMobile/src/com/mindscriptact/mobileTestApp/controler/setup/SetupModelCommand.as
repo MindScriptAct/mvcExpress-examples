@@ -1,5 +1,5 @@
-package com.mindscriptact.mobileTestApp.controler.setup {
-import com.mindscriptact.mobileTestApp.model.TestProxy;
+package mindscriptact.mobileTestApp.controler.setup {
+import mindscriptact.mobileTestApp.model.TestProxy;
 
 import mvcexpress.mvc.Command;
 

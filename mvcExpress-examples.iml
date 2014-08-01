@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="Flex" version="4">
-  <component name="FlexBuildConfigurationManager" active="mvcExpress-examples">
+  <component name="FlexBuildConfigurationManager" active="mvcExpress-modular">
     <configurations>
-      <configuration name="mvcExpress-examples" output-file="mvcExpress-examples.swf" output-folder="$MODULE_DIR$/bin">
-        <dependencies target-player="11.8">
+      <configuration name="mvcExpress-modular" main-class="modularProject.modularSample.ModularSample" output-file="mvcExpress-examples.swf" output-folder="$MODULE_DIR$/bin">
+        <dependencies target-player="11.9">
           <entries>
             <entry library-id="0e33fb6c-d97b-48b8-ad5a-56190ae66fd2">
               <dependency linkage="Merged" />
             </entry>
           </entries>
-          <sdk name="flex_sdk_4.10.0" />
+          <sdk name="flex_sdk_4.6" />
         </dependencies>
         <compiler-options>
           <option name="additionalOptions" value="-define=CONFIG::debug,true  -keep-as3-metadata+=Inject   -default-size 1200 900" />
@@ -24,14 +24,17 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/libSrc" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mvcExpress-ticTacToe/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mvcExpress-helloMobile/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/mvcExpress-helloWorld/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/mvcExpress-viewInheritance/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/mvcExpress-modular/src" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../mvcExpress-logger" />
-    <orderEntry type="jdk" jdkName="flex_sdk_4.10.0" jdkType="Flex SDK Type (new)" />
+    <content url="file://$MODULE_DIR$/../mvcExpress-framework-v2">
+      <sourceFolder url="file://$MODULE_DIR$/../mvcExpress-framework-v2/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../mvcExpress-framework-v2/srcExtensions" isTestSource="false" />
+    </content>
+    <content url="file://$MODULE_DIR$/../mvcExpress-logger">
+      <sourceFolder url="file://$MODULE_DIR$/../mvcExpress-logger/src" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="flex_sdk_4.6" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">
       <library type="flex">

@@ -1,4 +1,4 @@
-package com.mindscriptact.mobileTestApp.messages {
+package mindscriptact.mobileTestApp.messages {
 
 /**
  * Constants for data messages. (Usualy for data change.)

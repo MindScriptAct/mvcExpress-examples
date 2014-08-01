@@ -1,8 +1,8 @@
-package com.mindscriptact.mobileTestApp.view.main {
-import com.mindscriptact.mobileTestApp.Main;
-import com.mindscriptact.mobileTestApp.messages.DataMsg;
-import com.mindscriptact.mobileTestApp.messages.ViewMsg;
-import com.mindscriptact.mobileTestApp.model.TestProxy;
+package mindscriptact.mobileTestApp.view.main {
+import mindscriptact.mobileTestApp.Main;
+import mindscriptact.mobileTestApp.messages.DataMsg;
+import mindscriptact.mobileTestApp.messages.ViewMsg;
+import mindscriptact.mobileTestApp.model.TestProxy;
 
 import flash.events.MouseEvent;
 import flash.globalization.StringTools;

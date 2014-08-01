@@ -1,4 +1,4 @@
-package com.mindscriptact.mobileTestApp.messages {
+package mindscriptact.mobileTestApp.messages {
 
 /**
  * Constants for command messages, and everything that does not fit well in DataMsg or ViewMsg classes.

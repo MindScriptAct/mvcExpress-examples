@@ -1,8 +1,8 @@
 package mindscriptact.mobileTestApp.controler.setup {
-import com.mindscriptact.mobileTestApp.Main;
-import com.mindscriptact.mobileTestApp.view.homeView.HomeView;
-import com.mindscriptact.mobileTestApp.view.homeView.HomeViewMediator;
-import com.mindscriptact.mobileTestApp.view.main.MainMediator;
+import mindscriptact.mobileTestApp.Main;
+import mindscriptact.mobileTestApp.view.homeView.HomeView;
+import mindscriptact.mobileTestApp.view.homeView.HomeViewMediator;
+import mindscriptact.mobileTestApp.view.main.MainMediator;
 
 import mvcexpress.mvc.Command;
 

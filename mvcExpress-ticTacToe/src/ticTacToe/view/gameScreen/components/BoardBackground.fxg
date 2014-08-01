@@ -1,4 +1,6 @@
-<Graphic version="2.0" viewHeight="300" viewWidth="300" xmlns="http://ns.adobe.com/fxg/2008" xmlns:fxg="http://ns.adobe.com/fxg/2008"
+<Graphic version="2.0" viewHeight="300" viewWidth="300"
+         xmlns="http://ns.adobe.com/fxg/2008"
+         xmlns:fxg="http://ns.adobe.com/fxg/2008"
 		 xmlns:d="http://ns.adobe.com/fxg/2008/dt">
 	<Rect width="300" height="300" topLeftRadiusX="10" topRightRadiusX="10" bottomLeftRadiusX="10" bottomRightRadiusX="10">
 		<fill>

@@ -1,6 +1,6 @@
-package com.mindscriptact.mobileTestApp.controler.setup {
-import com.mindscriptact.mobileTestApp.controler.test.TestClickCommand;
-import com.mindscriptact.mobileTestApp.messages.ViewMsg;
+package mindscriptact.mobileTestApp.controler.setup {
+import mindscriptact.mobileTestApp.controler.test.TestClickCommand;
+import mindscriptact.mobileTestApp.messages.ViewMsg;
 
 import mvcexpress.mvc.Command;
 

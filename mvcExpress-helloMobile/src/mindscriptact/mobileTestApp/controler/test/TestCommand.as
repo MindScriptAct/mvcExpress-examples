@@ -1,4 +1,4 @@
-package com.mindscriptact.mobileTestApp.controler.test {
+package mindscriptact.mobileTestApp.controler.test {
 import flash.geom.Point;
 
 import wiewManagement.model.TestProxy;
